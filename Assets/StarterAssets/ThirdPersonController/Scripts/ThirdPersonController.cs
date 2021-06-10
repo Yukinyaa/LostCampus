@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using Mirror;
+using System;
 #if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
 using UnityEngine.InputSystem;
 #endif
@@ -60,11 +61,25 @@ namespace StarterAssets
 		public float CameraAngleOverride = 0.0f;
 		[Tooltip("For locking the camera position on all axis")]
 		public bool LockCameraPosition = false;
-        #endregion
 
-        #region localValues
-        // cinemachine
-        private float _cinemachineTargetYaw;
+		[Header("Weapon System")]
+		public Transform weaponAnchor;
+		#endregion
+
+		[Header("Debugging")]
+
+		[SyncVar][SerializeField]
+		bool isWeaponFullyUndrawn = true;
+
+		[Command]
+		void CmdSetIsWeaponFullyUndrawn(bool value)
+		{
+			isWeaponFullyUndrawn = value;
+		}
+
+		#region localValues
+		// cinemachine
+		private float _cinemachineTargetYaw;
 		private float _cinemachineTargetPitch;
 
 		// player
@@ -85,8 +100,13 @@ namespace StarterAssets
 		private int _animIDJump;
 		private int _animIDFreeFall;
 		private int _animIDMotionSpeed;
+		private int _animIDWeaponDrawn;
+		private int _animIDAttack1;
+		private int _animIDAttack2;
+		private int _animIDAttack3;
 
 		private Animator _animator;
+		private NetworkAnimator _nAnimator;
 		private CharacterController _controller;
 		private StarterAssetsInputs _input;
 		private GameObject _mainCamera;
@@ -98,6 +118,11 @@ namespace StarterAssets
 
 		private void Awake()
 		{
+			_animator = GetComponentInChildren<Animator>();
+			_nAnimator = GetComponent<NetworkAnimator>();
+			Debug.Assert(_animator != null);
+			_hasAnimator = true;
+			GetComponent<NetworkAnimator>().animator = _animator;
 			// get a reference to our main camera
 			if (_mainCamera == null)
 			{
@@ -105,29 +130,18 @@ namespace StarterAssets
 			}
 		}
 
-		void AnimatorSetBool(int key, bool value)
-		{
-			if (_hasAnimator)
-			{
-				_animator.SetBool(key, value);
-			}
-		}
-
-		void AnimatorSetFloat(int key, float value)
-		{
-			if (_hasAnimator)
-			{
-				_animator.SetFloat(key, value);
-			}
-		}
 
 		private void Start()
 		{
-			_hasAnimator = TryGetComponent(out _animator);
 			_controller = GetComponent<CharacterController>();
 			_input = GetComponent<StarterAssetsInputs>();
 
 			AssignAnimationIDs();
+
+			Transform righthand = _animator.GetBoneTransform(HumanBodyBones.RightHand);
+			weaponAnchor.parent = righthand;
+			weaponAnchor.localPosition = Vector3.zero;
+			weaponAnchor.localRotation = Quaternion.identity;
 
 			// reset our timeouts on start
 			_jumpTimeoutDelta = JumpTimeout;
@@ -149,15 +163,78 @@ namespace StarterAssets
 
 		private void Update()
 		{
-			_hasAnimator = TryGetComponent(out _animator);
+			if (isWeaponFullyUndrawn)
+			{
+				weaponAnchor.gameObject.SetActive(false);
+			}
+			else
+			{
+				weaponAnchor.gameObject.SetActive(true);
+			}
 			if (!isLocalPlayer) return;
 			
+			_animator.SetBool(_animIDAttack1, false);
+			_animator.SetBool(_animIDAttack2, false);
+			_animator.SetBool(_animIDAttack3, false);
+
 			JumpAndGravity();
+			WeaponSystem();
 			GroundedCheck();
 			Move();
 		}
 
-		private void LateUpdate()
+		[SerializeField]
+		float attackCoolDown = 0;
+		float timeSinceLastAttack = 0;
+		[SerializeField]
+		bool WeaponDrawn = false;
+		[SerializeField]
+		bool autoAttackOnDownEnabled = true; // 마우스 다운시 연속공격
+
+		bool atkBtnLastState;
+		bool wDrwnBtnLastState;
+
+
+		private void WeaponSystem()
+        {
+			attackCoolDown -= Time.deltaTime;
+			timeSinceLastAttack += Time.deltaTime;
+
+			if (_input.drawWeapon && wDrwnBtnLastState == false && attackCoolDown < 0)
+			{
+				WeaponDrawn = !WeaponDrawn;
+				if (WeaponDrawn == true) CmdSetIsWeaponFullyUndrawn(false);
+				_animator.SetBool(_animIDWeaponDrawn, WeaponDrawn);
+				attackCoolDown = 1f;
+			}
+
+			else if (_input.attack && (autoAttackOnDownEnabled || atkBtnLastState == false))
+			{
+				if (WeaponDrawn == false)
+				{
+					WeaponDrawn = true;
+					_animator.SetBool(_animIDWeaponDrawn, true);
+				}
+				if (attackCoolDown < 0)
+				{
+					attackCoolDown = 1f;
+					timeSinceLastAttack = 0f;
+
+					_animator.SetTrigger(_animIDAttack1);
+					_nAnimator.SetTrigger(_animIDAttack1);
+				}
+			}
+			else if (attackCoolDown < 0.5f)
+			{
+				if(isWeaponFullyUndrawn == WeaponDrawn)
+					CmdSetIsWeaponFullyUndrawn(!WeaponDrawn);
+			}
+
+			atkBtnLastState = _input.attack;
+			wDrwnBtnLastState = _input.drawWeapon;
+		}
+
+        private void LateUpdate()
 		{
 			//if (!isLocalPlayer) return; //commented out for spectator mode smh
 			CameraRotation();
@@ -170,6 +247,10 @@ namespace StarterAssets
 			_animIDJump = Animator.StringToHash("Jump");
 			_animIDFreeFall = Animator.StringToHash("FreeFall");
 			_animIDMotionSpeed = Animator.StringToHash("MotionSpeed");
+			_animIDWeaponDrawn = Animator.StringToHash("WeaponDrawn");
+			_animIDAttack1 = Animator.StringToHash("Attack1");
+			_animIDAttack2 = Animator.StringToHash("Attack2");
+			_animIDAttack3 = Animator.StringToHash("Attack3");
 		}
 
 		private void GroundedCheck()
@@ -180,7 +261,7 @@ namespace StarterAssets
 
 			// update animator if using character
 
-			AnimatorSetBool(_animIDGrounded, Grounded);
+			_animator.SetBool(_animIDGrounded, Grounded);
 		}
 
 		private void CameraRotation()
@@ -203,7 +284,7 @@ namespace StarterAssets
 		private void Move()
 		{
 			// set target speed based on move speed, sprint speed and if sprint is pressed
-			float targetSpeed = _input.sprint ? SprintSpeed : MoveSpeed;
+			float targetSpeed = isWeaponFullyUndrawn ? (_input.sprint ? SprintSpeed : MoveSpeed) : MoveSpeed / 2;
 
 			// a simplistic acceleration and deceleration designed to be easy to remove, replace, or iterate upon
 
@@ -254,8 +335,8 @@ namespace StarterAssets
 			_controller.Move(targetDirection.normalized * (_speed * Time.deltaTime) + new Vector3(0.0f, _verticalVelocity, 0.0f) * Time.deltaTime);
 
 			// update animator if using character
-			AnimatorSetFloat(_animIDSpeed, _animationBlend);
-			AnimatorSetFloat(_animIDMotionSpeed, inputMagnitude);
+			_animator.SetFloat(_animIDSpeed, _animationBlend);
+			_animator.SetFloat(_animIDMotionSpeed, inputMagnitude);
 			
 		}
 
@@ -267,8 +348,8 @@ namespace StarterAssets
 				_fallTimeoutDelta = FallTimeout;
 
 				// update animator if using character
-				AnimatorSetBool(_animIDJump, false);
-				AnimatorSetBool(_animIDFreeFall, false);
+				_animator.SetBool(_animIDJump, false);
+				_animator.SetBool(_animIDFreeFall, false);
 
 				// stop our velocity dropping infinitely when grounded
 				if (_verticalVelocity < 0.0f)
@@ -283,7 +364,7 @@ namespace StarterAssets
 					_verticalVelocity = Mathf.Sqrt(JumpHeight * -2f * Gravity);
 
 					// update animator if using character
-					AnimatorSetBool(_animIDJump, true);
+					_animator.SetBool(_animIDJump, true);
 				}
 
 				// jump timeout
@@ -305,7 +386,7 @@ namespace StarterAssets
 				else
 				{
 					// update animator if using character
-					AnimatorSetBool(_animIDFreeFall, true);
+					_animator.SetBool(_animIDFreeFall, true);
 				}
 
 				// if we are not grounded, do not jump

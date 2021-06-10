@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 #if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
 using UnityEngine.InputSystem;
@@ -12,6 +13,8 @@ namespace StarterAssets
 		public Vector2 look;
 		public bool jump;
 		public bool sprint;
+		public bool attack;
+		public bool drawWeapon;
 
 		[Header("Movement Settings")]
 		public bool analogMovement;
@@ -23,7 +26,7 @@ namespace StarterAssets
 #endif
 
 #if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
-		public void OnMove(InputValue value)
+        public void OnMove(InputValue value)
 		{
 			MoveInput(value.Get<Vector2>());
 		}
@@ -44,6 +47,15 @@ namespace StarterAssets
 		public void OnSprint(InputValue value)
 		{
 			SprintInput(value.isPressed);
+		}
+
+		public void OnAttack(InputValue value)
+		{
+			AttackInput(value.isPressed);
+		}
+		public void OnDrawWeapon(InputValue value)
+		{
+			DrawWeaponInput(value.isPressed);
 		}
 #else
 	// old input sys if we do decide to have it (most likely wont)...
@@ -70,11 +82,20 @@ namespace StarterAssets
 			sprint = newSprintState;
 		}
 
+		private void AttackInput(bool isPressed)
+		{
+			attack = isPressed;
+		}
+		private void DrawWeaponInput(bool isPressed)
+		{
+			drawWeapon = isPressed;
+		}
+
 #if !UNITY_IOS || !UNITY_ANDROID
 
 		private void OnApplicationFocus(bool hasFocus)
 		{
-			SetCursorState(cursorLocked);
+			SetCursorState(cursorLocked); // todo: unlocking cursor
 		}
 
 		private void SetCursorState(bool newState)
