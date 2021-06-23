@@ -173,10 +173,6 @@ namespace StarterAssets
 			}
 			if (!isLocalPlayer) return;
 			
-			_animator.SetBool(_animIDAttack1, false);
-			_animator.SetBool(_animIDAttack2, false);
-			_animator.SetBool(_animIDAttack3, false);
-
 			JumpAndGravity();
 			WeaponSystem();
 			GroundedCheck();
