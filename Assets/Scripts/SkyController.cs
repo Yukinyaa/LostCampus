@@ -30,6 +30,7 @@ public class SkyController : NetworkBehaviour
         {
             ServerUpdate();
         }
+        UpdateSunMoonToTime();
     }
 
     //[Server]
@@ -37,7 +38,6 @@ public class SkyController : NetworkBehaviour
     {
         timeOfDay += Time.deltaTime / 60f / minutePerDay * 24f;
         timeOfDay %= 24;
-        UpdateSunMoonToTime();
     }
 
     private void OnValidate()
@@ -47,16 +47,13 @@ public class SkyController : NetworkBehaviour
 
     void UpdateSunMoonToTime()
     {
-        float sunRotation = Mathf.Lerp(-90, 270, timeOfDay / 24f);
-        float moonRotation = sunRotation - 180;
+        float skyRotation = Mathf.Lerp(-90, 270, timeOfDay / 24f);
 
-        sun.transform.rotation = Quaternion.Euler(sunRotation, -180f, 0);
-        moon.transform.rotation = Quaternion.Euler(moonRotation, -180f, 0);
-
+        this.transform.rotation = Quaternion.Euler(skyRotation, 0, 0);
         skyVolume.profile.TryGet(out PhysicallyBasedSky sky);
         if (sky != null)
         {
-            sky.spaceRotation.value = new Vector3(moonRotation, -180f, 0);
+            sky.spaceRotation.value = moon.transform.rotation.eulerAngles;
         }
         
 
