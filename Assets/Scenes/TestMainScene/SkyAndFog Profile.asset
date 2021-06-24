@@ -140,14 +140,14 @@ MonoBehaviour:
     m_Value: {x: 0, y: 0, z: 0}
   spaceEmissionTexture:
     m_OverrideState: 1
-    m_Value: {fileID: 8900000, guid: 847652ef2e4b47743b7b25c357d3f906, type: 3}
+    m_Value: {fileID: 8900000, guid: 60e8aa8a0bbc98b4aa25b032e21ce684, type: 3}
   spaceEmissionMultiplier:
     m_OverrideState: 1
     m_Value: 0.36
     min: 0
   spaceRotation:
-    m_OverrideState: 0
-    m_Value: {x: 0, y: 0, z: 0}
+    m_OverrideState: 1
+    m_Value: {x: 129.6, y: 113.32, z: -452}
   colorSaturation:
     m_OverrideState: 0
     m_Value: 1
