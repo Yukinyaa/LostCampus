@@ -10,55 +10,38 @@ public class SkyController : NetworkBehaviour
     [SerializeField] Light sun;
     [SerializeField] Light moon;
 
-    [SerializeField] [Range(0, 24)]
-    [SyncVar] float timeOfDay; // in hours
-
-    [SerializeField] float minutePerDay = 5;
     [SerializeField] Volume skyVolume;
-
-    [SerializeField]
-
-
-    public float TimeOfDay { get => timeOfDay; }
-
-    bool IsDay{ get { if (6 < timeOfDay && timeOfDay < 18) return true; else return false; } }
     
+    PhysicallyBasedSky phsicalSky;
+
+    private void Start()
+    {
+        skyVolume.profile.TryGet(out phsicalSky);
+    }
+     
+    private void OnValidate()
+    {
+        skyVolume.profile.TryGet(out phsicalSky);
+        UpdateSkyToTime();
+    }
 
     private void Update()
     {
-        if (isServer)
-        {
-            ServerUpdate();
-        }
-        UpdateSunMoonToTime();
+        UpdateSkyToTime();
     }
 
-    //[Server]
-    void ServerUpdate()
+    void UpdateSkyToTime()
     {
-        timeOfDay += Time.deltaTime / 60f / minutePerDay * 24f;
-        timeOfDay %= 24;
-    }
+        float skyRotation = GetSkyRotation();
 
-    private void OnValidate()
-    {
-        UpdateSunMoonToTime();
-    }
-
-    void UpdateSunMoonToTime()
-    {
-        float skyRotation = Mathf.Lerp(-90, 270, timeOfDay / 24f);
-
+        // this should have sun/moon as child
         this.transform.rotation = Quaternion.Euler(skyRotation, 0, 0);
-        skyVolume.profile.TryGet(out PhysicallyBasedSky sky);
-        if (sky != null)
-        {
-            sky.spaceRotation.value = moon.transform.rotation.eulerAngles;
-        }
+
+        phsicalSky.spaceRotation.value = moon.transform.rotation.eulerAngles;
         
 
 
-        if (IsDay)
+        if (TimeController.Instance.IsDay)
         {
             sun.enabled = true;
             moon.enabled = false;
@@ -68,5 +51,10 @@ public class SkyController : NetworkBehaviour
             sun.enabled = false;
             moon.enabled = true;
         }
+    }
+
+    private float GetSkyRotation()
+    {
+        return Mathf.Lerp(-90, 270, TimeController.Instance.TimeOfDay / 24f);
     }
 }
