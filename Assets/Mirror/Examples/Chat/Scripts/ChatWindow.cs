@@ -1,6 +1,4 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -14,12 +12,10 @@ namespace Mirror.Examples.Chat
 
         public void Awake()
         {
-
             Player.OnMessage += OnPlayerMessage;
-
         }
 
-        private void OnPlayerMessage(Player player, string message)
+        void OnPlayerMessage(Player player, string message)
         {
             string prettyMessage = player.isLocalPlayer ?
                 $"<color=red>{player.playerName}: </color> {message}" :
@@ -29,9 +25,11 @@ namespace Mirror.Examples.Chat
             Debug.Log(message);
         }
 
+        // Called by UI element SendButton.OnClick
         public void OnSend()
         {
-            if (chatMessage.text.Trim() == "") return;
+            if (chatMessage.text.Trim() == "")
+                return;
 
             // get our player
             Player player = NetworkClient.connection.identity.GetComponent<Player>();

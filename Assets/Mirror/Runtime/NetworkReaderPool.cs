@@ -1,41 +1,52 @@
-﻿using System;
-using System.Collections.Generic;
+using System;
 
 namespace Mirror
 {
+    /// <summary>Pooled NetworkReader, automatically returned to pool when using 'using'</summary>
+    public sealed class PooledNetworkReader : NetworkReader, IDisposable
+    {
+        internal PooledNetworkReader(byte[] bytes) : base(bytes) {}
+        internal PooledNetworkReader(ArraySegment<byte> segment) : base(segment) {}
+        public void Dispose() => NetworkReaderPool.Recycle(this);
+    }
+
+    /// <summary>Pool of NetworkReaders to avoid allocations.</summary>
     public static class NetworkReaderPool
     {
-        static readonly Stack<NetworkReader> pool = new Stack<NetworkReader>();
+        // reuse Pool<T>
+        // we still wrap it in NetworkReaderPool.Get/Recyle so we can reset the
+        // position and array before reusing.
+        static readonly Pool<PooledNetworkReader> Pool = new Pool<PooledNetworkReader>(
+            // byte[] will be assigned in GetReader
+            () => new PooledNetworkReader(new byte[]{}),
+            // initial capacity to avoid allocations in the first few frames
+            1000
+        );
 
-        public static NetworkReader GetReader(byte[] bytes)
+        /// <summary>Get the next reader in the pool. If pool is empty, creates a new Reader</summary>
+        public static PooledNetworkReader GetReader(byte[] bytes)
         {
-            if (pool.Count != 0)
-            {
-                NetworkReader reader = pool.Pop();
-                // reset buffer
-                reader.SetBuffer(bytes);
-                return reader;
-            }
-
-            return new NetworkReader(bytes);
+            // grab from pool & set buffer
+            PooledNetworkReader reader = Pool.Take();
+            reader.buffer = new ArraySegment<byte>(bytes);
+            reader.Position = 0;
+            return reader;
         }
 
-        public static NetworkReader GetReader(ArraySegment<byte> segment)
+        /// <summary>Get the next reader in the pool. If pool is empty, creates a new Reader</summary>
+        public static PooledNetworkReader GetReader(ArraySegment<byte> segment)
         {
-            if (pool.Count != 0)
-            {
-                NetworkReader reader = pool.Pop();
-                // reset buffer
-                reader.SetBuffer(segment);
-                return reader;
-            }
-
-            return new NetworkReader(segment);
+            // grab from pool & set buffer
+            PooledNetworkReader reader = Pool.Take();
+            reader.buffer = segment;
+            reader.Position = 0;
+            return reader;
         }
 
-        public static void Recycle(NetworkReader reader)
+        /// <summary>Returns a reader to the pool.</summary>
+        public static void Recycle(PooledNetworkReader reader)
         {
-            pool.Push(reader);
+            Pool.Return(reader);
         }
     }
 }
