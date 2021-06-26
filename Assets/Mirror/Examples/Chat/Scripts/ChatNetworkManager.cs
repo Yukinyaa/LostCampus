@@ -1,23 +1,23 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using Mirror;
-using System;
 
 namespace Mirror.Examples.Chat
 {
+    [AddComponentMenu("")]
     public class ChatNetworkManager : NetworkManager
     {
-        public string playerName { get; set; }
-
-        public void SetHostname(string hostname)
-        {
-            this.networkAddress = hostname;
-        }
-
+        [Header("Chat GUI")]
         public ChatWindow chatWindow;
 
-        public class CreatePlayerMessage : MessageBase
+        // Set by UI element UsernameInput OnValueChanged
+        public string PlayerName { get; set; }
+
+        // Called by UI element NetworkAddressInput.OnValueChanged
+        public void SetHostname(string hostname)
+        {
+            networkAddress = hostname;
+        }
+
+        public struct CreatePlayerMessage : NetworkMessage
         {
             public string name;
         }
@@ -33,13 +33,10 @@ namespace Mirror.Examples.Chat
             base.OnClientConnect(conn);
 
             // tell the server to create a player with this name
-            conn.Send(new CreatePlayerMessage
-            {
-                name = playerName
-            });
+            conn.Send(new CreatePlayerMessage { name = PlayerName });
         }
 
-        private void OnCreatePlayer(NetworkConnection connection, CreatePlayerMessage createPlayerMessage)
+        void OnCreatePlayer(NetworkConnection connection, CreatePlayerMessage createPlayerMessage)
         {
             // create a gameobject using the name supplied by client
             GameObject playergo = Instantiate(playerPrefab);
