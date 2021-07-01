@@ -169,7 +169,7 @@ RectTransform:
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 20, y: -17}
+  m_SizeDelta: {x: 20, y: 0}
   m_Pivot: {x: 1, y: 1}
 --- !u!222 &1217854678670880640
 CanvasRenderer:
@@ -1146,6 +1146,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7330629643793477919}
+  - component: {fileID: 5566851329562316023}
+  - component: {fileID: 5839276649870769499}
   m_Layer: 5
   m_Name: UI_Console
   m_TagString: Untagged
@@ -1175,6 +1177,35 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 400, y: 600}
   m_Pivot: {x: 0, y: 0}
+--- !u!225 &5566851329562316023
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9129719514120568369}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
+--- !u!114 &5839276649870769499
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9129719514120568369}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b755282545761164ab5f0a2dbae7b583, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  canvasGroup: {fileID: 5566851329562316023}
+  content: {fileID: 1341501656313503844}
+  inputField: {fileID: 9134815751438795766}
+  storage: {fileID: 5178344531534511153}
+  consoleLine: {fileID: 8448713713615340445, guid: e737234285a8653499a02867f9c02984, type: 3}
 --- !u!1 &9217627438384771074
 GameObject:
   m_ObjectHideFlags: 0

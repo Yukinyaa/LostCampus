@@ -1,31 +1,23 @@
-using System;
+using System.Collections;
 using System.Collections.Generic;
-using Mirror;
-using UnityEngine;
-using UnityEngine.UI;
 using TMPro;
+using UnityEngine;
 
-
-public class UI_Console : NetworkBehaviour
+public class UI_Console : UIComponent
 {
-    [SerializeField] private GameObject consoleUI;
+    private static int MAX_LINECOUNT = 100;
+
+    private TrafficChannel channel;
+    private Queue<UI_ConsoleLine> consoleQueue;
+    private Queue<UI_ConsoleLine> storageQueue;
     [SerializeField] private RectTransform content;
     [SerializeField] private TMP_InputField inputField;
-    [SerializeField] private CanvasGroup canvasGroup;
     [SerializeField] private Transform storage;
     [Header("- Prefab")]
     [SerializeField] private UI_ConsoleLine consoleLine;
 
-    private static int MAX_LINECOUNT = 20;
-    private static event Action<string> OnMessage;
-
-    private Queue<UI_ConsoleLine> consoleQueue;
-    private Queue<UI_ConsoleLine> storageQueue;
-   
-
-    public override void OnStartAuthority()
+    public override void Init()
     {
-        consoleUI.SetActive(true);
         consoleQueue = new Queue<UI_ConsoleLine>(MAX_LINECOUNT);
         storageQueue = new Queue<UI_ConsoleLine>(MAX_LINECOUNT);
         for (int lineIndex = 0; lineIndex < MAX_LINECOUNT; ++lineIndex)
@@ -35,19 +27,11 @@ public class UI_Console : NetworkBehaviour
                 SetParent(storage).
                 SetContent(string.Empty));
         }
-        OnMessage += MakeLine;
     }
 
-    [ClientCallback]
-    private void OnDestroy()
+    public void MakeLine(string _message)
     {
-        if (false == hasAuthority) return;
-        OnMessage -= MakeLine;
-    }
-
-    private void MakeLine(string _message)
-    {
-        if(consoleQueue.Count >= MAX_LINECOUNT)
+        if (consoleQueue.Count >= MAX_LINECOUNT)
         {
             storageQueue.Enqueue(consoleQueue.Dequeue().SetParent(storage).SetPosition(0));
         }
@@ -58,7 +42,6 @@ public class UI_Console : NetworkBehaviour
             SetContent(_message));
     }
 
-    [Client]
     public void OnEndEdit()
     {
         if (false == Input.GetKeyDown(KeyCode.Return)) return;
@@ -66,28 +49,41 @@ public class UI_Console : NetworkBehaviour
         Send();
     }
 
-    [Client]
-    public void Send()
+    public void OnClick_Enter()
     {
-        CmdSendMessage(inputField.text);
-        //inputField.SetTextWithoutNotify(string.Empty);
+        Send();
+    }
+
+    private void Send()
+    {
+        //CmdSendMessage(inputField.text);
+        channel.Send(inputField.text);
         inputField.SetTextWithoutNotify(string.Empty);
     }
 
-    [Command]
-    private void CmdSendMessage(string _message)
+    public void SetChannel(TrafficChannel _channel)
     {
-        //여기서 meaage를 처리할 수 있다..
-        //ClientRpc의 경우 모든 Client에게 메시지를 송신
-        //TargetRpc의 경우 특정 Client에게 메시지를 송신 (귓속말 기능 수행 등)
-        //차단 등의 기능을 구현한다고 치면 ClientRpc는 사용하지 않는 것이 좋아보임.
-        RpcMakeLine($"[{connectionToClient.connectionId}] : {_message}");
+        Debug.Log("set Channel");
+        channel = _channel;
+
+        StartCoroutine(_MsgRoutine());
+        
+        IEnumerator _MsgRoutine()
+        {
+            yield return new WaitForEndOfFrame();
+            while (true)
+            {
+                while (channel.IsMail)
+                {
+                    MakeLine(channel.GetMail());
+                }
+                yield return null;
+            }
+        }
     }
 
-    [ClientRpc]
-    private void RpcMakeLine(string _content)
+    private void OnDestroy()
     {
-        OnMessage?.Invoke(_content);
+        StopAllCoroutines();
     }
-
 }
