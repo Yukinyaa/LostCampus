@@ -50,6 +50,12 @@ class TimeController : NetworkBehaviour
         }
     }
 
+    [Command(requiresAuthority = false)]
+    public void ChangeTime(float _value)
+    {
+        timeOfDay = _value;
+    }
+
 
     //[Server]
     void ServerUpdate()

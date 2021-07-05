@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -7,7 +8,6 @@ public class UI_Console : UIComponent
 {
     private static int MAX_LINECOUNT = 100;
 
-    private TrafficChannel channel;
     private Queue<UI_ConsoleLine> consoleQueue;
     private Queue<UI_ConsoleLine> storageQueue;
     [SerializeField] private RectTransform content;
@@ -44,7 +44,7 @@ public class UI_Console : UIComponent
 
     public void OnEndEdit()
     {
-        if (false == Input.GetKeyDown(KeyCode.Return)) return;
+        //if (false == Input.GetKeyDown(KeyCode.Return)) return;
         if (string.IsNullOrWhiteSpace(inputField.text)) return;
         Send();
     }
@@ -57,33 +57,39 @@ public class UI_Console : UIComponent
     private void Send()
     {
         //CmdSendMessage(inputField.text);
-        channel.Send(inputField.text);
+
+        string text = inputField.text;
+
+        if (text.Contains("SetTime"))
+        {
+            string[] str = text.Split(' ');
+            float time;
+            if(float.TryParse(str[1], out time))
+            {
+                Debug.Log("Time Change : " + time);
+                TimeController.Instance.ChangeTime(time);
+            }
+        }
+        else
+        {
+            TrafficChannel.Instance.Send(inputField.text);
+        }
         inputField.SetTextWithoutNotify(string.Empty);
     }
 
-    public void SetChannel(TrafficChannel _channel)
-    {
-        Debug.Log("set Channel");
-        channel = _channel;
 
-        StartCoroutine(_MsgRoutine());
-        
-        IEnumerator _MsgRoutine()
+    private void Update()
+    {
+        try
         {
-            yield return new WaitForEndOfFrame();
-            while (true)
+            while (TrafficChannel.Instance.IsMail)
             {
-                while (channel.IsMail)
-                {
-                    MakeLine(channel.GetMail());
-                }
-                yield return null;
+                MakeLine(TrafficChannel.Instance.GetMail());
             }
         }
-    }
+        catch (Exception)
+        {
 
-    private void OnDestroy()
-    {
-        StopAllCoroutines();
+        }
     }
 }
