@@ -51,7 +51,7 @@ class TimeController : NetworkBehaviour
     }
 
     [Command(requiresAuthority = false)]
-    public void ChangeTime(float _value)
+    public void SetTime(float _value)
     {
         timeOfDay = _value;
     }
