@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using Mirror;
 
-public class TrafficChannel : NetworkBehaviour
+public class MessageManager : NetworkBehaviour
 {
     static TrafficChannel instance;
     public static TrafficChannel Instance
@@ -48,10 +48,10 @@ public class TrafficChannel : NetworkBehaviour
     [Command(requiresAuthority = false)]
     private void CmdSendMessage(string _message)
     {
-        //¿©±â¼­ message¸¦ Ã³¸®ÇÒ ¼ö ÀÖ´Ù..
-        //ClientRpcÀÇ °æ¿ì ¸ğµç Client¿¡°Ô ¸Ş½ÃÁö¸¦ ¼Û½Å
-        //TargetRpcÀÇ °æ¿ì Æ¯Á¤ Client¿¡°Ô ¸Ş½ÃÁö¸¦ ¼Û½Å (±Ó¼Ó¸» ±â´É ¼öÇà µî)
-        //Â÷´Ü µîÀÇ ±â´ÉÀ» ±¸ÇöÇÑ´Ù°í Ä¡¸é ClientRpc´Â »ç¿ëÇÏÁö ¾Ê´Â °ÍÀÌ ÁÁ¾Æº¸ÀÓ.
+        //ì—¬ê¸°ì„œ messageë¥¼ ì²˜ë¦¬í•  ìˆ˜ ìˆë‹¤..
+        //ClientRpcì˜ ê²½ìš° ëª¨ë“  Clientì—ê²Œ ë©”ì‹œì§€ë¥¼ ì†¡ì‹ 
+        //TargetRpcì˜ ê²½ìš° íŠ¹ì • Clientì—ê²Œ ë©”ì‹œì§€ë¥¼ ì†¡ì‹  (ê·“ì†ë§ ê¸°ëŠ¥ ìˆ˜í–‰ ë“±)
+        //ì°¨ë‹¨ ë“±ì˜ ê¸°ëŠ¥ì„ êµ¬í˜„í•œë‹¤ê³  ì¹˜ë©´ ClientRpcëŠ” ì‚¬ìš©í•˜ì§€ ì•ŠëŠ” ê²ƒì´ ì¢‹ì•„ë³´ì„.
         RpcMakeLine($"{_message}");
     }
 
