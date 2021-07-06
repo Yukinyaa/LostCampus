@@ -3,16 +3,18 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class UI_Console : UIComponent
 {
-    private static int MAX_LINECOUNT = 100;
+    private static int MAX_LINECOUNT = 30;
 
     private Queue<UI_ConsoleLine> consoleQueue;
     private Queue<UI_ConsoleLine> storageQueue;
-    [SerializeField] private RectTransform content;
     [SerializeField] private TMP_InputField inputField;
     [SerializeField] private Transform storage;
+    [SerializeField] private Scrollbar scrollbar;
+    [SerializeField] private ScrollRect scrollRect;
     [Header("- Prefab")]
     [SerializeField] private UI_ConsoleLine consoleLine;
 
@@ -31,16 +33,42 @@ public class UI_Console : UIComponent
 
     public void MakeLine(string _message)
     {
-        if (consoleQueue.Count >= MAX_LINECOUNT)
+        if (!string.IsNullOrEmpty(_message))
         {
-            storageQueue.Enqueue(consoleQueue.Dequeue().SetParent(storage).SetPosition(0));
+            if (consoleQueue.Count >= MAX_LINECOUNT)
+            {
+                UI_ConsoleLine oldLine = consoleQueue.
+                    Dequeue().
+                    SetParent(storage).
+                    SetPosition(0);
+                storageQueue.Enqueue(oldLine);
+                scrollRect.content.sizeDelta = new Vector2(0, scrollRect.content.rect.height - oldLine.Height);
+            }
+
+            UI_ConsoleLine newLine = storageQueue.
+                Dequeue().
+                SetParent(scrollRect.content).
+                SetContent(_message).
+                SetPosition(-scrollRect.content.sizeDelta.y);
+            consoleQueue.Enqueue(newLine);
+            scrollRect.content.sizeDelta = new Vector2(0, scrollRect.content.rect.height + newLine.Height);
+
+            if (scrollRect.content.rect.height > scrollRect.viewport.rect.height)
+            {
+                scrollbar.gameObject.SetActive(true);
+                scrollRect.verticalScrollbar = scrollbar;
+                scrollRect.verticalScrollbarVisibility = ScrollRect.ScrollbarVisibility.Permanent;
+                scrollRect.viewport.offsetMin = new Vector2(scrollbar.GetComponent<RectTransform>().rect.width, scrollRect.viewport.offsetMin.y);
+            }
+            else
+            {
+                scrollRect.verticalScrollbar = null;
+                scrollbar.gameObject.SetActive(false);
+                scrollRect.viewport.offsetMin = new Vector2(0, scrollRect.viewport.offsetMin.y);
+            }
         }
-        consoleQueue.Enqueue(
-            storageQueue.
-            Dequeue().
-            SetParent(content).
-            SetContent(_message));
     }
+
 
     public void OnEndEdit()
     {

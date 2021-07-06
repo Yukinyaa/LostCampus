@@ -19,6 +19,7 @@ public class UI_ConsoleLine : MonoBehaviour
     public UI_ConsoleLine SetContent(string _content)
     {
         text_Content.SetText(_content);
+        rectTransform.offsetMin = new Vector2(0, rectTransform.offsetMin.y);
         rectTransform.offsetMax = new Vector2(0, rectTransform.offsetMax.y);
         rectTransform.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Bottom, 0, text_Content.preferredHeight);
         return this;
@@ -33,6 +34,8 @@ public class UI_ConsoleLine : MonoBehaviour
     public UI_ConsoleLine SetPosition(float _y)
     {
         rectTransform.anchoredPosition = new Vector2(rectTransform.anchoredPosition.x, _y);
+        rectTransform.anchorMin = new Vector2(0, 1);
+        rectTransform.anchorMax = new Vector2(1, 1);
         return this;
     }
 }

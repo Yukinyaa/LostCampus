@@ -120,9 +120,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 5839276649870769499}
         m_TargetAssemblyTypeName: UI_Console, Assembly-CSharp
-        m_MethodName: Send
+        m_MethodName: OnClick_Enter
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -150,7 +150,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2009881073858639310
 RectTransform:
   m_ObjectHideFlags: 0
@@ -166,11 +166,11 @@ RectTransform:
   m_Father: {fileID: 9163506087999705560}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 1, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 0}
-  m_Pivot: {x: 1, y: 1}
+  m_Pivot: {x: 0, y: 1}
 --- !u!222 &1217854678670880640
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -291,7 +291,7 @@ RectTransform:
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -342,8 +342,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1341501656313503844}
-  - component: {fileID: 6596184356041824283}
-  - component: {fileID: 4292824824575912650}
   m_Layer: 5
   m_Name: Content
   m_TagString: Untagged
@@ -370,46 +368,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
---- !u!114 &6596184356041824283
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3765250896021478427}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3245ec927659c4140ac4f8d17403cc18, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_HorizontalFit: 0
-  m_VerticalFit: 2
---- !u!114 &4292824824575912650
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3765250896021478427}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 59f8146938fff824cb5fd77236b75775, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Padding:
-    m_Left: 0
-    m_Right: 0
-    m_Top: 0
-    m_Bottom: 0
-  m_ChildAlignment: 0
-  m_Spacing: 0
-  m_ChildForceExpandWidth: 1
-  m_ChildForceExpandHeight: 1
-  m_ChildControlWidth: 1
-  m_ChildControlHeight: 0
-  m_ChildScaleWidth: 0
-  m_ChildScaleHeight: 0
-  m_ReverseArrangement: 0
 --- !u!1 &4763673307457219583
 GameObject:
   m_ObjectHideFlags: 0
@@ -584,7 +542,19 @@ MonoBehaviour:
   m_CharacterLimit: 0
   m_OnEndEdit:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 5839276649870769499}
+        m_TargetAssemblyTypeName: UI_Console, Assembly-CSharp
+        m_MethodName: OnEndEdit
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_OnSubmit:
     m_PersistentCalls:
       m_Calls: []
@@ -995,9 +965,9 @@ MonoBehaviour:
   m_ScrollSensitivity: 1
   m_Viewport: {fileID: 3432862501150301033}
   m_HorizontalScrollbar: {fileID: 0}
-  m_VerticalScrollbar: {fileID: 3281016511405951575}
+  m_VerticalScrollbar: {fileID: 0}
   m_HorizontalScrollbarVisibility: 2
-  m_VerticalScrollbarVisibility: 2
+  m_VerticalScrollbarVisibility: 0
   m_HorizontalScrollbarSpacing: -3
   m_VerticalScrollbarSpacing: -3
   m_OnValueChanged:
@@ -1202,9 +1172,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   canvasGroup: {fileID: 5566851329562316023}
-  content: {fileID: 1341501656313503844}
   inputField: {fileID: 9134815751438795766}
   storage: {fileID: 5178344531534511153}
+  scrollbar: {fileID: 3281016511405951575}
+  scrollRect: {fileID: 2815923568430454807}
   consoleLine: {fileID: 8448713713615340445, guid: e737234285a8653499a02867f9c02984, type: 3}
 --- !u!1 &9217627438384771074
 GameObject:
@@ -1241,7 +1212,7 @@ RectTransform:
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 1}
