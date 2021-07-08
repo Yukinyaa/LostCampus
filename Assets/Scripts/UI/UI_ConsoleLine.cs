@@ -16,9 +16,24 @@ public class UI_ConsoleLine : MonoBehaviour
         }
     }
 
-    public UI_ConsoleLine SetContent(string _content)
+    public UI_ConsoleLine SetContent(MessageManager.MessageData _data)
     {
-        text_Content.SetText(_content);
+        text_Content.SetText(_data.content);
+        switch (_data.messageType)
+        {
+            case MessageManager.MessageType.Chat:
+                text_Content.color = Color.green;
+                break;
+            case MessageManager.MessageType.Notice:
+                text_Content.color = Color.grey;
+                break;
+            case MessageManager.MessageType.Whisper:
+                text_Content.color = Color.cyan;
+                break;
+            case MessageManager.MessageType.Error:
+                text_Content.color = Color.red;
+                break;
+        }
         rectTransform.offsetMin = new Vector2(0, rectTransform.offsetMin.y);
         rectTransform.offsetMax = new Vector2(0, rectTransform.offsetMax.y);
         rectTransform.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Bottom, 0, text_Content.preferredHeight);

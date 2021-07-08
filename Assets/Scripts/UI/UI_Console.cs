@@ -5,6 +5,8 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
+
+
 public class UI_Console : UIComponent
 {
     private static int MAX_LINECOUNT = 30;
@@ -27,13 +29,13 @@ public class UI_Console : UIComponent
             storageQueue.Enqueue(
                 Instantiate(consoleLine).
                 SetParent(storage).
-                SetContent(string.Empty));
+                SetContent(default));
         }
     }
 
-    public void MakeLine(string _message)
+    public void MakeLine(MessageManager.MessageData _data)
     {
-        if (!string.IsNullOrEmpty(_message))
+        if (!_data.Equals(default(MessageManager.MessageData)))
         {
             if (consoleQueue.Count >= MAX_LINECOUNT)
             {
@@ -48,7 +50,7 @@ public class UI_Console : UIComponent
             UI_ConsoleLine newLine = storageQueue.
                 Dequeue().
                 SetParent(scrollRect.content).
-                SetContent(_message).
+                SetContent(_data).
                 SetPosition(-scrollRect.content.sizeDelta.y);
             consoleQueue.Enqueue(newLine);
             scrollRect.content.sizeDelta = new Vector2(0, scrollRect.content.rect.height + newLine.Height);
@@ -69,7 +71,6 @@ public class UI_Console : UIComponent
         }
     }
 
-
     public void OnEndEdit()
     {
         //if (false == Input.GetKeyDown(KeyCode.Return)) return;
@@ -85,23 +86,7 @@ public class UI_Console : UIComponent
     private void Send()
     {
         //CmdSendMessage(inputField.text);
-
-        string text = inputField.text;
-
-        if (text.Contains("SetTime"))
-        {
-            string[] str = text.Split(' ');
-            float time;
-            if(float.TryParse(str[1], out time))
-            {
-                Debug.Log("Time Change : " + time);
-                TimeController.Instance.ChangeTime(time);
-            }
-        }
-        else
-        {
-            TrafficChannel.Instance.Send(inputField.text);
-        }
+        MessageManager.Instance.Send(inputField.text);
         inputField.SetTextWithoutNotify(string.Empty);
     }
 
@@ -110,9 +95,9 @@ public class UI_Console : UIComponent
     {
         try
         {
-            while (TrafficChannel.Instance.IsMail)
+            while (MessageManager.Instance.IsMail)
             {
-                MakeLine(TrafficChannel.Instance.GetMail());
+                MakeLine(MessageManager.Instance.GetMail());
             }
         }
         catch (Exception)
