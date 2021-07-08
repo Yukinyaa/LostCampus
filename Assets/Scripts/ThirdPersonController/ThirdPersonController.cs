@@ -55,10 +55,6 @@ public class ThirdPersonController : NetworkBehaviour
 
 	[Header("Weapon System")]
 	public Transform weaponAnchor;
-
-	public SkinnedMeshRenderer PlayerSkinnedMesh;
-	public Mesh PlayerMesh;
-	public MeshCollider PlayerMeshColider;
 	#endregion
 
 	[Header("Debugging")]
@@ -115,7 +111,6 @@ public class ThirdPersonController : NetworkBehaviour
 	{
 		_animator = GetComponentInChildren<Animator>();
 		_nAnimator = GetComponent<NetworkAnimator>();
-		PlayerMeshColider = GetComponent<MeshCollider>();
 		Debug.Assert(_animator != null);
 		_hasAnimator = true;
 		GetComponent<NetworkAnimator>().animator = _animator;
@@ -168,7 +163,6 @@ public class ThirdPersonController : NetworkBehaviour
 			weaponAnchor.gameObject.SetActive(true);
 		}
 		if (!isLocalPlayer) return;
-		UpdateCollider();
 		JumpAndGravity();
 		WeaponSystem();
 		GroundedCheck();
@@ -186,12 +180,6 @@ public class ThirdPersonController : NetworkBehaviour
 	bool atkBtnLastState;
 	bool wDrwnBtnLastState;
 
-	private void UpdateCollider()
-	{
-		Mesh colliderMesh = new Mesh();
-		PlayerSkinnedMesh.BakeMesh(colliderMesh);
-		PlayerMeshColider.sharedMesh = colliderMesh;
-	}
 	private void WeaponSystem()
     {
 		attackCoolDown -= Time.deltaTime;
