@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using Mirror;
 
 public class MessageManager : NetworkBehaviour
 {
+    public static string REGEX_CHECKUSERNAME = @"[^a-zA-Z0-9가-힣_]";
     public enum MessageType
     {
         None = 0,
@@ -77,12 +79,60 @@ public class MessageManager : NetworkBehaviour
         CmdJoinPlayer(_newPlayer);
     }
 
+    [Server]
+    public void SetUserName(MyPlayer _target, string _username)
+    {
+        string newName = _username;
+        if(Regex.IsMatch(newName, REGEX_CHECKUSERNAME))
+        {
+            newName = Regex.Replace(newName, REGEX_CHECKUSERNAME, "");
+        }
+        if (string.IsNullOrEmpty(newName))
+        {
+            newName = "Player";
+        }
+        List<int> sameUserNameCount = new List<int>();
+        foreach (MyPlayer connectedPlayer in players)
+        {
+            if (connectedPlayer == _target) continue;
+            string[] words = connectedPlayer.username.Split(new char[] { '-' });
+            if (words[0].Equals(newName))
+            {
+                if (words.Length > 1)
+                {
+                    if (int.TryParse(words[1], out int index))
+                    {
+                        sameUserNameCount.Add(index);
+                    }
+                }
+                else sameUserNameCount.Add(0);
+            }
+        }
+        if (sameUserNameCount.Count > 0)
+        {
+            int lastIndex = -1;
+            sameUserNameCount.Sort();
+            for (int index = 0; index < sameUserNameCount.Count; ++index)
+            {
+                if (index == sameUserNameCount[index])
+                {
+                    lastIndex = index;
+                }
+                else break;
+            }
+            if (lastIndex == -1) _target.username = newName;
+            else _target.username =  $"{newName}-{lastIndex + 1}";
+        }
+        else _target.username = newName;
+    }
+
     [Command(requiresAuthority = false)]
     private void CmdJoinPlayer(MyPlayer _newPlayer)
     {
         try
         {
             players.Add(_newPlayer);
+            SetUserName(_newPlayer, _newPlayer.username);
             RpcSendAll(MessageType.Notice, $"{_newPlayer.username} Joined The Server");
             print($"{_newPlayer.username} 이 서버에 입장.");
         }
@@ -142,10 +192,15 @@ public class MessageManager : NetworkBehaviour
                     {
                         string[] data = words[1].Split(new char[] { ' ' }, 2);
                         string newName = data[0];
-                        if (!string.IsNullOrEmpty(newName))
+                        if (Regex.IsMatch(newName, REGEX_CHECKUSERNAME))
                         {
-                            RpcSendAll(MessageType.Notice, $"{_sender.username} Change Name To {newName}");
-                            _sender.username = newName;
+                            RpcSendMessage(_sender.netIdentity.connectionToClient, MessageType.Error, $"Invalid User Name : {newName}");
+                        }
+                        else
+                        {
+                            string oldName = _sender.username;
+                            SetUserName(_sender, newName);
+                            RpcSendAll(MessageType.Notice, $"{oldName} Change Name To {_sender.username}");
                         }
                         break;
                     }
