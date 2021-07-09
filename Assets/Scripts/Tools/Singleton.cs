@@ -1,20 +1,20 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
 /// Inherit from this base class to create a singleton.
-/// e.g. public class MyClassName : Singleton<MyClassName> {}
+/// e.g. public class MyClassName : MonoSingleton<MyClassName> {}
 /// </summary>
-public class MonoSingleton<T> : MonoBehaviour where T : MonoBehaviour
+public class Singleton<T> : MonoBehaviour where T : MonoBehaviour
 {
-    //À¯´ÏÆ¼, ½Ã½ºÅÛ ¿ÀºêÁ§Æ®ÀÇ null¹®Á¦ ÇØ°áÀ» À§ÇØ
+    //ìœ ë‹ˆí‹°, ì‹œìŠ¤í…œ ì˜¤ë¸Œì íŠ¸ì˜ nullë¬¸ì œ í•´ê²°ì„ ìœ„í•´
     private static bool isDestroyed = false; 
     private static T instance;
     //private static object m_Lock = new object();
 
     /// <summary>
-    /// Access singleton instance through this propriety.
+    /// Access singleton instance through this propriety
     /// </summary>
     public static T Instance
     {
@@ -27,7 +27,7 @@ public class MonoSingleton<T> : MonoBehaviour where T : MonoBehaviour
                 return null;
             }
 
-            //½º·¹µå¶ô Á¦°Å. ¸ÖÆ¼½º·¹µå¾µÀÏÀÌ º°·Î¾ø±âµµ ÇÏ°í ¼º´É °ÆÁ¤
+            //ìŠ¤ë ˆë“œë½ ì œê±°. ë©€í‹°ìŠ¤ë ˆë“œì“¸ì¼ì´ ë³„ë¡œì—†ê¸°ë„ í•˜ê³  ì„±ëŠ¥ ê±±ì •
             //lock (m_Lock)
             //{
                 if ((object)instance == null)
