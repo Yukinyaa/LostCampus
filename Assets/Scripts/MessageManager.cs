@@ -158,49 +158,88 @@ public class MessageManager : NetworkBehaviour
                 case "W":
                 case "WHISPER":
                     {
-                        string[] data = words[1].Split(new char[] { ' ' }, 2);
-                        string target = data[0];
-                        string content = data[1];
-                        foreach(MyPlayer connectedPlayer in players)
+                        if(words.Length < 2 || string.IsNullOrEmpty(words[1]))
                         {
-                            print("Check Player List : " + connectedPlayer.username);
-
-                            if (connectedPlayer.username.Equals(target))
+                            RpcSendMessage(_sender.netIdentity.connectionToClient, MessageType.Notice, $"/w /whisper (username) (message)\nSend message to username");
+                        }
+                        else
+                        {
+                            try
                             {
-                                RpcSendMessage(connectedPlayer.netIdentity.connectionToClient,
-                                    MessageType.Whisper, $"From {_sender.username} : {content}");
-                                RpcSendMessage(_sender.netIdentity.connectionToClient,
-                                    MessageType.Whisper, $"To {target} : {content}");
-                                return;
+                                string[] data = words[1].Split(new char[] { ' ' }, 2);
+                                string target = data[0];
+                                string content = data[1];
+                                foreach (MyPlayer connectedPlayer in players)
+                                {
+                                    if (connectedPlayer.username.Equals(target))
+                                    {
+                                        RpcSendMessage(connectedPlayer.netIdentity.connectionToClient,
+                                            MessageType.Whisper, $"From {_sender.username} : {content}");
+                                        RpcSendMessage(_sender.netIdentity.connectionToClient,
+                                            MessageType.Whisper, $"To {target} : {content}");
+                                        return;
+                                    }
+                                }
+                                RpcSendMessage(_sender.netIdentity.connectionToClient, MessageType.Error, $"Wrong User Name : {target}");
+                            }
+                            catch (IndexOutOfRangeException)
+                            {
+                                RpcSendMessage(_sender.netIdentity.connectionToClient, MessageType.Error, $"Invalid Command");
                             }
                         }
-                        RpcSendMessage(_sender.netIdentity.connectionToClient, MessageType.Error, $"Wrong User Name : {target}");
                         break;
                     }
                 case "SETTIME":
                     {
-                        string[] data = words[1].Split(new char[] { ' ' }, 2);
-                        float time;
-                        if (float.TryParse(data[0], out time))
+                        if(words.Length < 2 || string.IsNullOrEmpty(words[1]))
                         {
-                            RpcSendAll(MessageType.Notice, $"{_sender.username} Set Time To {time}");
-                            TimeController.Instance.SetTime(time);
+                            RpcSendMessage(_sender.netIdentity.connectionToClient, MessageType.Notice, $"/settime (time)\nSet Time to time ( 1 ~ 24 )");
+                        }
+                        else
+                        {
+                            try
+                            {
+                                string[] data = words[1].Split(new char[] { ' ' }, 2);
+                                float time;
+                                if (float.TryParse(data[0], out time))
+                                {
+                                    RpcSendAll(MessageType.Notice, $"{_sender.username} Set Time To {time}");
+                                    TimeController.Instance.SetTime(time);
+                                }
+                            }
+                            catch (IndexOutOfRangeException)
+                            {
+                                RpcSendMessage(_sender.netIdentity.connectionToClient, MessageType.Error, $"Invalid Command");
+                            }
                         }
                         break;
                     }
                 case "SETNAME":
                     {
-                        string[] data = words[1].Split(new char[] { ' ' }, 2);
-                        string newName = data[0];
-                        if (Regex.IsMatch(newName, REGEX_CHECKUSERNAME))
+                        if (words.Length < 2 || string.IsNullOrEmpty(words[1]))
                         {
-                            RpcSendMessage(_sender.netIdentity.connectionToClient, MessageType.Error, $"Invalid User Name : {newName}");
+                            RpcSendMessage(_sender.netIdentity.connectionToClient, MessageType.Notice, $"/setname (newName)\nSet UserName to newName");
                         }
                         else
                         {
-                            string oldName = _sender.username;
-                            SetUserName(_sender, newName);
-                            RpcSendAll(MessageType.Notice, $"{oldName} Change Name To {_sender.username}");
+                            try
+                            {
+                                string newName = words[1];
+                                if (Regex.IsMatch(newName, REGEX_CHECKUSERNAME))
+                                {
+                                    RpcSendMessage(_sender.netIdentity.connectionToClient, MessageType.Error, $"Invalid User Name : {newName}");
+                                }
+                                else
+                                {
+                                    string oldName = _sender.username;
+                                    SetUserName(_sender, newName);
+                                    RpcSendAll(MessageType.Notice, $"{oldName} Change Name To {_sender.username}");
+                                }
+                            }
+                            catch (IndexOutOfRangeException)
+                            {
+                                RpcSendMessage(_sender.netIdentity.connectionToClient, MessageType.Error, $"Invalid Command");
+                            }
                         }
                         break;
                     }
