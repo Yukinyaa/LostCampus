@@ -2,6 +2,7 @@
 using Mirror;
 using System;
 using UnityEngine.InputSystem;
+using System.Collections;
 
 [RequireComponent(typeof(CharacterController))]
 [RequireComponent(typeof(PlayerInput))]
@@ -18,6 +19,8 @@ public class ThirdPersonController : NetworkBehaviour
 	public float RotationSmoothTime = 0.12f;
 	[Tooltip("Acceleration and deceleration")]
 	public float SpeedChangeRate = 10.0f;
+	[Tooltip("Health")]
+	public float Health=100;
 
 	[Space(10)]
 	[Tooltip("The height the player can jump")]
@@ -103,9 +106,11 @@ public class ThirdPersonController : NetworkBehaviour
 	private GameObject _mainCamera;
 
 	private const float _threshold = 0.01f;
-    #endregion
 
-    private bool _hasAnimator;
+	private Status Status;
+	#endregion
+
+	private bool _hasAnimator;
 
 	private void Awake()
 	{
@@ -137,6 +142,9 @@ public class ThirdPersonController : NetworkBehaviour
 		// reset our timeouts on start
 		_jumpTimeoutDelta = JumpTimeout;
 		_fallTimeoutDelta = FallTimeout;
+		this.Status = gameObject.AddComponent<Status>();
+		this.Status.SetHealth(this.Health);
+		this.Health = this.Status.GetHealth();
 	}
 
 	public override void OnStartClient()
@@ -405,4 +413,14 @@ public class ThirdPersonController : NetworkBehaviour
 		// when selected, draw a gizmo in the position of, and matching radius of, the grounded collider
 		Gizmos.DrawSphere(new Vector3(transform.position.x, transform.position.y - GroundedOffset, transform.position.z), GroundedRadius);
 	}
+
+
+    private void OnTriggerStay(Collider other)
+    {
+        if (other.tag != "Skeleton")
+        {
+			this.Status.SetHealth(this.Status.GetHealth()-other.GetComponent<Weapon>().Status.AmountOfDamage());
+			Debug.Log(this.Status.GetHealth());
+        }
+    }
 }
