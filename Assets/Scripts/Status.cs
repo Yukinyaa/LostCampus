@@ -4,62 +4,55 @@ using UnityEngine;
 
 public class Status : MonoBehaviour
 {
+    #region SerializedFields
+    [Tooltip("Health")]
     public float HP;
+    [Tooltip("Attack power")]
     public float ATK;
+    #endregion
 
-    private float DamageDelaySecond = 1f;
-
-    private WaitForSeconds DamageDelay;
-
+    #region localValues
+    private float ATKDelaySecond = 1f;
+    private WaitForSeconds WaitForATKDelaySecond;
     private bool Delay = false;
+    #endregion
+
     private void Awake()
     {
-        DamageDelay = new WaitForSeconds(this.DamageDelaySecond);
+        WaitForATKDelaySecond = new WaitForSeconds(this.ATKDelaySecond);
     }
 
-    public float GetDamage()
+    public float GetATK()
     {
         return this.ATK;
     }
 
-    public float SetDamage(float ATK)
-    {
-        this.ATK = ATK;
-        return this.ATK;
-    }
-
-    public float AmountOfDamage()
+    public float TotalATK()
     {
         float ATK = 0;
         if (!this.Delay)
         {
             ATK = this.ATK;
-            StartCoroutine(DamageIEnumerator());
+            StartCoroutine(ATKIEnumerator());
         }
         return ATK;
     }
 
-    private IEnumerator DamageIEnumerator()
+    private IEnumerator ATKIEnumerator()
     {
         Delay = true;
-        yield return DamageDelay;
+        yield return WaitForATKDelaySecond;
         Delay = false;
     }
 
-    public float GetHealth()
+    public float GetHP()
     {
         return this.HP;
     }
 
-    public float SetHealth(float HP)
+    public float ApplyATK(float ATK)
     {
-        this.HP = HP;
-        return this.HP;
-    }
-
-    public float ApplyDamage(float Damage)
-    {
-        this.HP = this.HP > Damage ? this.HP - Damage : this.HP = 0;
+        this.HP = this.HP > ATK ? this.HP - ATK : this.HP = 0;
         return this.HP;
     }
 }

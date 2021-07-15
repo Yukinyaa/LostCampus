@@ -107,6 +107,7 @@ public class ThirdPersonController : NetworkBehaviour
 
 	private const float _threshold = 0.01f;
 
+	[Tooltip("Character Status Class")]
 	private Status Status;
 	#endregion
 
@@ -124,6 +125,8 @@ public class ThirdPersonController : NetworkBehaviour
 		{
 			_mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
 		}
+		if(gameObject.TryGetComponent<Status>(out Status Status))
+			this.Status = Status;
 	}
 
 
@@ -131,6 +134,8 @@ public class ThirdPersonController : NetworkBehaviour
 	{
 		_controller = GetComponent<CharacterController>();
 		_input = GetComponent<StarterAssetsInputs>();
+
+		_controller.detectCollisions = false;
 
 		AssignAnimationIDs();
 
@@ -142,9 +147,6 @@ public class ThirdPersonController : NetworkBehaviour
 		// reset our timeouts on start
 		_jumpTimeoutDelta = JumpTimeout;
 		_fallTimeoutDelta = FallTimeout;
-		this.Status = gameObject.AddComponent<Status>();
-		this.Status.SetHealth(this.Health);
-		this.Health = this.Status.GetHealth();
 	}
 
 	public override void OnStartClient()
@@ -413,14 +415,14 @@ public class ThirdPersonController : NetworkBehaviour
 		// when selected, draw a gizmo in the position of, and matching radius of, the grounded collider
 		Gizmos.DrawSphere(new Vector3(transform.position.x, transform.position.y - GroundedOffset, transform.position.z), GroundedRadius);
 	}
-
+	
 
     private void OnTriggerStay(Collider other)
     {
-        if (other.tag != "Skeleton")
+		if (other.TryGetComponent<Status>(out Status otherStatus))
         {
-			this.Status.SetHealth(this.Status.GetHealth()-other.GetComponent<Weapon>().Status.AmountOfDamage());
-			Debug.Log(this.Status.GetHealth());
+			this.Status.ApplyATK(otherStatus.TotalATK());
+			Debug.Log(this.Status.HP);
         }
     }
 }
