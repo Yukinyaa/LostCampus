@@ -140,23 +140,37 @@ public class Shelter : NetworkBehaviour
     [TargetRpc]
     public void RpcJoinPlayerToShelter(NetworkConnection conn, MyPlayer _player)
     {
-        isShelter = true;
-        _player.LockCamera(shelterCameraAnchor);
-        _player.transform.position = restPoint.position;
+        JoinToShelter(_player);
     }
 
     [TargetRpc]
     public void RpcExitPlayerFromShelter(NetworkConnection conn, MyPlayer _player)
     {
         // 여기서 필드 선택 같은걸 하게 한 다음에 그 필드에 따라서 다른 위치로 이동시킨다.
+        ExitFromShelter(_player);
+    }
+
+    [Client]
+    public void JoinToShelter(MyPlayer _player)
+    {
+        isShelter = true;
+        _player.LockCamera(shelterCameraAnchor);
+        _player.transform.position = restPoint.position;
+        Physics.SyncTransforms();
+    }
+
+    [Client]
+    public void ExitFromShelter(MyPlayer _player)
+    {
         isShelter = false;
         _player.transform.position = Vector3.zero;
         _player.UnlockCameraPos();
-       
+        Physics.SyncTransforms();
     }
 
     private void Update()
     {
+        if (!isClient) return;
         if (!isShelter) return;
 
         if (!EventSystem.current.IsPointerOverGameObject() && Mouse.current.leftButton.isPressed)
@@ -175,7 +189,7 @@ public class Shelter : NetworkBehaviour
                         UIManager.Instance.GetUI<UI_CraftingTable>().SetActive(true);
                         break;
                     case "Door":
-                        MessageManager.Instance.Send("/MoveTo Field");
+                        MessageManager.Instance.Send("/moveto Field");
                         break;
                 }
             }
