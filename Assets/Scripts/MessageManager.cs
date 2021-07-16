@@ -243,6 +243,41 @@ public class MessageManager : NetworkBehaviour
                         }
                         break;
                     }
+                case "MOVETO":
+                    {
+                        if (words.Length < 2 || string.IsNullOrEmpty(words[1]))
+                        {
+                            RpcSendMessage(_sender.netIdentity.connectionToClient, MessageType.Notice, $"/moveto (place)\nMove To Current Place");
+                        }
+                        else
+                        {
+                            try
+                            {
+                                string place = words[1].ToUpper();
+                                switch (place)
+                                {
+                                    case "HOME":
+                                    case "SHELTER":
+                                        {
+                                            FindObjectOfType<Shelter>().RpcJoinPlayerToShelter(_sender.netIdentity.connectionToClient, _sender);
+                                            RpcSendMessage(_sender.netIdentity.connectionToClient, MessageType.Notice, "Move To Shelter");
+                                            break;
+                                        }
+                                    case "FIELD":
+                                        {
+                                            FindObjectOfType<Shelter>().RpcExitPlayerFromShelter(_sender.netIdentity.connectionToClient, _sender);
+                                            RpcSendMessage(_sender.netIdentity.connectionToClient, MessageType.Notice, "Move To Field");
+                                            break;
+                                        }
+                                }
+                            }
+                            catch (IndexOutOfRangeException)
+                            {
+                                RpcSendMessage(_sender.netIdentity.connectionToClient, MessageType.Error, $"Invalid Command");
+                            }
+                        }
+                        break;
+                    }
             }
         }
         else
