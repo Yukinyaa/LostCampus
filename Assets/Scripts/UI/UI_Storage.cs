@@ -16,6 +16,7 @@ public class UI_Storage : UIComponent
     [SerializeField] private GridLayoutGroup contentLayoutGroup;
     [Header("- Display")]
     [SerializeField] private Image image_Thumbnail;
+    [SerializeField] private TextMeshProUGUI text_ID;
     [SerializeField] private TextMeshProUGUI text_Count;
     [Header("- Prefab")]
     [SerializeField] private UI_StorageSlot storageSlot;
@@ -115,18 +116,18 @@ public class UI_Storage : UIComponent
         {
             DisplayItemData(shelter.storage[_slotIndex]);
         }
-        Debug.Log($"{_slotIndex} 번 슬롯 클릭");
-        Debug.Log($"아이템 ID : {slotList[_slotIndex].itemIndex}");
     }
 
     private void DisplayItemData(StorageSlot _slot)
     {
         if (_slot.Equals(default(StorageSlot)))
         {
+            text_ID.SetText(string.Empty);
             text_Count.SetText(string.Empty);
         }
         else
         {
+            text_ID.SetText(_slot.id.ToString());
             text_Count.SetText(_slot.count.ToString());
         }
     }
@@ -137,7 +138,7 @@ public class UI_Storage : UIComponent
         {
             if (0 <= currentSlotIndex && currentSlotIndex < slotList.Count)
             {
-                shelter.CmdModifyInventory(currentSlotIndex, _value);
+                shelter.CmdModifyInventoryBySlotID(currentSlotIndex, _value);
             }
         }
     }

@@ -19,7 +19,7 @@ public class UI_StorageSlot : MonoBehaviour
 
     public UI_StorageSlot SetSlot(StorageSlot _slotData)
     {
-        itemIndex = _slotData.ID;
+        itemIndex = _slotData.id;
         SetCount(_slotData.count);
         return this;
     }

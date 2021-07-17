@@ -1,4 +1,5 @@
-using System.Collections;
+using System;
+using System.IO;
 using System.Collections.Generic;
 using Mirror;
 using UnityEngine;
@@ -6,14 +7,15 @@ using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
+[Serializable]
 public struct StorageSlot
 {
-    public int ID { get; private set; }
+    public int id;
     public int count;
 
     public StorageSlot(int _id, int _count = 0)
     {
-        ID = _id;
+        id = _id;
         count = _count;
     }
 }
@@ -37,11 +39,12 @@ public class Shelter : NetworkBehaviour
 
     public override void OnStartServer()
     {
-        // 여기서 거점 인벤토리를 저장된 파일로부터 불러와서 파싱한다.
-        for(int i = 0; i < 50; ++i)
+        StorageSlot[] data = LoadInventoryData();
+        for(int i = 0; i < data.Length; ++i)
         {
-            storage.Add(new StorageSlot(i, Random.Range(0, 999)));
+            storage.Add(data[i]);
         }
+        storage.Callback += OnStorageUpdatedToServer;
     }
 
     private void OnStorageUpdated(SyncList<StorageSlot>.Operation op, int index, StorageSlot oldItem, StorageSlot newItem)
@@ -90,6 +93,11 @@ public class Shelter : NetworkBehaviour
         }
     }
 
+    private void OnStorageUpdatedToServer(SyncList<StorageSlot>.Operation op, int index, StorageSlot oldItem, StorageSlot newItem)
+    {
+        SaveInventoryData();
+    }
+
     [TargetRpc]
     public void RpcJoinPlayerToShelter(NetworkConnection conn, MyPlayer _player)
     {
@@ -135,10 +143,96 @@ public class Shelter : NetworkBehaviour
     }
 
     [Command(requiresAuthority = false)]
-    public void CmdModifyInventory(int _slotIndex, int _value)
+    public void CmdModifyInventoryBySlotID(int _slotIndex, int _value)
     {
-        StorageSlot currentSlot = storage[_slotIndex];
-        storage[_slotIndex] = new StorageSlot(currentSlot.ID, currentSlot.count + _value);
+        ModifyInventoryBySlotID(_slotIndex, _value);
+    }
+
+    [Command(requiresAuthority = false)]
+    public void CmdModifyInventoryByItemID(int _itemIndex, int _value)
+    {
+        ModifyInventoryByItemID(_itemIndex, _value);
+    }
+
+    [Server]
+    public void ModifyInventoryBySlotID(int _slotIndex, int _value)
+    {
+        if(0 <= _slotIndex && _slotIndex < storage.Count)
+        {
+            StorageSlot currentSlot = storage[_slotIndex];
+            if(currentSlot.count + _value > 0)
+            {
+                storage[_slotIndex] = new StorageSlot(currentSlot.id, currentSlot.count + _value);
+            }
+            else
+            {
+                storage.RemoveAt(_slotIndex);
+            }
+        }
+    }
+
+    [Server]
+    public void ModifyInventoryByItemID(int _itemIndex, int _value)
+    {
+        int slotIndex = storage.FindIndex(x => x.id == _itemIndex);
+        if (slotIndex == -1)
+        {
+            if (_value > 0)
+            {
+                StorageSlot newSlot = new StorageSlot(_itemIndex, _value);
+                storage.Add(newSlot);
+            }
+        }
+        else
+        {
+            ModifyInventoryBySlotID(slotIndex, _value);
+        }
+    }
+
+    [Server]
+    public void SaveInventoryData()
+    {
+        try
+        {
+            List<StorageSlot> storageData = new List<StorageSlot>(storage.Count);
+            storage.CopyTo(storageData);
+            string json = JsonHelper.ToJson(storageData.ToArray(), true);
+            string path = Application.persistentDataPath + "/Server/" + "shelter.txt";
+            File.WriteAllText(path, json);
+        }
+        catch (Exception)
+        {
+
+        }
+    }
+
+    [Server]
+    public StorageSlot[] LoadInventoryData()
+    {
+        string path = Application.persistentDataPath + "/Server/" + "shelter.txt";
+        try
+        {
+            if (File.Exists(path))
+            {
+                string json = File.ReadAllText(path);
+                return JsonHelper.FromJson<StorageSlot>(json);
+            }
+            else
+            {
+                Directory.CreateDirectory(Application.persistentDataPath + "/Server/");
+                StorageSlot[] newData = new StorageSlot[30];
+                for (int i = 0; i < 30; ++i)
+                {
+                    newData[i] = new StorageSlot(i, i + 1);
+                }
+                File.WriteAllText(path, JsonHelper.ToJson(newData, true));
+                return newData;
+            }
+        }
+        catch (Exception)
+        {
+            return null;
+        }
     }
 
     private void Update()
@@ -170,12 +264,4 @@ public class Shelter : NetworkBehaviour
             }
         }
     }
-
-
-    /*
-    [Client]
-    void Input()
-    {
-        
-    }*/
 }
