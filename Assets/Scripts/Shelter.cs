@@ -6,135 +6,88 @@ using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
-
-public class ShelterInventory
+public struct StorageSlot
 {
-    public static int MAX_STORAGE = 2000;
-    public class ShelterInventorySlot
+    public int ID { get; private set; }
+    public int count;
+
+    public StorageSlot(int _id, int _count = 0)
     {
-        private ShelterInventory inventory;
-        public int ID { get; private set; }
-        private int count;
-        public int Count 
-        {
-            get
-            {
-                return count;
-            }
-            set
-            {
-                count = value;
-                if(count <= 0)
-                {
-                    inventory.RemoveSlotByItemID(ID);
-                }
-            }
-        }
-
-        public ShelterInventorySlot(ShelterInventory _inventory, int _id, int _count = 0)
-        {
-            inventory = _inventory;
-            ID = _id;
-            Count = _count;
-        }
-    }
-
-    private List<ShelterInventorySlot> slots;
-    private Dictionary<int, int> itemIDToSlotID;
-
-    public int currentStorage
-    {
-        get
-        {
-            return slots.Count;
-        }
-    }
-
-    public ShelterInventory()
-    {
-        slots = new List<ShelterInventorySlot>(MAX_STORAGE);
-        itemIDToSlotID = new Dictionary<int, int>();
-    }
-
-    public ShelterInventorySlot GetSlotBySlotID(int _id)
-    {
-        if(0 <= _id && _id < slots.Count)
-        {
-            return slots[_id];
-        }
-        return null;
-    }
-
-    public ShelterInventorySlot GetSlotByItemID(int _id)
-    {
-        if (HasItem(_id) == false)
-        {
-            ShelterInventorySlot newSlot = new ShelterInventorySlot(this, _id);
-            slots.Add(newSlot);
-            itemIDToSlotID.Add(_id, slots.LastIndexOf(newSlot));
-        }
-        return slots[itemIDToSlotID[_id]];
-    }
-
-    public bool RemoveSlotBySlotID(int _id)
-    {
-        if(0 <= _id && _id < slots.Count)
-        {
-            ShelterInventorySlot removeSlot = slots[_id];
-            slots.RemoveAt(_id);
-            itemIDToSlotID.Remove(removeSlot.ID);
-            return true;
-        }
-        return false;
-    }
-
-    public bool RemoveSlotByItemID(int _id)
-    {
-        if (HasItem(_id))
-        {
-            slots.RemoveAt(itemIDToSlotID[_id]);
-            itemIDToSlotID.Remove(_id);
-            return true;
-        }
-        return false;
-    }
-
-    public bool HasItem(int _id)
-    {
-        return itemIDToSlotID.ContainsKey(_id);
-    }
-
-    public void SortItem()
-    {
-        // 만약 구현할 일이 있다면 인자값으로 아이템 이름 순, 아이템 개수 순, 레어도 순 등등.... 으로 넣어서 할 수 있지 않을까?
-    }
-
-    public string ToData()
-    {
-        // 이 string을 서버에 저장하고
-        return string.Empty;
-    }
-
-    public static ShelterInventory Parse(string _data)
-    {
-        // 서버에선 저장된 string을 불러와서 초기화한다.
-        return null;
+        ID = _id;
+        count = _count;
     }
 }
-
 public class Shelter : NetworkBehaviour
 {
     [SerializeField] private Transform shelterCameraAnchor;
-    [SerializeField] private Transform restPoint;
-
-    [SyncVar]
-    private ShelterInventory shelterInventory;
-
+    [SerializeField] private Transform[] restPoint;
+    [SerializeField] private Transform exitPoint;
     [SerializeField] private bool isShelter = false;
+
+    [SyncVar] private int playerCount = 0;
+    public readonly SyncList<StorageSlot> storage = new SyncList<StorageSlot>();
+
+    public override void OnStartClient()
+    {
+        storage.Callback += OnStorageUpdated;
+        List<StorageSlot> data = new List<StorageSlot>(storage.Count);
+        storage.CopyTo(data);
+        UIManager.Instance.GetUI<UI_Storage>().InitSlot(data);
+    }
 
     public override void OnStartServer()
     {
-        shelterInventory = new ShelterInventory();
+        // 여기서 거점 인벤토리를 저장된 파일로부터 불러와서 파싱한다.
+        for(int i = 0; i < 50; ++i)
+        {
+            storage.Add(new StorageSlot(i, Random.Range(0, 999)));
+        }
+    }
+
+    private void OnStorageUpdated(SyncList<StorageSlot>.Operation op, int index, StorageSlot oldItem, StorageSlot newItem)
+    {
+        switch (op)
+        {
+            case SyncList<StorageSlot>.Operation.OP_ADD:
+                {
+                    // 새로운 아이템 슬롯이 추가되었을 때
+                    // index = 추가된 아이템 슬롯의 index
+                    // newItem = 추가된 아이템 슬롯
+                    UIManager.Instance.GetUI<UI_Storage>().AddSlot(index, newItem);
+                    break;
+                }
+            case SyncList<StorageSlot>.Operation.OP_CLEAR:
+                {
+                    // 리스트가 초기화 되었을 때
+                    UIManager.Instance.GetUI<UI_Storage>().ClearSlot();
+                    break;
+                }
+            case SyncList<StorageSlot>.Operation.OP_INSERT:
+                {
+                    // 리스트 중간에 삽입되었을 때
+                    // index = 추가된 아이템 슬롯의 index
+                    // newItem = 추가된 아이템 슬롯
+                    UIManager.Instance.GetUI<UI_Storage>().AddSlot(index, newItem);
+                    break;
+                }
+            case SyncList<StorageSlot>.Operation.OP_REMOVEAT:
+                {
+                    // 아이템 슬롯이 제거되었을 때
+                    // index = 제거된 아이템 슬롯의 index
+                    // oldItem = 제거된 아이템 슬롯
+                    UIManager.Instance.GetUI<UI_Storage>().RemoveSlot(index, newItem);
+                    break;
+                }
+            case SyncList<StorageSlot>.Operation.OP_SET:
+                {
+                    // 기존 아이템 슬롯이 업데이트 되었을 때 (수치의 증감, 슬롯 교환 등)
+                    // index = 업데이트 된 아이템 슬롯의 index
+                    // oldItem = 업데이트 되기 이전의 아이템 슬롯
+                    // newItem = 업데이트 된 아이템 슬롯
+                    UIManager.Instance.GetUI<UI_Storage>().UpdateSlot(index, oldItem, newItem);
+                    break;
+                }
+        }
     }
 
     [TargetRpc]
@@ -146,7 +99,6 @@ public class Shelter : NetworkBehaviour
     [TargetRpc]
     public void RpcExitPlayerFromShelter(NetworkConnection conn, MyPlayer _player)
     {
-        // 여기서 필드 선택 같은걸 하게 한 다음에 그 필드에 따라서 다른 위치로 이동시킨다.
         ExitFromShelter(_player);
     }
 
@@ -155,17 +107,38 @@ public class Shelter : NetworkBehaviour
     {
         isShelter = true;
         _player.LockCamera(shelterCameraAnchor);
-        _player.transform.position = restPoint.position;
+        _player.transform.position = restPoint[playerCount % restPoint.Length].position;
         Physics.SyncTransforms();
+        CmdJoinToShelter();
     }
 
     [Client]
     public void ExitFromShelter(MyPlayer _player)
     {
         isShelter = false;
-        _player.transform.position = Vector3.zero;
+        _player.transform.position = exitPoint.position;
         _player.UnlockCameraPos();
         Physics.SyncTransforms();
+        CmdExitFromShelter();
+    }
+
+    [Command(requiresAuthority = false)]
+    public void CmdJoinToShelter()
+    {
+        playerCount++;
+    }
+
+    [Command(requiresAuthority = false)]
+    public void CmdExitFromShelter()
+    {
+        playerCount--;
+    }
+
+    [Command(requiresAuthority = false)]
+    public void CmdModifyInventory(int _slotIndex, int _value)
+    {
+        StorageSlot currentSlot = storage[_slotIndex];
+        storage[_slotIndex] = new StorageSlot(currentSlot.ID, currentSlot.count + _value);
     }
 
     private void Update()
@@ -185,6 +158,8 @@ public class Shelter : NetworkBehaviour
                         UIManager.Instance.GetUI<UI_Armory>().SetActive(true);
                         break;
                     case "Chest":
+                        UIManager.Instance.GetUI<UI_Storage>().SetActive(true);
+                        break;
                     case "CraftingTable":
                         UIManager.Instance.GetUI<UI_CraftingTable>().SetActive(true);
                         break;

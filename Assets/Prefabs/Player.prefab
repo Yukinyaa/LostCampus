@@ -410,6 +410,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0.1
   username: 
+  controller: {fileID: 4063426843281924977}
   playerUI: {fileID: 6122401027408014308}
 --- !u!1 &6558510260272957836
 GameObject:
