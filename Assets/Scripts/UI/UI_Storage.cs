@@ -6,35 +6,46 @@ using UnityEngine.UI;
 
 public class UI_Storage : UIComponent
 {
+    private static int DEFAULT_SLOT_COUNT = 100;
+
     private List<UI_StorageSlot> slotList = new List<UI_StorageSlot>();
-    private Shelter shelter = null;
-    private bool isCashed = false;
     private int currentSlotIndex = -1;
 
     [SerializeField] private RectTransform viewport;
     [SerializeField] private RectTransform content;
     [SerializeField] private GridLayoutGroup contentLayoutGroup;
-    [Header("- Display")]
-    [SerializeField] private Image image_Thumbnail;
-    [SerializeField] private TextMeshProUGUI text_ID;
-    [SerializeField] private TextMeshProUGUI text_Count;
     [Header("- Prefab")]
     [SerializeField] private UI_StorageSlot storageSlot;
     public override void Init()
     {
-        float width = viewport.rect.width * .2f;
+        float width =
+            (viewport.rect.width
+            - contentLayoutGroup.padding.left - contentLayoutGroup.padding.right
+            - contentLayoutGroup.spacing.x * (contentLayoutGroup.constraintCount - 1))
+            / contentLayoutGroup.constraintCount;
+
+       
         contentLayoutGroup.cellSize = new Vector2(width, width);
-        contentLayoutGroup.constraintCount = 5;
+        for(int i = 0; i < DEFAULT_SLOT_COUNT; ++i)
+        {
+            slotList.Add(Instantiate(storageSlot, content));
+        }
+    }
+
+    private void AddLine()
+    {
+        for(int i = 0; i < contentLayoutGroup.constraintCount; ++i)
+        {
+            slotList.Add(Instantiate(storageSlot, content));
+        }
     }
 
     public void InitSlot(List<StorageSlot> _slots)
     {
         for(int i = 0; i < _slots.Count; ++i)
         {
-            UI_StorageSlot newSlot = Instantiate(storageSlot, content).SetIndex(slotList.Count);
-            newSlot.onClick += OnClick_Slot;
-            newSlot.SetSlot(_slots[i]);
-            slotList.Add(newSlot);
+            if(i >= slotList.Count) AddLine();
+            slotList[i].SetSlot(_slots[i]);
         }
     }
 
@@ -44,7 +55,6 @@ public class UI_Storage : UIComponent
         if (0 <= _slotIndex && _slotIndex < slotList.Count)
         {
             UI_StorageSlot newSlot = Instantiate(storageSlot, content).SetSlot(_slot).SetIndex(_slotIndex);
-            newSlot.onClick += OnClick_Slot;
             slotList.Insert(_slotIndex, newSlot);
             for(int i = _slotIndex; i < slotList.Count; ++i)
             {
@@ -57,7 +67,6 @@ public class UI_Storage : UIComponent
             for(int i = 0; i <= newSlotCount; ++i)
             {
                 UI_StorageSlot newSlot = Instantiate(storageSlot, content).SetIndex(slotList.Count);
-                newSlot.onClick += OnClick_Slot;
                 if(i == newSlotCount)
                 {
                     newSlot.SetSlot(_slot);
@@ -81,7 +90,6 @@ public class UI_Storage : UIComponent
                 slotList[i].SetIndex(i);
             }
             if (currentSlotIndex > _slotIndex) currentSlotIndex--;
-            else if (currentSlotIndex == _slotIndex) DisplayItemData(default(StorageSlot));
         }
     }
 
@@ -92,10 +100,6 @@ public class UI_Storage : UIComponent
         {
             UI_StorageSlot currentSlot = slotList[_slotIndex];
             currentSlot.SetSlot(_newSlot);
-            if(_slotIndex == currentSlotIndex)
-            {
-                DisplayItemData(_newSlot);
-            }
         }
     }
 
@@ -106,53 +110,10 @@ public class UI_Storage : UIComponent
             Destroy(slotList[i].gameObject);
         }
         slotList.Clear();
-        DisplayItemData(default(StorageSlot));
     }
 
     private void OnClick_Slot(int _slotIndex)
     {
         currentSlotIndex = _slotIndex;
-        if (isCashed)
-        {
-            DisplayItemData(shelter.storage[_slotIndex]);
-        }
     }
-
-    private void DisplayItemData(StorageSlot _slot)
-    {
-        if (_slot.Equals(default(StorageSlot)))
-        {
-            text_ID.SetText(string.Empty);
-            text_Count.SetText(string.Empty);
-        }
-        else
-        {
-            text_ID.SetText(_slot.id.ToString());
-            text_Count.SetText(_slot.count.ToString());
-        }
-    }
-
-    public void OnClick_Debug(int _value)
-    {
-        if (isCashed)
-        {
-            if (0 <= currentSlotIndex && currentSlotIndex < slotList.Count)
-            {
-                shelter.CmdModifyInventoryBySlotID(currentSlotIndex, _value);
-            }
-        }
-    }
-
-    private void Update()
-    {
-        if(!isCashed)
-        {
-            shelter = FindObjectOfType<Shelter>();
-            if(shelter != null)
-            {
-                isCashed = true;
-            }
-        }
-    }
-
 }

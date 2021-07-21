@@ -1,15 +1,82 @@
 using System;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
-public class UI_StorageSlot : MonoBehaviour
+public class UI_StorageSlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IDropHandler, IEndDragHandler
 {
-    public Action<int> onClick;
-    public int slotIndex;
-    public int itemIndex;
-    [SerializeField] private Image image_Item;
-    [SerializeField] private TextMeshProUGUI text_Count;
+    public int slotIndex = -1;
+    public StorageSlot slotData;
+
+    private bool isDragging = false;
+    [SerializeField] private ItemDataContainer itemContainer;
+    [SerializeField] private ItemDataContainer dragAndDropContainer;
+    
+
+    public void OnBeginDrag(PointerEventData eventData)
+    {
+        Debug.Log(name + " 에서 드래그 시작");
+        isDragging = true;
+        ItemDataContainer.container = dragAndDropContainer.SetData(slotData).SetActive(true).SetParent(UIManager.Instance.transform);
+    }
+
+    public void OnDrag(PointerEventData eventData)
+    {
+        if (isDragging)
+        {
+            dragAndDropContainer.transform.position = eventData.position;
+        }
+    }
+
+    public void OnDrop(PointerEventData eventData)
+    {
+        if(ItemDataContainer.container != null)
+        {
+            Debug.Log(name + " 에 드롭");
+            StorageSlot itemData = ItemDataContainer.container.itemData;
+            if(itemData.id == slotData.id)
+            {
+                slotData.count += itemData.count;
+                ItemDataContainer.container = null;
+            }
+            else
+            {
+                ItemDataContainer.container.itemData = slotData;
+                SetSlot(itemData);
+            }
+        }
+    }
+
+    public void OnEndDrag(PointerEventData eventData)
+    {
+        Debug.Log(name + " 에서 드래그 끝");
+        if(ItemDataContainer.container != null)
+        {
+            SetSlot(ItemDataContainer.container.itemData);
+            ItemDataContainer.container = null;
+        }
+        dragAndDropContainer.transform.localPosition = Vector3.zero;
+        dragAndDropContainer.SetActive(false).SetParent(transform);
+    }
+
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        switch (eventData.button)
+        {
+            case PointerEventData.InputButton.Left:
+                {
+                    Debug.Log("좌클릭");
+                    break;
+                }
+            case PointerEventData.InputButton.Right:
+                {
+                    Debug.Log("우클릭");
+                    break;
+                }
+        }
+    }
 
     public UI_StorageSlot SetIndex(int _index)
     {
@@ -19,26 +86,16 @@ public class UI_StorageSlot : MonoBehaviour
 
     public UI_StorageSlot SetSlot(StorageSlot _slotData)
     {
-        itemIndex = _slotData.id;
-        SetCount(_slotData.count);
+        slotData = _slotData;
+        itemContainer.SetData(_slotData);
         return this;
     }
 
-    public UI_StorageSlot SetImage(Sprite _sprite)
+    private void Update()
     {
-        image_Item.sprite = _sprite;
-        return this;
-    }
-
-    public UI_StorageSlot SetCount(int _count)
-    {
-        if (_count <= 0) text_Count.text = string.Empty;
-        else text_Count.text = _count.ToString();
-        return this;
-    }
-
-    public void OnClick()
-    {
-        onClick?.Invoke(slotIndex);
+        if (isDragging)
+        {
+            dragAndDropContainer.transform.position = Mouse.current.position.ReadValue();
+        }
     }
 }

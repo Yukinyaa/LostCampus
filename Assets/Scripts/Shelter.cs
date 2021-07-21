@@ -8,6 +8,24 @@ using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 [Serializable]
+public enum BlueprintCategory
+{
+    None = 0,
+    WEAPON,
+    MATERIAL,
+    HWEAPON
+}
+
+[Serializable]
+public struct Blueprint
+{
+    public int id;
+    public BlueprintCategory category;
+    public int itemID;
+    public StorageSlot[] needItems;
+}
+
+[Serializable]
 public struct StorageSlot
 {
     public int id;
@@ -21,6 +39,8 @@ public struct StorageSlot
 }
 public class Shelter : NetworkBehaviour
 {
+    public static Shelter Instance { get; private set; } = null;
+
     [SerializeField] private Transform shelterCameraAnchor;
     [SerializeField] private Transform[] restPoint;
     [SerializeField] private Transform exitPoint;
@@ -28,13 +48,18 @@ public class Shelter : NetworkBehaviour
 
     [SyncVar] private int playerCount = 0;
     public readonly SyncList<StorageSlot> storage = new SyncList<StorageSlot>();
+    public readonly SyncList<Blueprint> blueprints = new SyncList<Blueprint>();
 
     public override void OnStartClient()
     {
+        Instance = this;
         storage.Callback += OnStorageUpdated;
-        List<StorageSlot> data = new List<StorageSlot>(storage.Count);
-        storage.CopyTo(data);
-        UIManager.Instance.GetUI<UI_Storage>().InitSlot(data);
+        List<StorageSlot> itemData = new List<StorageSlot>(storage.Count);
+        List<Blueprint> blueprintData = new List<Blueprint>(blueprints.Count);
+        storage.CopyTo(itemData);
+        blueprints.CopyTo(blueprintData);
+        UIManager.Instance.GetUI<UI_Storage>().InitSlot(itemData);
+        UIManager.Instance.GetUI<UI_CraftingTable>().InitBlueprint(blueprintData);
     }
 
     public override void OnStartServer()
@@ -44,6 +69,13 @@ public class Shelter : NetworkBehaviour
         {
             storage.Add(data[i]);
         }
+
+        Blueprint[] blueprintData = LoadBlueprintData();
+        for(int i = 0; i < blueprintData.Length; ++i)
+        {
+            blueprints.Add(blueprintData[i]);
+        }
+
         storage.Callback += OnStorageUpdatedToServer;
     }
 
@@ -128,6 +160,22 @@ public class Shelter : NetworkBehaviour
         _player.UnlockCameraPos();
         Physics.SyncTransforms();
         CmdExitFromShelter();
+    }
+    
+    [Client]
+    public StorageSlot GetItemDataBySlotID(int _slotID)
+    {
+        if (0 <= _slotID && _slotID < storage.Count)
+        {
+            return storage[_slotID];
+        }
+        return default;
+    }
+
+    [Client]
+    public List<StorageSlot> GetItemDataByItemID(int _itemID)
+    {
+        return storage.FindAll(x => x.id == _itemID);
     }
 
     [Command(requiresAuthority = false)]
@@ -228,6 +276,25 @@ public class Shelter : NetworkBehaviour
                 File.WriteAllText(path, JsonHelper.ToJson(newData, true));
                 return newData;
             }
+        }
+        catch (Exception)
+        {
+            return null;
+        }
+    }
+
+    [Server]
+    public Blueprint[] LoadBlueprintData()
+    {
+        string path = Application.persistentDataPath + "/Server/" + "blueprint.txt";
+        try
+        {
+            if (File.Exists(path))
+            {
+                string json = File.ReadAllText(path);
+                return JsonHelper.FromJson<Blueprint>(json);
+            }
+            else return null;
         }
         catch (Exception)
         {
