@@ -17,9 +17,13 @@ public class UI_StorageSlot : MonoBehaviour, IBeginDragHandler, IDragHandler, ID
 
     public void OnBeginDrag(PointerEventData eventData)
     {
+        return; // 일단 버그나서 고쳐야댐.
         Debug.Log(name + " 에서 드래그 시작");
-        isDragging = true;
-        ItemDataContainer.container = dragAndDropContainer.SetData(slotData).SetActive(true).SetParent(UIManager.Instance.transform);
+        if (slotData.count > 0)
+        {
+            isDragging = true;
+            ItemDataContainer.container = dragAndDropContainer.SetData(slotData).SetActive(true).SetParent(UIManager.Instance.transform);
+        }
     }
 
     public void OnDrag(PointerEventData eventData)
@@ -81,6 +85,7 @@ public class UI_StorageSlot : MonoBehaviour, IBeginDragHandler, IDragHandler, ID
     public UI_StorageSlot SetIndex(int _index)
     {
         slotIndex = _index;
+        transform.SetSiblingIndex(_index);
         return this;
     }
 

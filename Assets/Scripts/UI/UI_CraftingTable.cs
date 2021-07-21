@@ -8,8 +8,8 @@ using UnityEngine.UI;
 
 public class UI_CraftingTable : UIComponent
 {
-    private int currentSlot;
-    private BlueprintCategory currentCategory;
+    private int currentSlot = -1;
+    private ItemCategory currentCategory;
 
     private List<Blueprint> blueprintData;
     private List<UI_CraftingTableSlot> blueprintSlot;
@@ -26,40 +26,85 @@ public class UI_CraftingTable : UIComponent
     [SerializeField] private UI_CraftingTableSlot craftingTableSlot;
     public void OnClick_Category(int _category)
     {
-        if (Enum.IsDefined(typeof(BlueprintCategory), _category))
+        if (Enum.IsDefined(typeof(ItemCategory), _category))
         {
-            currentCategory = (BlueprintCategory)_category;
+            currentCategory = (ItemCategory)_category;
         }
-        else currentCategory = BlueprintCategory.None;
+        else currentCategory = ItemCategory.None;
         MakeBlueprintList();
     }
 
     public void OnClick_Slot(int _slotIndex)
     {
-        currentSlot = _slotIndex;
-        Blueprint blueprint = blueprintData[currentSlot];
-        text_ItemName.SetText(blueprint.itemID.ToString());
-        text_ItemCategory.SetText(blueprint.category.ToString());
-        text_ItemDescription.SetText(string.Empty);
-        for(int i = 0; i < needItemSlot.Length; ++i)
+        if (currentSlot != _slotIndex)
         {
-            if (i < blueprint.needItems.Length)
+            currentSlot = _slotIndex;
+            Blueprint blueprint = blueprintData[currentSlot];
+            MyItemData itemData = MyItemManager.Instance.GetItemData(blueprint.itemID);
+            image_Thumbnail.sprite = MyItemManager.Instance.GetSprite(blueprint.itemID);
+            text_ItemName.SetText(itemData.name);
+            text_ItemCategory.SetText(itemData.category.ToString());
+            text_ItemDescription.SetText(itemData.description);
+            for (int i = 0; i < needItemSlot.Length; ++i)
             {
-                int currentItemCount = 0;
-                List<StorageSlot> currentItemData = Shelter.Instance.GetItemDataByItemID(blueprint.needItems[i].id);
-                for (int j = 0; j < currentItemData.Count; ++j)
+                if (i < blueprint.needItems.Length)
                 {
-                    currentItemCount += currentItemData[j].count;
+                    needItemSlot[i].
+                        SetActive(true).
+                        SetSprite(MyItemManager.Instance.GetSprite(blueprint.needItems[i].id)).
+                        SetCount(Shelter.Instance.GetCountByItemID(blueprint.needItems[i].id), blueprint.needItems[i].count);
                 }
-                needItemSlot[i].SetActive(true).SetSprite(null).SetCount(currentItemCount, blueprint.needItems[i].count);
+                else needItemSlot[i].SetActive(false);
             }
-            else needItemSlot[i].SetActive(false);
         }
     }
 
-    public void OnClick_Make()
+    public void OnClick_Craft()
     {
+        if (currentSlot >= 0)
+        {
+            Blueprint blueprint = blueprintData[currentSlot];
+            bool canMake = true;
+            for (int i = 0; i < blueprint.needItems.Length; ++i)
+            {
+                if (Shelter.Instance.GetCountByItemID(blueprint.needItems[i].id) < blueprint.needItems[i].count)
+                {
+                    canMake = false;
+                    break;
+                }
+            }
+            if (canMake)
+            {
+                for (int i = 0; i < blueprint.needItems.Length; ++i)
+                {
+                    Shelter.Instance.CmdModifyInventoryByItemID(blueprint.needItems[i].id, -blueprint.needItems[i].count);
+                }
+                Shelter.Instance.CmdModifyInventoryByItemID(blueprint.itemID, 1);
+            }
+        }
+    }
 
+    public void OnStorageChanged(StorageSlot _newSlot)
+    {
+        if (currentSlot >= 0)
+        {
+            Blueprint blueprint = blueprintData[currentSlot];
+            for(int i = 0; i < blueprint.needItems.Length; ++i)
+            {
+                if(_newSlot.Equals(default))
+                {
+                    needItemSlot[i].SetCount(Shelter.Instance.GetCountByItemID(blueprint.needItems[i].id), blueprint.needItems[i].count);
+                }
+                else
+                {
+                    if (blueprint.needItems[i].id == _newSlot.id)
+                    {
+                        needItemSlot[i].SetCount(Shelter.Instance.GetCountByItemID(blueprint.needItems[i].id), blueprint.needItems[i].count);
+                        break;
+                    }
+                }
+            }
+        }
     }
 
     public void InitBlueprint(List<Blueprint> _data)
@@ -70,7 +115,10 @@ public class UI_CraftingTable : UIComponent
         {
             UI_CraftingTableSlot newSlot = Instantiate(craftingTableSlot, blueprintListContent);
             newSlot.onClick += OnClick_Slot;
-            blueprintSlot.Add(newSlot.SetIndex(blueprintData[i].id).SetName(blueprintData[i].itemID.ToString()));
+            blueprintSlot.Add(newSlot.
+                SetIndex(blueprintData[i].id).
+                SetName(MyItemManager.Instance.GetItemData(blueprintData[i].itemID).name).
+                SetIcon(MyItemManager.Instance.GetSprite(blueprintData[i].itemID)));
         }
     }
 
@@ -82,7 +130,7 @@ public class UI_CraftingTable : UIComponent
         }
 
         List<Blueprint> currentData;
-        if(currentCategory == BlueprintCategory.None)
+        if(currentCategory == ItemCategory.None)
         {
             currentData = blueprintData;   
         }

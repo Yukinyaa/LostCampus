@@ -27,8 +27,9 @@ public class ItemDataContainer : MonoBehaviour
     public ItemDataContainer SetData(StorageSlot _data)
     {
         itemData = _data;
+        image_Item.sprite = MyItemManager.Instance.GetSprite(itemData.id);
         SetCount(itemData.count);
-        return this;
+        return SetActive(itemData.count > 0);
     }
 
     public ItemDataContainer SetActive(bool _status)

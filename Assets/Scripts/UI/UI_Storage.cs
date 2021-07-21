@@ -26,17 +26,13 @@ public class UI_Storage : UIComponent
 
        
         contentLayoutGroup.cellSize = new Vector2(width, width);
-        for(int i = 0; i < DEFAULT_SLOT_COUNT; ++i)
-        {
-            slotList.Add(Instantiate(storageSlot, content));
-        }
     }
 
     private void AddLine()
     {
         for(int i = 0; i < contentLayoutGroup.constraintCount; ++i)
         {
-            slotList.Add(Instantiate(storageSlot, content));
+            slotList.Add(Instantiate(storageSlot, content).SetSlot(default));
         }
     }
 
@@ -45,7 +41,7 @@ public class UI_Storage : UIComponent
         for(int i = 0; i < _slots.Count; ++i)
         {
             if(i >= slotList.Count) AddLine();
-            slotList[i].SetSlot(_slots[i]);
+            slotList[i].SetSlot(_slots[i]).SetIndex(i);
         }
     }
 

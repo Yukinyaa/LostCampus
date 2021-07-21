@@ -8,7 +8,7 @@ using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 [Serializable]
-public enum BlueprintCategory
+public enum ItemCategory
 {
     None = 0,
     WEAPON,
@@ -20,7 +20,7 @@ public enum BlueprintCategory
 public struct Blueprint
 {
     public int id;
-    public BlueprintCategory category;
+    public ItemCategory category;
     public int itemID;
     public StorageSlot[] needItems;
 }
@@ -89,12 +89,14 @@ public class Shelter : NetworkBehaviour
                     // index = 추가된 아이템 슬롯의 index
                     // newItem = 추가된 아이템 슬롯
                     UIManager.Instance.GetUI<UI_Storage>().AddSlot(index, newItem);
+                    UIManager.Instance.GetUI<UI_CraftingTable>().OnStorageChanged(newItem);
                     break;
                 }
             case SyncList<StorageSlot>.Operation.OP_CLEAR:
                 {
                     // 리스트가 초기화 되었을 때
                     UIManager.Instance.GetUI<UI_Storage>().ClearSlot();
+                    UIManager.Instance.GetUI<UI_CraftingTable>().OnStorageChanged(default);
                     break;
                 }
             case SyncList<StorageSlot>.Operation.OP_INSERT:
@@ -103,6 +105,7 @@ public class Shelter : NetworkBehaviour
                     // index = 추가된 아이템 슬롯의 index
                     // newItem = 추가된 아이템 슬롯
                     UIManager.Instance.GetUI<UI_Storage>().AddSlot(index, newItem);
+                    UIManager.Instance.GetUI<UI_CraftingTable>().OnStorageChanged(newItem);
                     break;
                 }
             case SyncList<StorageSlot>.Operation.OP_REMOVEAT:
@@ -111,6 +114,7 @@ public class Shelter : NetworkBehaviour
                     // index = 제거된 아이템 슬롯의 index
                     // oldItem = 제거된 아이템 슬롯
                     UIManager.Instance.GetUI<UI_Storage>().RemoveSlot(index, newItem);
+                    UIManager.Instance.GetUI<UI_CraftingTable>().OnStorageChanged(newItem);
                     break;
                 }
             case SyncList<StorageSlot>.Operation.OP_SET:
@@ -120,6 +124,7 @@ public class Shelter : NetworkBehaviour
                     // oldItem = 업데이트 되기 이전의 아이템 슬롯
                     // newItem = 업데이트 된 아이템 슬롯
                     UIManager.Instance.GetUI<UI_Storage>().UpdateSlot(index, oldItem, newItem);
+                    UIManager.Instance.GetUI<UI_CraftingTable>().OnStorageChanged(newItem);
                     break;
                 }
         }
@@ -161,8 +166,7 @@ public class Shelter : NetworkBehaviour
         Physics.SyncTransforms();
         CmdExitFromShelter();
     }
-    
-    [Client]
+
     public StorageSlot GetItemDataBySlotID(int _slotID)
     {
         if (0 <= _slotID && _slotID < storage.Count)
@@ -172,10 +176,19 @@ public class Shelter : NetworkBehaviour
         return default;
     }
 
-    [Client]
     public List<StorageSlot> GetItemDataByItemID(int _itemID)
     {
         return storage.FindAll(x => x.id == _itemID);
+    }
+
+    public int GetCountByItemID(int _itemID)
+    {
+        int count = 0;
+        foreach(StorageSlot data in GetItemDataByItemID(_itemID))
+        {
+            count += data.count;
+        }
+        return count;
     }
 
     [Command(requiresAuthority = false)]
@@ -268,10 +281,10 @@ public class Shelter : NetworkBehaviour
             else
             {
                 Directory.CreateDirectory(Application.persistentDataPath + "/Server/");
-                StorageSlot[] newData = new StorageSlot[30];
-                for (int i = 0; i < 30; ++i)
+                StorageSlot[] newData = new StorageSlot[5];
+                for (int i = 0; i < 5; ++i)
                 {
-                    newData[i] = new StorageSlot(i, i + 1);
+                    newData[i] = new StorageSlot(i, 100);
                 }
                 File.WriteAllText(path, JsonHelper.ToJson(newData, true));
                 return newData;
@@ -319,9 +332,8 @@ public class Shelter : NetworkBehaviour
                         UIManager.Instance.GetUI<UI_Armory>().SetActive(true);
                         break;
                     case "Chest":
-                        UIManager.Instance.GetUI<UI_Storage>().SetActive(true);
-                        break;
                     case "CraftingTable":
+                        UIManager.Instance.GetUI<UI_Storage>().SetActive(true);
                         UIManager.Instance.GetUI<UI_CraftingTable>().SetActive(true);
                         break;
                     case "Door":
