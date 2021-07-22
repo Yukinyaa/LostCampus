@@ -2,6 +2,7 @@
 using Mirror;
 using System;
 using UnityEngine.InputSystem;
+using System.Collections;
 
 [RequireComponent(typeof(CharacterController))]
 [RequireComponent(typeof(PlayerInput))]
@@ -18,6 +19,8 @@ public class ThirdPersonController : NetworkBehaviour
 	public float RotationSmoothTime = 0.12f;
 	[Tooltip("Acceleration and deceleration")]
 	public float SpeedChangeRate = 10.0f;
+	[Tooltip("Health")]
+	public float Health=100;
 
 	[Space(10)]
 	[Tooltip("The height the player can jump")]
@@ -103,9 +106,12 @@ public class ThirdPersonController : NetworkBehaviour
 	private GameObject _mainCamera;
 
 	private const float _threshold = 0.01f;
-    #endregion
 
-    private bool _hasAnimator;
+	[Tooltip("Character Status Class")]
+	private Status Status;
+	#endregion
+
+	private bool _hasAnimator;
 
 	private void Awake()
 	{
@@ -119,6 +125,8 @@ public class ThirdPersonController : NetworkBehaviour
 		{
 			_mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
 		}
+		if(gameObject.TryGetComponent<Status>(out Status Status))
+			this.Status = Status;
 	}
 
 
@@ -126,6 +134,8 @@ public class ThirdPersonController : NetworkBehaviour
 	{
 		_controller = GetComponent<CharacterController>();
 		_input = GetComponent<StarterAssetsInputs>();
+
+		_controller.detectCollisions = false;
 
 		AssignAnimationIDs();
 
@@ -163,7 +173,6 @@ public class ThirdPersonController : NetworkBehaviour
 			weaponAnchor.gameObject.SetActive(true);
 		}
 		if (!isLocalPlayer) return;
-			
 		JumpAndGravity();
 		WeaponSystem();
 		GroundedCheck();
@@ -180,7 +189,6 @@ public class ThirdPersonController : NetworkBehaviour
 
 	bool atkBtnLastState;
 	bool wDrwnBtnLastState;
-
 
 	private void WeaponSystem()
     {
@@ -407,4 +415,14 @@ public class ThirdPersonController : NetworkBehaviour
 		// when selected, draw a gizmo in the position of, and matching radius of, the grounded collider
 		Gizmos.DrawSphere(new Vector3(transform.position.x, transform.position.y - GroundedOffset, transform.position.z), GroundedRadius);
 	}
+	
+
+    private void OnTriggerStay(Collider other)
+    {
+		if (other.TryGetComponent<Status>(out Status otherStatus))
+        {
+			this.Status.ApplyATK(otherStatus.TotalATK());
+			Debug.Log(this.Status.HP);
+        }
+    }
 }
