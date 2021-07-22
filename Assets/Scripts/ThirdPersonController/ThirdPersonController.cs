@@ -284,6 +284,22 @@ public class ThirdPersonController : NetworkBehaviour
 
 	private void Move()
 	{
+		if (_input.sprint&&isWeaponFullyUndrawn)
+        {
+			if (this.Status.AP <= 0)
+			{
+				_input.sprint = false;
+			}
+			this.Status.AP-=1*Time.deltaTime;
+			if (this.Status.AP <= 0)
+				this.Status.AP = 0;
+		}
+        else
+        {
+			this.Status.AP+=2*Time.deltaTime;
+			if (this.Status.AP >= this.Status.MaxAP)
+				this.Status.AP = this.Status.MaxAP;
+		}
 		// set target speed based on move speed, sprint speed and if sprint is pressed
 		float targetSpeed = isWeaponFullyUndrawn ? (_input.sprint ? SprintSpeed : MoveSpeed) : MoveSpeed / 2;
 

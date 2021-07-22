@@ -65,6 +65,10 @@ public class Status : MonoBehaviour
     public float HP;
     [Tooltip("Attack power")]
     public float ATK;
+
+    public float AP;
+
+    public float MaxAP = 1000;
     #endregion
 
     #region localValues

@@ -224,6 +224,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   HP: 100
   ATK: 1
+  AP: 10
+  MaxAP: 10
 --- !u!114 &345209283141304070
 MonoBehaviour:
   m_ObjectHideFlags: 0
