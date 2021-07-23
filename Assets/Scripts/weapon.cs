@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class weapon : MonoBehaviour
+public class Weapon : MonoBehaviour
 {
     private MeshCollider WeaponCollider;
     private GameObject PlayerGameObject;
@@ -18,7 +18,7 @@ public class weapon : MonoBehaviour
         this.PlayerController = GetComponentInParent<ThirdPersonController>();
         this.PlayerGameObject = PlayerController.gameObject;
         this.PlayerStatus = PlayerGameObject.GetComponent<Status>();
-        this.PlayerController.weapon = this;
+        this.PlayerController.Weapon = this;
     }
 
     public void Set(bool tmp)

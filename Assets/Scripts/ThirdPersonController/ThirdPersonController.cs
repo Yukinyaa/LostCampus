@@ -59,7 +59,7 @@ public class ThirdPersonController : NetworkBehaviour
 	[Header("Weapon System")]
 	public Transform weaponAnchor;
 
-	public weapon weapon;
+	public Weapon Weapon;
 	#endregion
 
 	[Header("Debugging")]
@@ -443,13 +443,13 @@ public class ThirdPersonController : NetworkBehaviour
 			//전환 중일 때 실행되는 부분
 			yield return null;
 		}
-		weapon.Set(true);
+		Weapon.Set(true);
 		while (_animator.GetCurrentAnimatorStateInfo(1).IsTag("Attacking"))
 		{
 			//애니메이션 재생 중 실행되는 부분
 			yield return null;
 		}
-		weapon.Set(false);
+		Weapon.Set(false);
 		
 		//애니메이션 완료 후 실행되는 부분
 
