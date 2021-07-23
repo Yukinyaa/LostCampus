@@ -6,6 +6,9 @@ TagManager:
   tags:
   - CinemachineTarget
   - Door
+  - Skeleton
+  - WeaponCollider
+  - Weapon
   layers:
   - Default
   - TransparentFX
