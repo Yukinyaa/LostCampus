@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -11,16 +12,38 @@ public class UI_ItemSlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IDrop
     [SerializeField] private Image image;
     [SerializeField] private TextMeshProUGUI text;
     [SerializeField] private RectTransform slotContent;
-
-    private Item item;
+    [SerializeField] private CanvasGroup group;
+    
+    private ItemSlot _itemSlot;
+    public ItemSlot ItemSlot
+    {
+        get => _itemSlot;
+        set => _itemSlot = value;
+    }
     private int slotIndex = -1;
+    public int SlotIndex
+    {
+        get => slotIndex;
+        set => slotIndex = value;
+    }
+
+    private UI_Inventory inventoryUI;
+    private Transform canvas;
     private bool isDragging = false;
+
+    private static UI_ItemSlot draggingSlot = null;
+
 
     public void OnBeginDrag(PointerEventData eventData)
     {
-        if (item.Amount > 0)
+        if (_itemSlot != null)
         {
             isDragging = true;
+            slotContent.SetParent(canvas);
+            group.blocksRaycasts = false;
+            group.interactable = false;
+            draggingSlot = this;
+            Debug.Log("drag: " + draggingSlot.ItemSlot.Amount + "data : " + _itemSlot.Amount);
         }
     }
 
@@ -28,17 +51,29 @@ public class UI_ItemSlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IDrop
     {
         if (isDragging)
         {
-            
+            slotContent.position = eventData.position;
         }
     }
 
     public void OnDrop(PointerEventData eventData)
     {
+        if (draggingSlot != null)
+        {
+            Debug.Log("drop : " + _itemSlot.Amount);
+            ItemSlot tempItemSlot = ItemSlot;
+            SetSlot(draggingSlot.ItemSlot);
+            draggingSlot.SetSlot(tempItemSlot);
+            draggingSlot = null;
+        }
     }
 
     public void OnEndDrag(PointerEventData eventData)
     {
-        
+        slotContent.SetParent(transform);
+        slotContent.localPosition = Vector3.zero;
+        group.blocksRaycasts = true;
+        group.interactable = true;
+        isDragging = false;
     }
 
     public void OnPointerClick(PointerEventData eventData)
@@ -59,20 +94,41 @@ public class UI_ItemSlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IDrop
         return this;
     }
 
-    public UI_ItemSlot SetSlot(Item? _slotData)
+    public UI_ItemSlot SetCanvas(Transform _canvas)
+    {
+        canvas = _canvas;
+        return this;
+    }
+
+    public UI_ItemSlot SetCanvasGroup(CanvasGroup grp)
+    {
+        group = grp;
+        return this;
+    }
+
+    public void OnValueChanged(ItemSlot item)
+    {
+        if (item.Amount <= 0) SetSlot(null);
+        else text.text = _itemSlot.Amount.ToString();
+    }
+    
+    public UI_ItemSlot SetSlot(ItemSlot _slotData)
     {
         if (_slotData == null)
         {
-            item = null;
+            if (_itemSlot != null) _itemSlot.OnValueChanged -= OnValueChanged;
+            _itemSlot = null;
             //image = item.ItemInfo.sprite;
             text.text = "0";
         }
         else
         {
-            item = (Item)_slotData;
+            _itemSlot = (ItemSlot)_slotData;
             //image = item.ItemInfo.sprite;
-            text.text = item.Amount.ToString();
+            _itemSlot.OnValueChanged += OnValueChanged;
+            text.text = _itemSlot.Amount.ToString();
         }
         return this;
     }
+
 }
