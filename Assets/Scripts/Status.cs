@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-/*
+
 public class Status : MonoBehaviour
 {
     #region SerializedFields
@@ -55,25 +55,4 @@ public class Status : MonoBehaviour
         this.HP = this.HP > ATK ? this.HP - ATK : this.HP = 0;
         return this.HP;
     }
-}
-*/
-
-public class Status : MonoBehaviour
-{
-    #region SerializedFields
-    [Tooltip("Health")]
-    public float HP;
-    [Tooltip("Attack power")]
-    public float ATK;
-
-    public float AP;
-
-    public float MaxAP = 1000;
-    #endregion
-
-    #region localValues
-    
-    #endregion
-
-    
 }
