@@ -1,37 +1,37 @@
 {
     "Items": [
         {
-            "id": 0,
+            "id": 1,
             "name": "돌멩이",
             "description": "길가에서 흔히 볼 수 있는 돌멩이다.",
             "category": 2
         },
         {
-            "id": 1,
+            "id": 2,
             "name": "나뭇가지",
             "description": "길가에서 흔히 볼 수 있는 나뭇가지이다.",
             "category": 2
         },
         {
-            "id": 2,
+            "id": 3,
             "name": "줄",
             "description": "서랍을 뒤지다가 찾아낸 줄이다.",
             "category": 2
         },
         {
-            "id": 3,
+            "id": 4,
             "name": "철막대기",
             "description": "건물의 잔해 등에서 가끔씩 찾아볼 수 있는 철막대기다.",
             "category": 2
         },
         {
-            "id": 4,
+            "id": 5,
             "name": "곤충의 껍질",
             "description": "곤충의 사체에서 찾아볼 수 있는 딱딱한 곤충의 껍데기다.",
             "category": 2
         },
         {
-            "id": 5,
+            "id": 6,
             "name": "강철",
             "description": "철을 제련해 만든 강철이다. 제조법은 아무도 모른다.",
             "category": 2
