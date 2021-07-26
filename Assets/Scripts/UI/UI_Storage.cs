@@ -1,3 +1,4 @@
+using Mirror;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -8,14 +9,18 @@ public class UI_Storage : UIComponent
 {
     private static int DEFAULT_SLOT_COUNT = 100;
 
-    private List<UI_StorageSlot> slotList = new List<UI_StorageSlot>();
+    private List<UI_ItemSlot> slotList = new List<UI_ItemSlot>();
     private int currentSlotIndex = -1;
+    private ShelterInventory shelterInventory;
 
     [SerializeField] private RectTransform viewport;
     [SerializeField] private RectTransform content;
     [SerializeField] private GridLayoutGroup contentLayoutGroup;
+    [SerializeField] private CanvasGroup group;
+
     [Header("- Prefab")]
-    [SerializeField] private UI_StorageSlot storageSlot;
+    [SerializeField] private UI_ItemSlot storageSlot;
+
     public override void Init()
     {
         float width =
@@ -36,7 +41,7 @@ public class UI_Storage : UIComponent
         }
     }
 
-    public void InitSlot(List<StorageSlot> _slots)
+    public void InitSlot(SyncList<ItemSlot> _slots)
     {
         for(int i = 0; i < _slots.Count; ++i)
         {
@@ -45,12 +50,12 @@ public class UI_Storage : UIComponent
         }
     }
 
-    public void AddSlot(int _slotIndex, StorageSlot _slot)
+    public void AddSlot(int _slotIndex, ItemSlot _slot)
     {
         Debug.Log($"½½·Ô Ãß°¡ µÊ : {_slotIndex}");
         if (0 <= _slotIndex && _slotIndex < slotList.Count)
         {
-            UI_StorageSlot newSlot = Instantiate(storageSlot, content).SetSlot(_slot).SetIndex(_slotIndex);
+            UI_ItemSlot newSlot = Instantiate(storageSlot, content).SetSlot(_slot).SetIndex(_slotIndex);
             slotList.Insert(_slotIndex, newSlot);
             for(int i = _slotIndex; i < slotList.Count; ++i)
             {
@@ -62,7 +67,7 @@ public class UI_Storage : UIComponent
             int newSlotCount = _slotIndex - slotList.Count;
             for(int i = 0; i <= newSlotCount; ++i)
             {
-                UI_StorageSlot newSlot = Instantiate(storageSlot, content).SetIndex(slotList.Count);
+                UI_ItemSlot newSlot = Instantiate(storageSlot, content).SetIndex(slotList.Count);
                 if(i == newSlotCount)
                 {
                     newSlot.SetSlot(_slot);
@@ -73,12 +78,12 @@ public class UI_Storage : UIComponent
         if (currentSlotIndex > _slotIndex) currentSlotIndex++;
     }
 
-    public void RemoveSlot(int _slotIndex, StorageSlot _slot)
+    public void RemoveSlot(int _slotIndex, ItemSlot _slot)
     {
         Debug.Log($"½½·Ô Á¦°Å µÊ : {_slotIndex}");
         if (0 <= _slotIndex && _slotIndex < slotList.Count)
         {
-            UI_StorageSlot removeSlot = slotList[_slotIndex];
+            UI_ItemSlot removeSlot = slotList[_slotIndex];
             slotList.RemoveAt(_slotIndex);
             Destroy(removeSlot.gameObject);
             for(int i = _slotIndex; i < slotList.Count; ++i)
@@ -89,12 +94,12 @@ public class UI_Storage : UIComponent
         }
     }
 
-    public void UpdateSlot(int _slotIndex, StorageSlot _oldSlot, StorageSlot _newSlot)
+    public void UpdateSlot(int _slotIndex, ItemSlot _oldSlot, ItemSlot _newSlot)
     {
         Debug.Log($"½½·Ô ¾÷µ¥ÀÌÆ® µÊ : {_slotIndex}");
         if(0 <= _slotIndex && _slotIndex < slotList.Count)
         {
-            UI_StorageSlot currentSlot = slotList[_slotIndex];
+            UI_ItemSlot currentSlot = slotList[_slotIndex];
             currentSlot.SetSlot(_newSlot);
         }
     }

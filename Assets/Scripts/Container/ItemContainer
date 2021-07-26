@@ -8,7 +8,7 @@ using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
-public class PlayerInventory : NetworkBehaviour
+public class ItmeContainer : NetworkBehaviour
 {
     [SerializeField]
     private SyncList<ItemSlot> _itemslots = new SyncList<ItemSlot>();
@@ -25,9 +25,13 @@ public class PlayerInventory : NetworkBehaviour
 
     #region NetworkEvent
 
-    public override void OnStartLocalPlayer()
+    public override void OnStartClient()
     {
         input = transform.GetComponent<StarterAssetsInputs>();
+    }
+
+    public override void OnStartLocalPlayer()
+    {
         if (isLocalPlayer)
         {
             InventoryUI = UIManager.Instance.GetUI<UI_Inventory>();
@@ -49,12 +53,12 @@ public class PlayerInventory : NetworkBehaviour
     }
 
     [Server]
-    private void OnStorageUpdatedToServer(SyncList<ItemSlot>.Operation op, int index, ItemSlot oldItemSlot, ItemSlot newItemSlot)
+    protected virtual void OnStorageUpdatedToServer(SyncList<ItemSlot>.Operation op, int index, ItemSlot oldItemSlot, ItemSlot newItemSlot)
     {
         SaveInventoryData();
     }
     
-    private void OnStorageUpdated(SyncList<ItemSlot>.Operation op, int index, ItemSlot oldItem, ItemSlot newItem)
+    protected virtual void OnStorageUpdated(SyncList<ItemSlot>.Operation op, int index, ItemSlot oldItem, ItemSlot newItem)
     {
         switch (op)
         {
@@ -139,11 +143,11 @@ public class PlayerInventory : NetworkBehaviour
     }
 
     /// <summary>
-    /// ì¸ë²¤ì— ì•„ì´í…œì„ ë„£ë„ë¡ ì‹œë„í•¨
+    /// ÀÎº¥¿¡ ¾ÆÀÌÅÛÀ» ³Öµµ·Ï ½ÃµµÇÔ
     /// </summary>
     /// <param name="id"></param>
     /// <param name="amount"></param>
-    /// <returns>ì¸ë²¤ì— ë„£ê³  ë‚¨ì€ ê°¯ìˆ˜</returns>
+    /// <returns>ÀÎº¥¿¡ ³Ö°í ³²Àº °¹¼ö</returns>
     public int TryAddItem(int id, int amount)
     {
         int emptySpaceCount =  GetEmptySpaceCount(id);
@@ -157,7 +161,7 @@ public class PlayerInventory : NetworkBehaviour
     }
     
     [Server]
-    private void CmdEditInventoryBySlotID(int slotIndex, int value)
+    protected virtual void CmdEditInventoryBySlotID(int slotIndex, int value)
     {
         if(0 <= slotIndex && slotIndex < Itemslots.Count)
         {
@@ -178,7 +182,7 @@ public class PlayerInventory : NetworkBehaviour
     }
 
     [Command(requiresAuthority = false)]
-    private void CmdEditInventoryByItemID(int id, int amount)
+    protected virtual void CmdEditInventoryByItemID(int id, int amount)
     {
         List<int> indexes = GetItemIndexsByItemID(id);
         ItemInfo info = ItemInfoDataBase.FindItemInfo(id);
@@ -218,7 +222,7 @@ public class PlayerInventory : NetworkBehaviour
 
     #endregion
 
-    //TODO: ì €ì¥, ë¡œë“œ ë§Œë“¤ê¸°
+    //TODO: ÀúÀå, ·Îµå ¸¸µé±â
     [Server]
     public void SaveInventoryData()
     {
@@ -233,12 +237,12 @@ public class PlayerInventory : NetworkBehaviour
         // }
     }
 
-    //TODO: ì €ì¥, ë¡œë“œ ë§Œë“¤ê¸°2
+    //TODO: ÀúÀå, ·Îµå ¸¸µé±â2
     [Server]
     public ItemSlot[] LoadInventoryData()
     {
         ItemSlot[] newItems = new ItemSlot[5];
-        // ì„œë²„ì—ì„œ í•´ë‹¹ í´ë¼ì´ì–¸íŠ¸ì˜ ì¸ë²¤í† ë¦¬ ì •ë³´ë¥¼ ê°€ì ¸ì˜´.
+        // ¼­¹ö¿¡¼­ ÇØ´ç Å¬¶óÀÌ¾ğÆ®ÀÇ ÀÎº¥Åä¸® Á¤º¸¸¦ °¡Á®¿È.
         //return null;
         for (int i = 0; i < 5; i++)
         {

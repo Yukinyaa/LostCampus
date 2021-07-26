@@ -8,11 +8,60 @@ using UnityEngine.Events;
 [Serializable]
 public class ItemSlot
 {
+    private int infoID = -1;
+
     private ItemInfo _itemInfo;
-    public ItemInfo ItemInfo
+    public ItemInfo itemInfo
     {
-        get => _itemInfo;
+        get
+        {
+            if (_itemInfo == null)
+            {
+                _itemInfo = ItemInfoDataBase.FindItemInfo(infoID);
+            }
+            return _itemInfo;
+        }
     }
+
+    private Dictionary<string, int> stats; //
+    private string sprite; //
+
+    public int InfoID
+    {
+        get => infoID;
+    }
+    public string Name
+    {
+        get => itemInfo.name;
+    }
+    public int Rarity
+    {
+        get => itemInfo.rarity;
+    }
+    public ItemType Type
+    {
+        get => itemInfo.type;
+    }
+    public string FlavorText
+    {
+        get => itemInfo.flavorText;
+    }
+    public int MAXStack
+    {
+        get => itemInfo.maxStack;
+    }
+
+    public Dictionary<string, int> Stats
+    {
+        get => stats;
+        set => stats = value;
+    }
+    public string Sprite
+    {
+        get => sprite;
+        set => sprite = value;
+    }
+
 
     private int amount;
     public int Amount
@@ -20,6 +69,7 @@ public class ItemSlot
         get => amount;
         set
         {
+            
             amount = value;
             OnValueChanged(this);
         }

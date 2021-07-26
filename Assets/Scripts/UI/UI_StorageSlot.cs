@@ -5,21 +5,22 @@ using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
+/*
 public class UI_StorageSlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IDropHandler, IEndDragHandler
 {
     public int slotIndex = -1;
-    public StorageSlot slotData;
+    public ItemSlot slotData;
 
     private bool isDragging = false;
     [SerializeField] private ItemDataContainer itemContainer;
     [SerializeField] private ItemDataContainer dragAndDropContainer;
     
-
+    /*
     public void OnBeginDrag(PointerEventData eventData)
     {
         return; // 일단 버그나서 고쳐야댐.
         Debug.Log(name + " 에서 드래그 시작");
-        if (slotData.count > 0)
+        if (slotData.Amount > 0)
         {
             isDragging = true;
             ItemDataContainer.container = dragAndDropContainer.SetData(slotData).SetActive(true).SetParent(UIManager.Instance.transform);
@@ -89,7 +90,7 @@ public class UI_StorageSlot : MonoBehaviour, IBeginDragHandler, IDragHandler, ID
         return this;
     }
 
-    public UI_StorageSlot SetSlot(StorageSlot _slotData)
+    public UI_StorageSlot SetSlot(ItemSlot _slotData)
     {
         slotData = _slotData;
         itemContainer.SetData(_slotData);
@@ -104,3 +105,4 @@ public class UI_StorageSlot : MonoBehaviour, IBeginDragHandler, IDragHandler, ID
         }
     }
 }
+*/

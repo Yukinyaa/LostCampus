@@ -53,32 +53,20 @@ public class Shelter : NetworkBehaviour
     public override void OnStartClient()
     {
         Instance = this;
-        storage.Callback += OnStorageUpdated;
-        List<StorageSlot> itemData = new List<StorageSlot>(storage.Count);
         List<Blueprint> blueprintData = new List<Blueprint>(blueprints.Count);
-        storage.CopyTo(itemData);
         blueprints.CopyTo(blueprintData);
-        UIManager.Instance.GetUI<UI_Storage>().InitSlot(itemData);
         UIManager.Instance.GetUI<UI_CraftingTable>().InitBlueprint(blueprintData);
     }
 
     public override void OnStartServer()
     {
-        StorageSlot[] data = LoadInventoryData();
-        for(int i = 0; i < data.Length; ++i)
-        {
-            storage.Add(data[i]);
-        }
-
         Blueprint[] blueprintData = LoadBlueprintData();
         for(int i = 0; i < blueprintData.Length; ++i)
         {
             blueprints.Add(blueprintData[i]);
         }
-
-        storage.Callback += OnStorageUpdatedToServer;
     }
-
+    /*
     private void OnStorageUpdated(SyncList<StorageSlot>.Operation op, int index, StorageSlot oldItem, StorageSlot newItem)
     {
         switch (op)
@@ -128,7 +116,7 @@ public class Shelter : NetworkBehaviour
                     break;
                 }
         }
-    }
+    }*/
 
     private void OnStorageUpdatedToServer(SyncList<StorageSlot>.Operation op, int index, StorageSlot oldItem, StorageSlot newItem)
     {
