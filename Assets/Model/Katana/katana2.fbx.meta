@@ -1,9 +1,49 @@
 fileFormatVersion: 2
-guid: c35cd5d34ebf5af41b90a674e27b6dd9
+guid: 3073ba51d6f9ef943bd005f54696a5dd
 ModelImporter:
   serializedVersion: 20200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Katana Blade
+    second: {fileID: 2100000, guid: cfb2db2be0cdf924186b6fc8ec3fbb19, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Katana End Piece
+    second: {fileID: 2100000, guid: b37f01d15ced5704ea5940a9023836c8, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Katana Handguard
+    second: {fileID: 2100000, guid: b79545a42e0f70545a3ea1636c035563, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Katana Handle
+    second: {fileID: 2100000, guid: e80e3f4684cbd9a4d9924c5717d5855e, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Katana Handle Cloth
+    second: {fileID: 2100000, guid: 862aeb272e75fb746b4f48cbd99c86d6, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Katana Handle Hilt
+    second: {fileID: 2100000, guid: 9d7ffe1d658a357458bd8618f0aa0d55, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Katana Hilt 2
+    second: {fileID: 2100000, guid: 1340677349ddb9846875f2b8e607b1f2, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Katana Sheath 1
+    second: {fileID: 2100000, guid: 1ec6884fee8278c49b2fa596598a6d36, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
@@ -34,15 +74,15 @@ ModelImporter:
     isReadable: 0
   meshes:
     lODScreenPercentages: []
-    globalScale: 1
+    globalScale: 0.1
     meshCompression: 0
     addColliders: 0
     useSRGBMaterialColor: 1
     sortHierarchyByName: 1
     importVisibility: 1
     importBlendShapes: 1
-    importCameras: 1
-    importLights: 1
+    importCameras: 0
+    importLights: 0
     fileIdsGeneration: 2
     swapUVChannels: 0
     generateSecondaryUV: 0
@@ -73,7 +113,7 @@ ModelImporter:
     blendShapeNormalImportMode: 1
     normalSmoothingSource: 0
   referencedClips: []
-  importAnimation: 1
+  importAnimation: 0
   humanDescription:
     serializedVersion: 3
     human: []
@@ -85,7 +125,7 @@ ModelImporter:
     armStretch: 0.05
     legStretch: 0.05
     feetSpacing: 0
-    globalScale: 1
+    globalScale: 0.1
     rootMotionBoneName: 
     hasTranslationDoF: 0
     hasExtraRoot: 0
