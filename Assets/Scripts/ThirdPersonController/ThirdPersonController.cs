@@ -142,10 +142,10 @@ public class ThirdPersonController : NetworkBehaviour
 		AssignAnimationIDs();
 
 		Transform rightHand = _animator.GetBoneTransform(HumanBodyBones.RightHand);
-		Transform rightIndex = _animator.GetBoneTransform(HumanBodyBones.RightIndexDistal);
+		Transform rightIndex = _animator.GetBoneTransform(HumanBodyBones.RightIndexProximal);
 		Transform rightPinky = _animator.GetBoneTransform(HumanBodyBones.RightLittleIntermediate);
 
-		weaponAnchor.parent = rightIndex;
+		weaponAnchor.parent = rightHand;
 		weaponAnchor.localPosition = Vector3.zero;
 		weaponAnchor.localRotation = Quaternion.identity;
 		weaponAnchor.forward = rightIndex.position - rightPinky.position;//새끼손가락 3번째 마디 > 검지 3번째 마디
