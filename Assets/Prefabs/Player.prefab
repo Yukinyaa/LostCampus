@@ -118,6 +118,7 @@ GameObject:
   - component: {fileID: 3688414575921428928}
   - component: {fileID: 4063426843281924976}
   - component: {fileID: 4063426843281924977}
+  - component: {fileID: 4109949015719182537}
   - component: {fileID: 345209283141304070}
   - component: {fileID: 4063426843281924982}
   - component: {fileID: 371586490501103313}
@@ -125,6 +126,7 @@ GameObject:
   - component: {fileID: 371586490501103315}
   - component: {fileID: 4449531232943756085}
   - component: {fileID: 1329667464887348410}
+  - component: {fileID: 7867115797891470777}
   m_Layer: 8
   m_Name: Player
   m_TagString: Player
@@ -186,6 +188,7 @@ MonoBehaviour:
   SprintSpeed: 5.335
   RotationSmoothTime: 0.12
   SpeedChangeRate: 10
+  Health: 100
   JumpHeight: 1.2
   Gravity: -15
   JumpTimeout: 0.3
@@ -202,10 +205,27 @@ MonoBehaviour:
   CameraAngleOverride: 0
   LockCameraPosition: 0
   weaponAnchor: {fileID: 4028326861393840841}
+  weapon: {fileID: 0}
   isWeaponFullyUndrawn: 0
   attackCoolDown: 0
   WeaponDrawn: 0
   autoAttackOnDownEnabled: 1
+--- !u!114 &4109949015719182537
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4063426843281924986}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dfbb1c6d52a0f584d84c628ef98b8065, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  HP: 100
+  ATK: 1
+  AP: 10
+  MaxAP: 10
 --- !u!114 &345209283141304070
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -390,7 +410,7 @@ CapsuleCollider:
   m_GameObject: {fileID: 4063426843281924986}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   m_Radius: 0.12
   m_Height: 1
   m_Direction: 1
@@ -411,6 +431,22 @@ MonoBehaviour:
   syncInterval: 0.1
   username: 
   playerUI: {fileID: 6122401027408014308}
+--- !u!54 &7867115797891470777
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4063426843281924986}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 1
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!1 &6558510260272957836
 GameObject:
   m_ObjectHideFlags: 0
@@ -624,15 +660,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 250474103302765033, guid: e3a8fecee8438954d80c565cc160e178, type: 3}
       propertyPath: m_LocalScale.x
-      value: 0.07000003
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 250474103302765033, guid: e3a8fecee8438954d80c565cc160e178, type: 3}
       propertyPath: m_LocalScale.y
-      value: 0.07
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 250474103302765033, guid: e3a8fecee8438954d80c565cc160e178, type: 3}
       propertyPath: m_LocalScale.z
-      value: 0.07000002
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 250474103302765033, guid: e3a8fecee8438954d80c565cc160e178, type: 3}
       propertyPath: m_LocalPosition.x
