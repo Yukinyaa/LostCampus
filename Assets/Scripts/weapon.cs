@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class weapon : MonoBehaviour
+public class Weapon : MonoBehaviour
 {
     private MeshCollider WeaponCollider;
     private GameObject PlayerGameObject;
@@ -50,7 +50,7 @@ public class weapon : MonoBehaviour
                         this.OtherStatus.Add(OtherStatus);
                         //여기서부터 데미지 처리
 
-                        OtherStatus.HP = OtherStatus.HP-this.PlayerStatus.ATK;
+                        OtherStatus.HP = OtherStatus.HP - this.PlayerStatus.ATK;
 
                         Debug.Log(OtherStatus.HP);
                     }

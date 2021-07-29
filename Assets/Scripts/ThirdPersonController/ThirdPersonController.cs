@@ -59,7 +59,7 @@ public class ThirdPersonController : NetworkBehaviour
 	[Header("Weapon System")]
 	public Transform weaponAnchor;
 
-	public weapon weapon;
+	public Weapon weapon;
 	#endregion
 
 	[Header("Debugging")]
