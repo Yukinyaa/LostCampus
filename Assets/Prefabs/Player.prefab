@@ -118,6 +118,7 @@ GameObject:
   - component: {fileID: 3688414575921428928}
   - component: {fileID: 4063426843281924976}
   - component: {fileID: 4063426843281924977}
+  - component: {fileID: 8522708465929898753}
   - component: {fileID: 4109949015719182537}
   - component: {fileID: 345209283141304070}
   - component: {fileID: 4063426843281924982}
@@ -204,12 +205,26 @@ MonoBehaviour:
   BottomClamp: -30
   CameraAngleOverride: 0
   LockCameraPosition: 0
-  weaponAnchor: {fileID: 4028326861393840841}
-  weapon: {fileID: 0}
-  isWeaponFullyUndrawn: 0
-  attackCoolDown: 0
+--- !u!114 &8522708465929898753
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4063426843281924986}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 66362a387910c5b4a800d917db651c66, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
+  isWeaponFullyUndrawn: 1
+  attackCoolDown: 1
   WeaponDrawn: 0
   autoAttackOnDownEnabled: 1
+  weaponAnchor: {fileID: 4028326861393840841}
+  weapon: {fileID: 6704917895355918015}
 --- !u!114 &4109949015719182537
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -226,6 +241,7 @@ MonoBehaviour:
   ATK: 1
   AP: 10
   MaxAP: 10
+  team: 0
 --- !u!114 &345209283141304070
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -714,6 +730,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: katanaPF
       objectReference: {fileID: 0}
+    - target: {fileID: 5018650800993574232, guid: e3a8fecee8438954d80c565cc160e178, type: 3}
+      propertyPath: PlayerStatus
+      value: 
+      objectReference: {fileID: 4109949015719182537}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e3a8fecee8438954d80c565cc160e178, type: 3}
 --- !u!4 &2004295089670668814 stripped
@@ -721,6 +741,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 250474103302765033, guid: e3a8fecee8438954d80c565cc160e178, type: 3}
   m_PrefabInstance: {fileID: 1777078098448808935}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &6704917895355918015 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5018650800993574232, guid: e3a8fecee8438954d80c565cc160e178, type: 3}
+  m_PrefabInstance: {fileID: 1777078098448808935}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 01c136764d92f3940969d5ea6543796c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &7274287501823491061
 PrefabInstance:
   m_ObjectHideFlags: 0
