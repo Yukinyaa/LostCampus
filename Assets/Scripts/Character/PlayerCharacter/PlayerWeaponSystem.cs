@@ -78,7 +78,7 @@ public class PlayerWeaponSystem : NetworkBehaviour
 		weaponAnchor.parent = rightHand;
 		weaponAnchor.localPosition = Vector3.zero;
 		weaponAnchor.localRotation = Quaternion.identity;
-		weaponAnchor.forward = rightIndex.position - rightPinky.position;//새끼손가락 3번째 마디 > 검지 3번째 마디
+		weaponAnchor.forward = rightIndex.position - rightPinky.position;//새끼손가락 2번째 마디 > 검지 3번째 마디
 
 		weaponAnchor.parent = rightHand;
 		weaponAnchor.localPosition = Vector3.zero;
