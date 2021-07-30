@@ -506,6 +506,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0.1
   username: 
+  controller: {fileID: 4063426843281924977}
   playerUI: {fileID: 6122401027408014308}
 --- !u!54 &7867115797891470777
 Rigidbody:

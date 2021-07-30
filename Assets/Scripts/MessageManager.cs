@@ -160,7 +160,7 @@ public class MessageManager : NetworkBehaviour
                     {
                         if(words.Length < 2 || string.IsNullOrEmpty(words[1]))
                         {
-                            RpcSendMessage(_sender.netIdentity.connectionToClient, MessageType.Notice, $"/w /whisper (username) (message)\nSend message to username");
+                            RpcSendMessage(_sender.netIdentity.connectionToClient, MessageType.Notice, $"/w /whisper (username[Str]) (message[Str])\nSend message to username");
                         }
                         else
                         {
@@ -193,7 +193,7 @@ public class MessageManager : NetworkBehaviour
                     {
                         if(words.Length < 2 || string.IsNullOrEmpty(words[1]))
                         {
-                            RpcSendMessage(_sender.netIdentity.connectionToClient, MessageType.Notice, $"/settime (time)\nSet Time to time ( 1 ~ 24 )");
+                            RpcSendMessage(_sender.netIdentity.connectionToClient, MessageType.Notice, $"/settime (time[Int])\nSet Time to time ( 1 ~ 24 )");
                         }
                         else
                         {
@@ -218,7 +218,7 @@ public class MessageManager : NetworkBehaviour
                     {
                         if (words.Length < 2 || string.IsNullOrEmpty(words[1]))
                         {
-                            RpcSendMessage(_sender.netIdentity.connectionToClient, MessageType.Notice, $"/setname (newName)\nSet UserName to newName");
+                            RpcSendMessage(_sender.netIdentity.connectionToClient, MessageType.Notice, $"/setname (newName[Str])\nSet UserName to newName");
                         }
                         else
                         {
@@ -234,6 +234,77 @@ public class MessageManager : NetworkBehaviour
                                     string oldName = _sender.username;
                                     SetUserName(_sender, newName);
                                     RpcSendAll(MessageType.Notice, $"{oldName} Change Name To {_sender.username}");
+                                }
+                            }
+                            catch (IndexOutOfRangeException)
+                            {
+                                RpcSendMessage(_sender.netIdentity.connectionToClient, MessageType.Error, $"Invalid Command");
+                            }
+                        }
+                        break;
+                    }
+                case "MOVETO":
+                    {
+                        if (words.Length < 2 || string.IsNullOrEmpty(words[1]))
+                        {
+                            RpcSendMessage(_sender.netIdentity.connectionToClient, MessageType.Notice, $"/moveto (place)\nMove To Current Place");
+                        }
+                        else
+                        {
+                            try
+                            {
+                                string place = words[1].ToUpper();
+                                switch (place)
+                                {
+                                    case "HOME":
+                                    case "SHELTER":
+                                        {
+                                            FindObjectOfType<Shelter>().RpcJoinPlayerToShelter(_sender.netIdentity.connectionToClient, _sender);
+                                            RpcSendMessage(_sender.netIdentity.connectionToClient, MessageType.Notice, "Move To Shelter");
+                                            break;
+                                        }
+                                    case "FIELD":
+                                        {
+                                            FindObjectOfType<Shelter>().RpcExitPlayerFromShelter(_sender.netIdentity.connectionToClient, _sender);
+                                            RpcSendMessage(_sender.netIdentity.connectionToClient, MessageType.Notice, "Move To Field");
+                                            break;
+                                        }
+                                }
+                            }
+                            catch (IndexOutOfRangeException)
+                            {
+                                RpcSendMessage(_sender.netIdentity.connectionToClient, MessageType.Error, $"Invalid Command");
+                            }
+                        }
+                        break;
+                    }
+                case "ADDITEM":
+                    {
+                        if (words.Length < 2 || string.IsNullOrEmpty(words[1]))
+                        {
+                            RpcSendMessage(_sender.netIdentity.connectionToClient, MessageType.Notice, $"/AddItem (Place[Str]) (itemID[Hex]) (value[Int])\nAdd (itemID) Item To Certain Place (ex : Home, Inventory)");
+                        }
+                        else
+                        {
+                            try
+                            {
+                                string[] data = words[1].Split(new char[] { ' ' }, 3);
+                                string place = data[0].ToUpper();
+                                int itemID = data[1].Contains("0x") ? Convert.ToInt32(data[1], 16) : int.Parse(data[1], System.Globalization.NumberStyles.HexNumber);
+                                int value = Convert.ToInt32(data[2]);
+                                switch (place)
+                                {
+                                    case "HOME":
+                                    case "SHELTER":
+                                        {
+                                            FindObjectOfType<Shelter>().Inventory.TryUpdateItem(itemID, value);
+                                            break;
+                                        }
+                                    case "INVEN":
+                                    case "INVENTORY":
+                                        {
+                                            break;
+                                        }
                                 }
                             }
                             catch (IndexOutOfRangeException)
