@@ -20,7 +20,7 @@ public class ThirdPersonController : NetworkBehaviour
 	[Tooltip("Acceleration and deceleration")]
 	public float SpeedChangeRate = 10.0f;
 	[Tooltip("Health")]
-	public float Health=100;
+	public float Health = 100;
 
 	[Space(10)]
 	[Tooltip("The height the player can jump")]
@@ -56,22 +56,10 @@ public class ThirdPersonController : NetworkBehaviour
 	[Tooltip("For locking the camera position on all axis")]
 	public bool LockCameraPosition = false;
 
-	[Header("Weapon System")]
-	public Transform weaponAnchor;
-
-	public weapon weapon;
 	#endregion
 
 	[Header("Debugging")]
 
-	[SyncVar][SerializeField]
-	bool isWeaponFullyUndrawn = true;
-
-	[Command]
-	void CmdSetIsWeaponFullyUndrawn(bool value)
-	{
-		isWeaponFullyUndrawn = value;
-	}
 
 	#region localValues
 	// cinemachine
@@ -141,11 +129,6 @@ public class ThirdPersonController : NetworkBehaviour
 
 		AssignAnimationIDs();
 
-		Transform righthand = _animator.GetBoneTransform(HumanBodyBones.RightHand);
-		weaponAnchor.parent = righthand;
-		weaponAnchor.localPosition = Vector3.zero;
-		weaponAnchor.localRotation = Quaternion.identity;
-
 		// reset our timeouts on start
 		_jumpTimeoutDelta = JumpTimeout;
 		_fallTimeoutDelta = FallTimeout;
@@ -166,72 +149,12 @@ public class ThirdPersonController : NetworkBehaviour
 
 	private void Update()
 	{
-		if (isWeaponFullyUndrawn)
-		{
-			weaponAnchor.gameObject.SetActive(false);
-		}
-		else
-		{
-			weaponAnchor.gameObject.SetActive(true);
-		}
 		if (!isLocalPlayer) return;
 		JumpAndGravity();
-		WeaponSystem();
 		GroundedCheck();
 		Move();
 	}
 
-	[SerializeField]
-	float attackCoolDown = 0;
-	float timeSinceLastAttack = 0;
-	[SerializeField]
-	bool WeaponDrawn = false;
-	[SerializeField]
-	bool autoAttackOnDownEnabled = true; // 마우스 다운시 연속공격
-
-	bool atkBtnLastState;
-	bool wDrwnBtnLastState;
-
-	private void WeaponSystem()
-    {
-		attackCoolDown -= Time.deltaTime;
-		timeSinceLastAttack += Time.deltaTime;
-
-		if (_input.drawWeapon && wDrwnBtnLastState == false && attackCoolDown < 0)
-		{
-			WeaponDrawn = !WeaponDrawn;
-			if (WeaponDrawn == true) CmdSetIsWeaponFullyUndrawn(false);
-			_animator.SetBool(_animIDWeaponDrawn, WeaponDrawn);
-			attackCoolDown = 1f;
-		}
-
-		else if (_input.attack && (autoAttackOnDownEnabled || atkBtnLastState == false))
-		{
-			if (WeaponDrawn == false)
-			{
-				WeaponDrawn = true;
-				_animator.SetBool(_animIDWeaponDrawn, true);
-			}
-			if (attackCoolDown < 0)
-			{
-				attackCoolDown = 1f;
-				timeSinceLastAttack = 0f;
-
-				_animator.SetTrigger(_animIDAttack1);
-				_nAnimator.SetTrigger(_animIDAttack1);
-				StartCoroutine(AttackCollider());
-
-			}
-		}
-		else if (attackCoolDown < 0.5f)
-		{
-			if (isWeaponFullyUndrawn == WeaponDrawn)
-				CmdSetIsWeaponFullyUndrawn(!WeaponDrawn);
-		}
-
-		atkBtnLastState = _input.attack;
-		wDrwnBtnLastState = _input.drawWeapon;
-	}
 
     private void LateUpdate()
 	{
@@ -284,24 +207,24 @@ public class ThirdPersonController : NetworkBehaviour
 
 	private void Move()
 	{
-		if (_input.sprint&&isWeaponFullyUndrawn)
+		if (_input.sprint)
         {
 			if (this.Status.AP <= 0)
 			{
 				_input.sprint = false;
 			}
-			this.Status.AP-=1*Time.deltaTime;
+			this.Status.AP -= 1 * Time.deltaTime;
 			if (this.Status.AP <= 0)
 				this.Status.AP = 0;
 		}
         else
         {
-			this.Status.AP+=2*Time.deltaTime;
+			this.Status.AP += 2 * Time.deltaTime;
 			if (this.Status.AP >= this.Status.MaxAP)
 				this.Status.AP = this.Status.MaxAP;
 		}
 		// set target speed based on move speed, sprint speed and if sprint is pressed
-		float targetSpeed = isWeaponFullyUndrawn ? (_input.sprint ? SprintSpeed : MoveSpeed) : MoveSpeed / 2;
+		float targetSpeed = _input.sprint ? SprintSpeed : MoveSpeed;
 
 		// a simplistic acceleration and deceleration designed to be easy to remove, replace, or iterate upon
 
@@ -436,22 +359,4 @@ public class ThirdPersonController : NetworkBehaviour
 		Gizmos.DrawSphere(new Vector3(transform.position.x, transform.position.y - GroundedOffset, transform.position.z), GroundedRadius);
 	}
 
-	IEnumerator AttackCollider()
-    {
-		while (!_animator.GetCurrentAnimatorStateInfo(1).IsTag("Attacking"))
-		{
-			//전환 중일 때 실행되는 부분
-			yield return null;
-		}
-		weapon.Set(true);
-		while (_animator.GetCurrentAnimatorStateInfo(1).IsTag("Attacking"))
-		{
-			//애니메이션 재생 중 실행되는 부분
-			yield return null;
-		}
-		weapon.Set(false);
-		
-		//애니메이션 완료 후 실행되는 부분
-
-	}
 }
