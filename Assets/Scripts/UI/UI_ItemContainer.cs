@@ -17,7 +17,6 @@ public class UI_ItemContainer : UIComponent
     [SerializeField] protected RectTransform content;
     [SerializeField] protected GridLayoutGroup contentLayoutGroup;
     [SerializeField] protected Transform canvas;
-
     protected void OnGUI()
     {
 #if UNITY_EDITOR
@@ -33,7 +32,6 @@ public class UI_ItemContainer : UIComponent
 
     public void Start()
     {
-        canvas = transform.parent;
         float width =
             (content.rect.width
              - contentLayoutGroup.padding.left - contentLayoutGroup.padding.right
@@ -46,6 +44,7 @@ public class UI_ItemContainer : UIComponent
     public void SetContainer(ItemContainer inv)
     {
         container = inv;
+        canvas = transform.parent;
         slotList.AddRange(content.GetComponentsInChildren<UI_ItemSlot>());
         for(int i=0; i<slotList.Count; i++)
         {
