@@ -1,0 +1,130 @@
+name: CI
+#on:
+#  pull_request: {}
+#  push: { branches: [master] }
+
+on:
+  pull_request:
+    paths-ignore:
+     - 'doc/**'
+     - '*.md'
+    branches: [ main ]
+  push:
+    paths-ignore:
+      - 'doc/**'
+      - '*.md'
+    branches: [ main, KSY_CI ]
+  
+jobs:
+  requestActivationFile:
+    runs-on: ubuntu-latest
+    if: false
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Request manual activation file
+        uses: SibaDoge1/unity-runner-sibadoge@20.3.12f1
+        id: getManualLicenseFile
+        with:
+            entrypoint: /request_activation.sh
+
+      - name: Expose as artifact
+        uses: actions/upload-artifact@v1
+        with:
+            name: Manual Activation File
+            path: ${{ steps.getManualLicenseFile.outputs.filePath }}
+    
+  CI:
+    name: Test
+    runs-on: ubuntu-latest
+    env:
+      UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+    if: true
+    steps:
+  
+      # Checkout repository (required to test local actions)
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+        
+      - name: Activate license
+        uses: SibaDoge1/unity-runner-sibadoge@20.3.12f1
+        with:
+          entrypoint: /activate.sh
+          
+      - name: Generate Solution
+        uses: SibaDoge1/unity-runner-sibadoge@20.3.12f1
+        with:
+          # Arguments to pass to unity
+          args: -buildTarget StandaloneWindows64 -customBuildName ChessGirls -customBuildPath ./build/StandaloneWindows64 -projectPath . -executeMethod  UnityEditor.SyncVS.SyncSolution -quit
+  
+      # Configure test runner
+      - name: Run editor Tests
+        uses: SibaDoge1/unity-runner-sibadoge@20.3.12f1
+        with:
+          args: -runTests -testPlatform editmode -testResults Tests/editmode-results.xml -enableCodeCoverage -coverageResultsPath Tests
+          
+      # Upload artifacts
+      - name: Archive test results
+        uses: actions/upload-artifact@v1
+        if: always()
+        with:
+          name: Test results
+          path: Tests
+
+      - name: Publish test results
+        uses: MirrorNG/nunit-reporter@v1.0.9
+        if: always()
+        with:
+          path: "Tests/*.xml"
+          access-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: sln check
+        run: |
+          pwd
+          ls -a
+          cat workspace.sln
+          
+      - name: edit reference
+        run: |
+          cat *.csproj
+          echo -e "\n\n\ test \n"
+          sudo sed -i '/<ReferenceOutputAssembly>false<\/ReferenceOutputAssembly>/d' *.csproj
+          cat *.csproj
+          
+      - name: SonarQube analysis
+        if: always()
+        uses: SibaDoge1/unity-runner-sibadoge@20.3.12f1
+        with:
+          entrypoint: /sonar-scanner.sh
+          projectKey: yukinyaa_lostcampus
+          projectName: yukinyaa_lostcampus
+          sonarHostname: ${{ secrets.SONAR_HOST_URL }}
+          beginArguments: /d:sonar.verbose="true" /d:sonar.cs.nunit.reportsPaths=Tests/editmode-results.xml /d:sonar.cs.opencover.reportsPaths=Tests/workspace-opencov/EditMode/TestCoverageResults_0000.xml /d:sonar.inclusions=Assets/Scripts/**
+        env:
+          FrameworkPathOverride: /opt/unity/Editor/Data/MonoBleedingEdge/
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          #GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  #Release:
+  #  runs-on: ubuntu-latest
+  #  needs: CI
+  #  steps:
+  #    - name: Checkout repository
+  #      uses: actions/checkout@v2
+  #      with:
+  #        fetch-depth: 0 
+  #        
+  
+  #    - name: Release
+  #      uses: cycjimmy/semantic-release-action@v2
+  #      with:
+  #        extra_plugins: |
+  #          @semantic-release/exec
+  #          @semantic-release/changelog
+  #          @semantic-release/git
+  #        branch: master
+  #      env:
+  #        GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}

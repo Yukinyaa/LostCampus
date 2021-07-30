@@ -2,6 +2,7 @@
 using Mirror;
 using System;
 using UnityEngine.InputSystem;
+using System.Collections;
 
 [RequireComponent(typeof(CharacterController))]
 [RequireComponent(typeof(PlayerInput))]
@@ -18,6 +19,8 @@ public class ThirdPersonController : NetworkBehaviour
 	public float RotationSmoothTime = 0.12f;
 	[Tooltip("Acceleration and deceleration")]
 	public float SpeedChangeRate = 10.0f;
+	[Tooltip("Health")]
+	public float Health=100;
 
 	[Space(10)]
 	[Tooltip("The height the player can jump")]
@@ -55,6 +58,8 @@ public class ThirdPersonController : NetworkBehaviour
 
 	[Header("Weapon System")]
 	public Transform weaponAnchor;
+
+	public weapon weapon;
 	#endregion
 
 	[Header("Debugging")]
@@ -103,9 +108,12 @@ public class ThirdPersonController : NetworkBehaviour
 	private GameObject _mainCamera;
 
 	private const float _threshold = 0.01f;
-    #endregion
 
-    private bool _hasAnimator;
+	[Tooltip("Character Status Class")]
+	private Status Status;
+	#endregion
+
+	private bool _hasAnimator;
 
 	private void Awake()
 	{
@@ -119,6 +127,8 @@ public class ThirdPersonController : NetworkBehaviour
 		{
 			_mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
 		}
+		if(gameObject.TryGetComponent<Status>(out Status Status))
+			this.Status = Status;
 	}
 
 
@@ -126,6 +136,8 @@ public class ThirdPersonController : NetworkBehaviour
 	{
 		_controller = GetComponent<CharacterController>();
 		_input = GetComponent<StarterAssetsInputs>();
+
+		_controller.detectCollisions = false;
 
 		AssignAnimationIDs();
 
@@ -163,7 +175,6 @@ public class ThirdPersonController : NetworkBehaviour
 			weaponAnchor.gameObject.SetActive(true);
 		}
 		if (!isLocalPlayer) return;
-			
 		JumpAndGravity();
 		WeaponSystem();
 		GroundedCheck();
@@ -180,7 +191,6 @@ public class ThirdPersonController : NetworkBehaviour
 
 	bool atkBtnLastState;
 	bool wDrwnBtnLastState;
-
 
 	private void WeaponSystem()
     {
@@ -209,11 +219,13 @@ public class ThirdPersonController : NetworkBehaviour
 
 				_animator.SetTrigger(_animIDAttack1);
 				_nAnimator.SetTrigger(_animIDAttack1);
+				StartCoroutine(AttackCollider());
+
 			}
 		}
 		else if (attackCoolDown < 0.5f)
 		{
-			if(isWeaponFullyUndrawn == WeaponDrawn)
+			if (isWeaponFullyUndrawn == WeaponDrawn)
 				CmdSetIsWeaponFullyUndrawn(!WeaponDrawn);
 		}
 
@@ -272,6 +284,22 @@ public class ThirdPersonController : NetworkBehaviour
 
 	private void Move()
 	{
+		if (_input.sprint&&isWeaponFullyUndrawn)
+        {
+			if (this.Status.AP <= 0)
+			{
+				_input.sprint = false;
+			}
+			this.Status.AP-=1*Time.deltaTime;
+			if (this.Status.AP <= 0)
+				this.Status.AP = 0;
+		}
+        else
+        {
+			this.Status.AP+=2*Time.deltaTime;
+			if (this.Status.AP >= this.Status.MaxAP)
+				this.Status.AP = this.Status.MaxAP;
+		}
 		// set target speed based on move speed, sprint speed and if sprint is pressed
 		float targetSpeed = isWeaponFullyUndrawn ? (_input.sprint ? SprintSpeed : MoveSpeed) : MoveSpeed / 2;
 
@@ -406,5 +434,24 @@ public class ThirdPersonController : NetworkBehaviour
 			
 		// when selected, draw a gizmo in the position of, and matching radius of, the grounded collider
 		Gizmos.DrawSphere(new Vector3(transform.position.x, transform.position.y - GroundedOffset, transform.position.z), GroundedRadius);
+	}
+
+	IEnumerator AttackCollider()
+    {
+		while (!_animator.GetCurrentAnimatorStateInfo(1).IsTag("Attacking"))
+		{
+			//전환 중일 때 실행되는 부분
+			yield return null;
+		}
+		weapon.Set(true);
+		while (_animator.GetCurrentAnimatorStateInfo(1).IsTag("Attacking"))
+		{
+			//애니메이션 재생 중 실행되는 부분
+			yield return null;
+		}
+		weapon.Set(false);
+		
+		//애니메이션 완료 후 실행되는 부분
+
 	}
 }
