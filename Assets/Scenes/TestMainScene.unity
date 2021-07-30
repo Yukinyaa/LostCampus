@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 8900000, guid: 619e305f5165a9946b7f72464e44ca4a, type: 3}
   m_Sun: {fileID: 2114283754330233425}
-  m_IndirectSpecularColor: {r: 0.0178324, g: 0.017328357, b: 0.024172943, a: 1}
+  m_IndirectSpecularColor: {r: 0.017820667, g: 0.017346159, b: 0.024196595, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -122,7 +122,7 @@ NavMeshSettings:
     preserveTilesOutsideBounds: 0
     debug:
       m_Flags: 0
-  m_NavMeshData: {fileID: 0}
+  m_NavMeshData: {fileID: 23800000, guid: fd019f43510c59e4cadf99886f00f3c6, type: 2}
 --- !u!1 &43551838
 GameObject:
   m_ObjectHideFlags: 0
@@ -3003,7 +3003,7 @@ MonoBehaviour:
   disconnectInactiveConnections: 0
   disconnectInactiveTimeout: 60
   authenticator: {fileID: 0}
-  playerPrefab: {fileID: 4063426843281924986, guid: 6830c4a9b032d3b4fad61b1d49aac206, type: 3}
+  playerPrefab: {fileID: 4063426843281924986, guid: 967c41595f245bb48a2770b09af35993, type: 3}
   autoCreatePlayer: 1
   playerSpawnMethod: 0
   spawnPrefabs: []
