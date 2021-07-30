@@ -121,8 +121,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 3719380790008014828}
-        m_TargetAssemblyTypeName: UI_Inventory, Assembly-CSharp
+      - m_Target: {fileID: 19305661093981634}
+        m_TargetAssemblyTypeName: UI_ItemContainer, Assembly-CSharp
         m_MethodName: AddItemForTest
         m_Mode: 3
         m_Arguments:
@@ -297,7 +297,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4445782850685250742}
   - component: {fileID: 4053892627669711956}
-  - component: {fileID: 3719380790008014828}
+  - component: {fileID: 19305661093981634}
   m_Layer: 5
   m_Name: UI_Inventory
   m_TagString: Untagged
@@ -338,7 +338,7 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
---- !u!114 &3719380790008014828
+--- !u!114 &19305661093981634
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -354,7 +354,6 @@ MonoBehaviour:
   content: {fileID: 3848813279380200904}
   contentLayoutGroup: {fileID: 8122413268528296324}
   canvas: {fileID: 0}
-  group: {fileID: 4053892627669711956}
 --- !u!1 &409021233800083232
 GameObject:
   m_ObjectHideFlags: 0

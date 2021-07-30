@@ -10,7 +10,7 @@ public class ItemSlot
 {
     private int infoID = -1;
 
-    private ItemInfo _itemInfo;
+    [NonSerialized] private ItemInfo _itemInfo;
     public ItemInfo itemInfo
     {
         get
@@ -23,7 +23,6 @@ public class ItemSlot
         }
     }
 
-    private Dictionary<string, int> stats; //
     private string sprite; //
 
     public int InfoID
@@ -51,10 +50,10 @@ public class ItemSlot
         get => itemInfo.maxStack;
     }
 
-    public Dictionary<string, int> Stats
+    public Dictionary<StatModType, int> Stats
     {
-        get => stats;
-        set => stats = value;
+        get => itemInfo.stats;
+        set => itemInfo.stats = value;
     }
     public string Sprite
     {
@@ -97,6 +96,7 @@ public class ItemSlot
     public ItemSlot(ItemInfo itemInfo, int _amount = 1)
     {
         _itemInfo = itemInfo;
+        sprite = _itemInfo.sprite;
         amount = _amount;
     }
 }

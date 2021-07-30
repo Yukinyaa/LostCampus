@@ -242,7 +242,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 0, b: 0, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -271,6 +271,7 @@ GameObject:
   - component: {fileID: 6563764757696007351}
   - component: {fileID: 3541356654414973175}
   - component: {fileID: 5123788845835583976}
+  - component: {fileID: 845905663646610367}
   m_Layer: 5
   m_Name: UI_ItemSlot
   m_TagString: Untagged
@@ -352,3 +353,15 @@ MonoBehaviour:
   text: {fileID: 1073237693488011276}
   slotContent: {fileID: 3612082209098705610}
   group: {fileID: 8673990319760264416}
+--- !u!225 &845905663646610367
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6910471620934126453}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0

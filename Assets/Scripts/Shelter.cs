@@ -46,6 +46,11 @@ public class Shelter : NetworkBehaviour
     [SerializeField] private Transform exitPoint;
     [SerializeField] private bool isShelter = false;
 
+    public bool IsShelter => isShelter;
+
+    [SerializeField] private ShelterInventory inventory;
+    public ShelterInventory Inventory => inventory;
+
     [SyncVar] private int playerCount = 0;
     public readonly SyncList<StorageSlot> storage = new SyncList<StorageSlot>();
     public readonly SyncList<Blueprint> blueprints = new SyncList<Blueprint>();
@@ -53,6 +58,7 @@ public class Shelter : NetworkBehaviour
     public override void OnStartClient()
     {
         Instance = this;
+        inventory = transform.GetComponent<ShelterInventory>();
         List<Blueprint> blueprintData = new List<Blueprint>(blueprints.Count);
         blueprints.CopyTo(blueprintData);
         UIManager.Instance.GetUI<UI_CraftingTable>().InitBlueprint(blueprintData);
@@ -60,6 +66,7 @@ public class Shelter : NetworkBehaviour
 
     public override void OnStartServer()
     {
+        inventory = transform.GetComponent<ShelterInventory>();
         Blueprint[] blueprintData = LoadBlueprintData();
         for(int i = 0; i < blueprintData.Length; ++i)
         {
@@ -118,11 +125,6 @@ public class Shelter : NetworkBehaviour
         }
     }*/
 
-    private void OnStorageUpdatedToServer(SyncList<StorageSlot>.Operation op, int index, StorageSlot oldItem, StorageSlot newItem)
-    {
-        SaveInventoryData();
-    }
-
     [TargetRpc]
     public void RpcJoinPlayerToShelter(NetworkConnection conn, MyPlayer _player)
     {
@@ -155,30 +157,6 @@ public class Shelter : NetworkBehaviour
         CmdExitFromShelter();
     }
 
-    public StorageSlot GetItemDataBySlotID(int _slotID)
-    {
-        if (0 <= _slotID && _slotID < storage.Count)
-        {
-            return storage[_slotID];
-        }
-        return default;
-    }
-
-    public List<StorageSlot> GetItemDataByItemID(int _itemID)
-    {
-        return storage.FindAll(x => x.id == _itemID);
-    }
-
-    public int GetCountByItemID(int _itemID)
-    {
-        int count = 0;
-        foreach(StorageSlot data in GetItemDataByItemID(_itemID))
-        {
-            count += data.count;
-        }
-        return count;
-    }
-
     [Command(requiresAuthority = false)]
     public void CmdJoinToShelter()
     {
@@ -189,99 +167,6 @@ public class Shelter : NetworkBehaviour
     public void CmdExitFromShelter()
     {
         playerCount--;
-    }
-
-    [Command(requiresAuthority = false)]
-    public void CmdModifyInventoryBySlotID(int _slotIndex, int _value)
-    {
-        ModifyInventoryBySlotID(_slotIndex, _value);
-    }
-
-    [Command(requiresAuthority = false)]
-    public void CmdModifyInventoryByItemID(int _itemIndex, int _value)
-    {
-        ModifyInventoryByItemID(_itemIndex, _value);
-    }
-
-    [Server]
-    public void ModifyInventoryBySlotID(int _slotIndex, int _value)
-    {
-        if(0 <= _slotIndex && _slotIndex < storage.Count)
-        {
-            StorageSlot currentSlot = storage[_slotIndex];
-            if(currentSlot.count + _value > 0)
-            {
-                storage[_slotIndex] = new StorageSlot(currentSlot.id, currentSlot.count + _value);
-            }
-            else
-            {
-                storage.RemoveAt(_slotIndex);
-            }
-        }
-    }
-
-    [Server]
-    public void ModifyInventoryByItemID(int _itemIndex, int _value)
-    {
-        int slotIndex = storage.FindIndex(x => x.id == _itemIndex);
-        if (slotIndex == -1)
-        {
-            if (_value > 0)
-            {
-                StorageSlot newSlot = new StorageSlot(_itemIndex, _value);
-                storage.Add(newSlot);
-            }
-        }
-        else
-        {
-            ModifyInventoryBySlotID(slotIndex, _value);
-        }
-    }
-
-    [Server]
-    public void SaveInventoryData()
-    {
-        try
-        {
-            List<StorageSlot> storageData = new List<StorageSlot>(storage.Count);
-            storage.CopyTo(storageData);
-            string json = JsonHelper.ToJson(storageData.ToArray(), true);
-            string path = Application.persistentDataPath + "/Server/" + "shelter.txt";
-            File.WriteAllText(path, json);
-        }
-        catch (Exception)
-        {
-
-        }
-    }
-
-    [Server]
-    public StorageSlot[] LoadInventoryData()
-    {
-        string path = Application.persistentDataPath + "/Server/" + "shelter.txt";
-        try
-        {
-            if (File.Exists(path))
-            {
-                string json = File.ReadAllText(path);
-                return JsonHelper.FromJson<StorageSlot>(json);
-            }
-            else
-            {
-                Directory.CreateDirectory(Application.persistentDataPath + "/Server/");
-                StorageSlot[] newData = new StorageSlot[5];
-                for (int i = 0; i < 5; ++i)
-                {
-                    newData[i] = new StorageSlot(i, 100);
-                }
-                File.WriteAllText(path, JsonHelper.ToJson(newData, true));
-                return newData;
-            }
-        }
-        catch (Exception)
-        {
-            return null;
-        }
     }
 
     [Server]
@@ -321,7 +206,7 @@ public class Shelter : NetworkBehaviour
                         break;
                     case "Chest":
                     case "CraftingTable":
-                        UIManager.Instance.GetUI<UI_Storage>().SetActive(true);
+                        inventory.ActiveContainerUI();
                         UIManager.Instance.GetUI<UI_CraftingTable>().SetActive(true);
                         break;
                     case "Door":

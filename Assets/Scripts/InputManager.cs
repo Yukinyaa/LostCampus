@@ -1,13 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class InputManager : Singleton<InputManager>
 {
     [SerializeField]
-    private Input.StarterAssets starterAssets;
+    public InputActionAsset starterAssets;
 
-    public Input.StarterAssets StarterAssets
+    public InputActionAsset StarterAssets
     {
         get => starterAssets;
     }
