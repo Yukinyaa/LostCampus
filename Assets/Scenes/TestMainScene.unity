@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 8900000, guid: 619e305f5165a9946b7f72464e44ca4a, type: 3}
   m_Sun: {fileID: 2114283754330233425}
-  m_IndirectSpecularColor: {r: 0.017820667, g: 0.017346159, b: 0.024196476, a: 1}
+  m_IndirectSpecularColor: {r: 0.017790888, g: 0.017313778, b: 0.024162054, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1749,9 +1749,9 @@ GameObject:
   m_Component:
   - component: {fileID: 1046041300}
   - component: {fileID: 1046041299}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Attack
-  m_TagString: Untagged
+  m_TagString: EnemyAttack
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

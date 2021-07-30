@@ -36,7 +36,7 @@ public class Wander : MonoBehaviour
         target = GameObject.FindWithTag("Player").transform;
         distance = Vector3.Distance(target.position, transform.position);
         timer += Time.deltaTime;
-        if (distance < 5)
+        if (distance < 10)
         {
             anim.SetBool("isWalk", true);
             agent.SetDestination(target.position);
