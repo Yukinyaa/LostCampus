@@ -38,9 +38,14 @@ public class Wander : MonoBehaviour
         timer += Time.deltaTime;
         if (distance < 10)
         {
-            anim.SetBool("isWalk", true);
-            agent.SetDestination(target.position);
-            isChase = true;
+            if (anim.GetBool("isAttack") == false)
+            {
+                anim.SetBool("isWalk", true);
+                agent.SetDestination(target.position);
+                isChase = true;
+            }
+            else
+            { }
 
         }
 

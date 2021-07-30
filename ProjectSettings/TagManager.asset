@@ -8,6 +8,8 @@ TagManager:
   - Skeleton
   - WeaponCollider
   - Weapon
+  - Enemy
+  - EnemyAttack
   layers:
   - Default
   - TransparentFX
@@ -15,9 +17,9 @@ TagManager:
   - 
   - Water
   - UI
-  - 
-  - 
-  - 
+  - Player
+  - Enemy
+  - EnemyAttack
   - 
   - 
   - 
