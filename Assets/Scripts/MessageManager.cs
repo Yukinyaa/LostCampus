@@ -297,7 +297,7 @@ public class MessageManager : NetworkBehaviour
                                     case "HOME":
                                     case "SHELTER":
                                         {
-                                            FindObjectOfType<Shelter>().ModifyInventoryByItemID(itemID, value);
+                                            FindObjectOfType<Shelter>().Inventory.TryUpdateItem(itemID, value);
                                             break;
                                         }
                                     case "INVEN":

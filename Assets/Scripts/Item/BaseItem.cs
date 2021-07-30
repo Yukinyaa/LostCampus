@@ -7,6 +7,7 @@ using UnityEngine;
 [Serializable]
 public class BaseItem : NetworkBehaviour
 {
+    //TODO: 아이템 클래스 수정하기
     private string instanceId;
     private ItemInfo _itemInfo;
     private int amount;

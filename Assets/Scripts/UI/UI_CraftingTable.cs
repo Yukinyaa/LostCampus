@@ -52,7 +52,7 @@ public class UI_CraftingTable : UIComponent
                     needItemSlot[i].
                         SetActive(true).
                         SetSprite(MyItemManager.Instance.GetSprite(blueprint.needItems[i].id)).
-                        SetCount(Shelter.Instance.GetCountByItemID(blueprint.needItems[i].id), blueprint.needItems[i].count);
+                        SetCount(Shelter.Instance.Inventory.GetCountByItemID(blueprint.needItems[i].id), blueprint.needItems[i].count);
                 }
                 else needItemSlot[i].SetActive(false);
             }
@@ -67,7 +67,7 @@ public class UI_CraftingTable : UIComponent
             bool canMake = true;
             for (int i = 0; i < blueprint.needItems.Length; ++i)
             {
-                if (Shelter.Instance.GetCountByItemID(blueprint.needItems[i].id) < blueprint.needItems[i].count)
+                if (Shelter.Instance.Inventory.GetCountByItemID(blueprint.needItems[i].id) < blueprint.needItems[i].count)
                 {
                     canMake = false;
                     break;
@@ -77,9 +77,9 @@ public class UI_CraftingTable : UIComponent
             {
                 for (int i = 0; i < blueprint.needItems.Length; ++i)
                 {
-                    Shelter.Instance.CmdModifyInventoryByItemID(blueprint.needItems[i].id, -blueprint.needItems[i].count);
+                    Shelter.Instance.Inventory.TryUpdateItem(blueprint.needItems[i].id, -blueprint.needItems[i].count);
                 }
-                Shelter.Instance.CmdModifyInventoryByItemID(blueprint.itemID, 1);
+                Shelter.Instance.Inventory.TryUpdateItem(blueprint.itemID, 1);
             }
         }
     }
@@ -93,13 +93,13 @@ public class UI_CraftingTable : UIComponent
             {
                 if(_newSlot.Equals(default))
                 {
-                    needItemSlot[i].SetCount(Shelter.Instance.GetCountByItemID(blueprint.needItems[i].id), blueprint.needItems[i].count);
+                    needItemSlot[i].SetCount(Shelter.Instance.Inventory.GetCountByItemID(blueprint.needItems[i].id), blueprint.needItems[i].count);
                 }
                 else
                 {
                     if (blueprint.needItems[i].id == _newSlot.id)
                     {
-                        needItemSlot[i].SetCount(Shelter.Instance.GetCountByItemID(blueprint.needItems[i].id), blueprint.needItems[i].count);
+                        needItemSlot[i].SetCount(Shelter.Instance.Inventory.GetCountByItemID(blueprint.needItems[i].id), blueprint.needItems[i].count);
                         break;
                     }
                 }

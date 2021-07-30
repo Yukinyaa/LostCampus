@@ -532,10 +532,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   canvasGroup: {fileID: 402574136380052931}
-  viewport: {fileID: 402574136343440369}
   content: {fileID: 402574136698203169}
   contentLayoutGroup: {fileID: 402574136698203171}
-  storageSlot: {fileID: 8745979704250641730, guid: 7d9cb84e1911fd84f910539052458008, type: 3}
+  canvas: {fileID: 0}
+  storageSlot: {fileID: 6501227118714634044, guid: 7d9cb84e1911fd84f910539052458008, type: 3}
 --- !u!1 &402574136698203170
 GameObject:
   m_ObjectHideFlags: 0

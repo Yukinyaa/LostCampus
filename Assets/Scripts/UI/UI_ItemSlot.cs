@@ -59,11 +59,10 @@ public class UI_ItemSlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IDrop
     {
         if (draggingSlot != null)
         {
-            Debug.Log("drop : " + _itemSlot.Amount);
-            ItemSlot tempItemSlot = ItemSlot;
-            SetSlot(draggingSlot.ItemSlot);
-            draggingSlot.SetSlot(tempItemSlot);
-            draggingSlot = null;
+                ItemSlot tempItemSlot = ItemSlot;
+                SetSlot(draggingSlot.ItemSlot);
+                draggingSlot.SetSlot(tempItemSlot);
+                draggingSlot = null;
         }
     }
 
@@ -118,13 +117,13 @@ public class UI_ItemSlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IDrop
         {
             if (_itemSlot != null) _itemSlot.OnValueChanged -= OnValueChanged;
             _itemSlot = null;
-            //image = item.ItemInfo.sprite;
+            image.sprite = ItemInfoDataBase.GetSprite("None");
             text.text = "0";
         }
         else
         {
             _itemSlot = (ItemSlot)_slotData;
-            //image = item.ItemInfo.sprite;
+            image.sprite = ItemInfoDataBase.GetSprite(_slotData.Sprite);
             _itemSlot.OnValueChanged += OnValueChanged;
             text.text = _itemSlot.Amount.ToString();
         }
