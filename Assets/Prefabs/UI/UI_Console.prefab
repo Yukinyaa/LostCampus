@@ -1159,6 +1159,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b755282545761164ab5f0a2dbae7b583, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  rectTransform: {fileID: 7330629643793477919}
   canvasGroup: {fileID: 5566851329562316023}
   inputField: {fileID: 9134815751438795766}
   storage: {fileID: 5178344531534511153}
