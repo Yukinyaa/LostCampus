@@ -6,8 +6,8 @@ using UnityEngine;
 [RequireComponent(typeof(CanvasGroup))]
 public class UIComponent : MonoBehaviour
 {
-    [SerializeField] private RectTransform rectTransform;
-    [SerializeField] private CanvasGroup canvasGroup;
+    [SerializeField] protected RectTransform rectTransform;
+    [SerializeField] protected CanvasGroup canvasGroup;
     public virtual void Init()
     {
 
