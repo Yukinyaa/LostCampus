@@ -92,14 +92,13 @@ public class Wander : MonoBehaviour
         isChase = false;
         isAttack = true;
         anim.SetBool("isAttack", true);
-        yield return new WaitForSeconds(0.2f);
-
-        yield return new WaitForSeconds(1f);
         weapon.Set(true);
-
+        yield return new WaitForSeconds(0.2f);
+        
+        yield return new WaitForSeconds(1f);
+        
         yield return new WaitForSeconds(1f);
         weapon.Set(false);
-
         isChase = true;
         isAttack = false;
         anim.SetBool("isAttack", false);

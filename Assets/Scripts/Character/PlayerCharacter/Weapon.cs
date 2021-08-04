@@ -35,25 +35,29 @@ public class Weapon : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        try
+        if (other.tag=="Skeleton")
         {
-            Status otherStatus = other.GetComponentInParent<Status>();
-            if (otherStatus.team != this.playerStatus.team)
+            try
             {
-                if (!this.otherStatus.Contains(otherStatus))
+                Status otherStatus = other.GetComponentInParent<Status>();
+                if (otherStatus.team != this.playerStatus.team)
                 {
-                    this.otherStatus.Add(otherStatus);
-                    //여기서부터 데미지 처리
+                    if (!this.otherStatus.Contains(otherStatus))
+                    {
+                        this.otherStatus.Add(otherStatus);
+                        //여기서부터 데미지 처리
 
-                    otherStatus.HP -= this.playerStatus.ATK;
+                        otherStatus.HP -= this.playerStatus.ATK;
 
-                    Debug.Log(otherStatus.name+":"+otherStatus.HP);
+                        Debug.Log(otherStatus.name + ":" + otherStatus.HP);
+                    }
                 }
             }
+            catch (NullReferenceException)
+            {
+            }
         }
-        catch (NullReferenceException)
-        {
-        }
+        
 
     }
 }
