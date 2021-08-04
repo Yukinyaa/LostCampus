@@ -10,7 +10,6 @@ public class Wander : MonoBehaviour
     public float wanderTimer;
     public bool isChase;
     public bool isAttack;
-    public BoxCollider meleeArea;
 
     private NavMeshAgent agent;
     private float timer;
@@ -18,6 +17,7 @@ public class Wander : MonoBehaviour
     private Transform target;
     private Animator anim;
     private Rigidbody rigid;
+    private Weapon weapon;
 
 
     // Use this for initialization
@@ -27,6 +27,7 @@ public class Wander : MonoBehaviour
         agent = GetComponent<NavMeshAgent>();
         timer = wanderTimer;
         anim = GetComponent<Animator>();
+        this.weapon = GetComponentInChildren<Weapon>();
 
     }
 
@@ -92,12 +93,12 @@ public class Wander : MonoBehaviour
         isAttack = true;
         anim.SetBool("isAttack", true);
         yield return new WaitForSeconds(0.2f);
-        meleeArea.enabled = true;
 
         yield return new WaitForSeconds(1f);
-        meleeArea.enabled = false;
+        weapon.Set(true);
 
         yield return new WaitForSeconds(1f);
+        weapon.Set(false);
 
         isChase = true;
         isAttack = false;
