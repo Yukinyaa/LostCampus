@@ -5,20 +5,18 @@ using UnityEngine;
 
 public class Weapon : MonoBehaviour
 {
+    [SerializeField] private Status PlayerStatus;
     private MeshCollider WeaponCollider;
     private GameObject PlayerGameObject;
-    private ThirdPersonController PlayerController;
-    private Status PlayerStatus;
     private List<Status> OtherStatus;
 
     private void Awake()
     {
+        Debug.Assert(PlayerStatus != null);
+
         this.WeaponCollider = GetComponentInChildren<MeshCollider>();
         this.WeaponCollider.enabled = false;
-        this.PlayerController = GetComponentInParent<ThirdPersonController>();
-        this.PlayerGameObject = PlayerController.gameObject;
-        this.PlayerStatus = PlayerGameObject.GetComponent<Status>();
-        this.PlayerController.Weapon = this;
+        this.PlayerStatus = GetComponentInParent<Status>();
     }
 
     public void Set(bool tmp)
@@ -38,7 +36,7 @@ public class Weapon : MonoBehaviour
     {
         try
         {
-            if (other.GetComponentInParent<ThirdPersonController>() != PlayerController)
+            if (other.GetComponentInParent<Status>() != PlayerStatus)
             {
                 Status OtherStatus;
                 try
@@ -50,7 +48,7 @@ public class Weapon : MonoBehaviour
                         this.OtherStatus.Add(OtherStatus);
                         //여기서부터 데미지 처리
 
-                        OtherStatus.HP = OtherStatus.HP-this.PlayerStatus.ATK;
+                        OtherStatus.HP = OtherStatus.HP - this.PlayerStatus.ATK;
 
                         Debug.Log(OtherStatus.HP);
                     }

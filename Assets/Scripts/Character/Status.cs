@@ -60,6 +60,10 @@ public class Status : MonoBehaviour
 
 public class Status : MonoBehaviour
 {
+    public enum Team
+    { 
+        Friendly, Enemy, Neutral
+    }
     #region SerializedFields
     [Tooltip("Health")]
     public float HP;
@@ -69,6 +73,8 @@ public class Status : MonoBehaviour
     public float AP;
 
     public float MaxAP = 1000;
+
+    public Team team;
     #endregion
 
     #region localValues
