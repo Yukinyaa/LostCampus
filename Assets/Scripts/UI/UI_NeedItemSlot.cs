@@ -8,11 +8,18 @@ using UnityEngine.EventSystems;
 public class UI_NeedItemSlot : MonoBehaviour, IPointerUpHandler
 {
     [SerializeField] private Image image_Item;
+    [SerializeField] private TextMeshProUGUI text_Name;
     [SerializeField] private TextMeshProUGUI text_Count;
 
     public UI_NeedItemSlot SetActive(bool _state)
     {
         gameObject.SetActive(_state);
+        return this;
+    }
+
+    public UI_NeedItemSlot SetName(string _name)
+    {
+        text_Name.SetText(_name);
         return this;
     }
 

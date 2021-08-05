@@ -25,7 +25,6 @@ public class UI_Notice : UIComponent
         storageQueue = new Queue<UI_NoticeLine>(MAX_LINECOUNT);
         sequenceQueue = new Queue<Sequence>(MAX_NOTICECOUNT);
         float lineHeight = rectTransform.rect.height / MAX_NOTICECOUNT;
-        Debug.Log(lineHeight);
         for (int lineIndex = 0; lineIndex < MAX_LINECOUNT; ++lineIndex)
         {
             storageQueue.Enqueue(

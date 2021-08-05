@@ -19,7 +19,6 @@ public class UI_CraftingTable : UIComponent
     [Header("- UI")]
     [SerializeField] private Image image_Thumbnail;
     [SerializeField] private TextMeshProUGUI text_ItemName;
-    [SerializeField] private TextMeshProUGUI text_ItemCategory;
     [SerializeField] private TextMeshProUGUI text_ItemDescription;
     [SerializeField] private UI_NeedItemSlot[] needItemSlot;
     [Header("- Prefab")]
@@ -43,7 +42,6 @@ public class UI_CraftingTable : UIComponent
             MyItemData itemData = MyItemManager.Instance.GetItemData(blueprint.itemID);
             image_Thumbnail.sprite = MyItemManager.Instance.GetSprite(blueprint.itemID);
             text_ItemName.SetText(itemData.name);
-            text_ItemCategory.SetText(itemData.category.ToString());
             text_ItemDescription.SetText(itemData.description);
             for (int i = 0; i < needItemSlot.Length; ++i)
             {
