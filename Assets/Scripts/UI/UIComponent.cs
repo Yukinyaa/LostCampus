@@ -8,6 +8,9 @@ public class UIComponent : MonoBehaviour
 {
     [SerializeField] protected RectTransform rectTransform;
     [SerializeField] protected CanvasGroup canvasGroup;
+
+    public bool IsShow { get => canvasGroup.alpha >= 1; }
+    public bool IsActive { get => canvasGroup.alpha >= 1 && canvasGroup.blocksRaycasts && canvasGroup.interactable; }
     public virtual void Init()
     {
 
