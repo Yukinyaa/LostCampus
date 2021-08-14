@@ -77,9 +77,9 @@ public class UI_CraftingTable : UIComponent
             {
                 for (int i = 0; i < blueprint.needItems.Length; ++i)
                 {
-                    Shelter.Instance.Inventory.TryUpdateItem(blueprint.needItems[i].id, -blueprint.needItems[i].count);
+                    Shelter.Instance.Inventory.TryUpdateItemById(blueprint.needItems[i].id, -blueprint.needItems[i].count);
                 }
-                Shelter.Instance.Inventory.TryUpdateItem(blueprint.itemID, 1);
+                Shelter.Instance.Inventory.TryUpdateItemById(blueprint.itemID, 1);
             }
         }
     }

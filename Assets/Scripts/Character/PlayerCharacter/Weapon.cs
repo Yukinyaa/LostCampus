@@ -46,7 +46,7 @@ public class Weapon : MonoBehaviour
                     if (!this.OtherStatus.Contains(OtherStatus))
                     {
                         this.OtherStatus.Add(OtherStatus);
-                        //¿©±â¼­ºÎÅÍ µ¥¹ÌÁö Ã³¸®
+                        //ì—¬ê¸°ì„œë¶€í„° ë°ë¯¸ì§€ ì²˜ë¦¬
 
                         OtherStatus.HP = OtherStatus.HP - this.PlayerStatus.ATK;
 

@@ -52,7 +52,6 @@ public class Shelter : NetworkBehaviour
     public ShelterInventory Inventory => inventory;
 
     [SyncVar] private int playerCount = 0;
-    public readonly SyncList<StorageSlot> storage = new SyncList<StorageSlot>();
     public readonly SyncList<Blueprint> blueprints = new SyncList<Blueprint>();
 
     public override void OnStartClient()
@@ -68,10 +67,10 @@ public class Shelter : NetworkBehaviour
     {
         inventory = transform.GetComponent<ShelterInventory>();
         Blueprint[] blueprintData = LoadBlueprintData();
-        for(int i = 0; i < blueprintData.Length; ++i)
-        {
-            blueprints.Add(blueprintData[i]);
-        }
+        // for(int i = 0; i < blueprintData.Length; ++i)
+        // {
+        //     blueprints.Add(blueprintData[i]);
+        // }
     }
     /*
     private void OnStorageUpdated(SyncList<StorageSlot>.Operation op, int index, StorageSlot oldItem, StorageSlot newItem)

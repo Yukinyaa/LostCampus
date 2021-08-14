@@ -23,21 +23,23 @@ public class UI_Storage : UI_ItemContainer
 
     public override bool AddSlot(int _slotIndex, ItemSlot _slot)
     {
-        Debug.Log($"½½·Ô Ãß°¡ µÊ : {_slotIndex}");
-        UI_ItemSlot newSlot = Instantiate(storageSlot, content).SetSlot(_slot).SetIndex(slotList.Count);
+        Debug.Log($"½½·Ô Ãß°¡ µÊ");
+        UI_ItemSlot newSlot = Instantiate(storageSlot, content);
         slotList.Add(newSlot);
+        InitSlot(slotList.IndexOf(newSlot));
+        newSlot.SetSlot(_slot);
         return true;
     }
 
     public override bool RemoveSlot(int _slotIndex, ItemSlot _slot)
     {
-        Debug.Log($"½½·Ô Á¦°Å µÊ : {_slotIndex}");
         foreach (var uiSlot in slotList)
         {
             if (uiSlot.ItemSlot == _slot)
             {
                 slotList.Remove(uiSlot);
-                Destroy(uiSlot);
+                Destroy(uiSlot.SlotContent.gameObject);
+                Destroy(uiSlot.gameObject);
                 return true;
             }
         }
