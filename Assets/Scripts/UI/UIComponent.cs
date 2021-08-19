@@ -30,4 +30,21 @@ public class UIComponent : MonoBehaviour
         }
     }
 
+    public virtual void On()
+    {
+        gameObject.SetActive(true);
+    }
+    
+    public virtual void Off()
+    {
+        gameObject.SetActive(false);
+    }    
+    
+    public virtual void Toggle()
+    {        
+        if (isActiveAndEnabled)
+            gameObject.SetActive(false);
+        else
+            gameObject.SetActive(true);
+    }
 }

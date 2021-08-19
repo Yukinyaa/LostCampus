@@ -8,7 +8,7 @@ using UnityEngine.Events;
 [Serializable]
 public class ItemSlot
 {
-    private int infoID = -1;
+    private int infoID = 0;
 
     [NonSerialized] private ItemInfo _itemInfo;
     public ItemInfo itemInfo
@@ -27,7 +27,7 @@ public class ItemSlot
 
     public int InfoID
     {
-        get => infoID;
+        get => itemInfo.id;
     }
     public string Name
     {
@@ -68,9 +68,8 @@ public class ItemSlot
         get => amount;
         set
         {
-            
-            amount = value;
-            OnValueChanged(this);
+            amount = Mathf.Clamp(value, 0, itemInfo.maxStack);
+            OnValueChanged?.Invoke(this);
         }
     }
 
@@ -87,7 +86,6 @@ public class ItemSlot
         return Amount >= _itemInfo.maxStack;
     }
 
-
     public ItemSlot()
     {
         
@@ -96,6 +94,7 @@ public class ItemSlot
     public ItemSlot(ItemInfo itemInfo, int _amount = 1)
     {
         _itemInfo = itemInfo;
+        infoID = itemInfo.id;
         sprite = _itemInfo.sprite;
         amount = _amount;
     }

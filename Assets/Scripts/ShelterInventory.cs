@@ -12,7 +12,6 @@ public class ShelterInventory : ItemContainer
     public override void cacheUI()
     {
         InventoryUI = UIManager.Instance.GetUI<UI_Storage>();
-        InventoryUI.SetContainer(this);
     }
 
     public override void InvokeSaveInventoryData()
