@@ -9,18 +9,18 @@ public class UI_ContainerToolTip : UIComponent
     [SerializeField] private TextMeshProUGUI title;
     [SerializeField] private TextMeshProUGUI instruction;
     [SerializeField] private Image icon;
-    private RectTransform rectTransform;
+    private RectTransform rect;
 
-    public RectTransform RectTransform
+    public RectTransform Rect
     {
         get
         {
-            if ((object)rectTransform == null)
+            if ((object)rect == null)
             {
-                rectTransform = transform.GetComponent<RectTransform>();
+                rect = transform.GetComponent<RectTransform>();
             }
 
-            return rectTransform;
+            return rect;
         }
     }
 
@@ -29,7 +29,7 @@ public class UI_ContainerToolTip : UIComponent
         title.text = itemSlot.Name;
         instruction.text = itemSlot.FlavorText;
         icon.sprite = ItemInfoDataBase.GetSprite(itemSlot.Sprite);
-        Vector3 bias = new Vector3(RectTransform.rect.width / 2, -RectTransform.rect.height / 2);
+        Vector3 bias = new Vector3(Rect.rect.width / 2, -Rect.rect.height / 2);
         transform.position = position + bias;
     }
 }

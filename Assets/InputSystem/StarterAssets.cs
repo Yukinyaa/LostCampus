@@ -81,6 +81,22 @@ public class @StarterInputAssets : IInputActionCollection, IDisposable
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""Action"",
+                    ""type"": ""Button"",
+                    ""id"": ""d6fedf5a-b072-4f64-8bed-e06f3fbc8969"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""Alternate"",
+                    ""type"": ""PassThrough"",
+                    ""id"": ""32d1eb28-9741-4638-9f7a-3d8519ed15fa"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -295,23 +311,23 @@ public class @StarterInputAssets : IInputActionCollection, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""dd34febb-873f-440e-bac0-4b72299760ab"",
+                    ""id"": ""39cb27ab-b198-4258-8468-b3ed3c1bda8e"",
                     ""path"": ""<Keyboard>/i"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": ""KeyboardMouse"",
+                    ""groups"": ""KeyboardMouse;Gamepad;Xbox Controller;PS4 Controller"",
                     ""action"": ""ToggleInventory"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
                 {
                     ""name"": """",
-                    ""id"": ""994a5e3d-3015-4262-a48d-582953bcadb6"",
-                    ""path"": ""<Keyboard>/escape"",
+                    ""id"": ""948169e2-ccac-4363-8d9d-ec5955cf675b"",
+                    ""path"": ""<Keyboard>/leftShift"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Exit"",
+                    ""groups"": ""KeyboardMouse"",
+                    ""action"": ""Alternate"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -378,6 +394,8 @@ public class @StarterInputAssets : IInputActionCollection, IDisposable
         m_Player_DrawWeapon = m_Player.FindAction("DrawWeapon", throwIfNotFound: true);
         m_Player_ToggleInventory = m_Player.FindAction("ToggleInventory", throwIfNotFound: true);
         m_Player_Exit = m_Player.FindAction("Exit", throwIfNotFound: true);
+        m_Player_Action = m_Player.FindAction("Action", throwIfNotFound: true);
+        m_Player_Alternate = m_Player.FindAction("Alternate", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -435,6 +453,8 @@ public class @StarterInputAssets : IInputActionCollection, IDisposable
     private readonly InputAction m_Player_DrawWeapon;
     private readonly InputAction m_Player_ToggleInventory;
     private readonly InputAction m_Player_Exit;
+    private readonly InputAction m_Player_Action;
+    private readonly InputAction m_Player_Alternate;
     public struct PlayerActions
     {
         private @StarterInputAssets m_Wrapper;
@@ -447,6 +467,8 @@ public class @StarterInputAssets : IInputActionCollection, IDisposable
         public InputAction @DrawWeapon => m_Wrapper.m_Player_DrawWeapon;
         public InputAction @ToggleInventory => m_Wrapper.m_Player_ToggleInventory;
         public InputAction @Exit => m_Wrapper.m_Player_Exit;
+        public InputAction @Action => m_Wrapper.m_Player_Action;
+        public InputAction @Alternate => m_Wrapper.m_Player_Alternate;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -480,6 +502,12 @@ public class @StarterInputAssets : IInputActionCollection, IDisposable
                 @Exit.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnExit;
                 @Exit.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnExit;
                 @Exit.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnExit;
+                @Action.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnAction;
+                @Action.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnAction;
+                @Action.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnAction;
+                @Alternate.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnAlternate;
+                @Alternate.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnAlternate;
+                @Alternate.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnAlternate;
             }
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
@@ -508,6 +536,12 @@ public class @StarterInputAssets : IInputActionCollection, IDisposable
                 @Exit.started += instance.OnExit;
                 @Exit.performed += instance.OnExit;
                 @Exit.canceled += instance.OnExit;
+                @Action.started += instance.OnAction;
+                @Action.performed += instance.OnAction;
+                @Action.canceled += instance.OnAction;
+                @Alternate.started += instance.OnAlternate;
+                @Alternate.performed += instance.OnAlternate;
+                @Alternate.canceled += instance.OnAlternate;
             }
         }
     }
@@ -558,5 +592,7 @@ public class @StarterInputAssets : IInputActionCollection, IDisposable
         void OnDrawWeapon(InputAction.CallbackContext context);
         void OnToggleInventory(InputAction.CallbackContext context);
         void OnExit(InputAction.CallbackContext context);
+        void OnAction(InputAction.CallbackContext context);
+        void OnAlternate(InputAction.CallbackContext context);
     }
 }
