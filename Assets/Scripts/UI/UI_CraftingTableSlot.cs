@@ -8,13 +8,6 @@ public class UI_CraftingTableSlot : MonoBehaviour
     public int index;
     public Action<int> onClick;
     [SerializeField] private Image image_Icon;
-    [SerializeField] private TextMeshProUGUI text_Name;
-
-    public UI_CraftingTableSlot SetName(string _name)
-    {
-        text_Name.SetText(_name);
-        return this;
-    }
 
     public UI_CraftingTableSlot SetIcon(Sprite _icon)
     {
