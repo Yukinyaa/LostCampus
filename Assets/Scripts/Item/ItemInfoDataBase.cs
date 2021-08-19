@@ -15,6 +15,7 @@ using UnityEngine;
 [Serializable]
 public enum ItemType
 {
+    None = 0,
     WEAPON,
     INGRIDIENT,
     ARMOR

@@ -58,9 +58,9 @@ public class Shelter : NetworkBehaviour
     {
         Instance = this;
         inventory = transform.GetComponent<ShelterInventory>();
-        List<Blueprint> blueprintData = new List<Blueprint>(blueprints.Count);
-        blueprints.CopyTo(blueprintData);
-        UIManager.Instance.GetUI<UI_CraftingTable>().InitBlueprint(blueprintData);
+        //List<Blueprint> blueprintData = new List<Blueprint>(blueprints.Count);
+        //blueprints.CopyTo(blueprintData);
+        //UIManager.Instance.GetUI<UI_CraftingTable>().InitBlueprint(blueprintData);
     }
 
     public override void OnStartServer()
