@@ -3,13 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class InputManager : Singleton<InputManager>
+public static class InputManager
 {
-    [SerializeField]
-    public InputActionAsset starterAssets;
+    private static StarterInputAssets inputAssets = new StarterInputAssets();
 
-    public InputActionAsset StarterAssets
-    {
-        get => starterAssets;
-    }
+    public static StarterInputAssets InputAssets => inputAssets;
+    
+    //사용예 :
+    //InputManager.InputAssets.Player.Move.performed += x => Debug.Log( x.action.name+" performed");
 }

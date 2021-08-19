@@ -13,6 +13,7 @@ public class StarterAssetsInputs : MonoBehaviour
 	public bool sprint;
 	public bool attack;
 	public bool drawWeapon;
+	public bool action;
 
 	[Header("Movement Settings")]
 	public bool analogMovement;
@@ -55,6 +56,11 @@ public class StarterAssetsInputs : MonoBehaviour
 	{
 		DrawWeaponInput(value.isPressed);
 	}
+	public void OnAction(InputValue value)
+    {
+		ActionInput(value.isPressed);
+    }
+
 #else
 // old input sys if we do decide to have it (most likely wont)...
 #endif
@@ -87,6 +93,11 @@ public class StarterAssetsInputs : MonoBehaviour
 	private void DrawWeaponInput(bool isPressed)
 	{
 		drawWeapon = isPressed;
+	}
+
+	private void ActionInput(bool isPressed)
+	{
+		action = isPressed;
 	}
 
 #if !UNITY_IOS || !UNITY_ANDROID

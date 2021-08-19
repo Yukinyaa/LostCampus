@@ -4,6 +4,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using UnityEngine;
 using Mirror;
@@ -11,10 +12,20 @@ using Newtonsoft.Json;
 using Steamworks;
 using UnityEngine.InputSystem;
 
+public class ItemSlotComparer : IComparer<ItemSlot>
+{
+    public int Compare(ItemSlot x, ItemSlot y)
+    {
+        throw new NotImplementedException();
+    }
+}
+
 public abstract class ItemContainer : NetworkBehaviour
 {
     [SerializeField]
     protected int MAX_SLOT = 16;
+    [SerializeField]
+    protected int SLOT_INCREASE_FACTOR = 4;
     
    [SerializeField]
    protected SyncList<ItemSlot> _itemslots = new SyncList<ItemSlot>();
@@ -50,12 +61,12 @@ public abstract class ItemContainer : NetworkBehaviour
     }
 
     [Server]
-    protected void OnStorageUpdatedToServer(SyncList<ItemSlot>.Operation op, int index, ItemSlot oldItemSlot, ItemSlot newItemSlot)
+    protected void OnStorageUpdatedToServer(SyncList<ItemSlot>.Operation op,int index, ItemSlot oldItem, ItemSlot newItem)
     {
         InvokeSaveInventoryData();
     }
     
-    protected void OnStorageUpdated(SyncList<ItemSlot>.Operation op, int index, ItemSlot oldItem, ItemSlot newItem)
+    protected void OnStorageUpdated(SyncList<ItemSlot>.Operation op,int index, ItemSlot oldItem, ItemSlot newItem)
     {
         switch (op)
         {
@@ -76,7 +87,7 @@ public abstract class ItemContainer : NetworkBehaviour
                 }
             case SyncList<ItemSlot>.Operation.OP_REMOVEAT:
                 {
-                    InventoryUI.RemoveSlot(index, newItem);
+                    InventoryUI.RemoveSlot(index, oldItem);
                     break;
                 }
             case SyncList<ItemSlot>.Operation.OP_SET:
@@ -99,26 +110,15 @@ public abstract class ItemContainer : NetworkBehaviour
         return default;
     }
 
-    public List<ItemSlot> GetItemDataByItemID(int _itemID)
+    protected List<ItemSlot> GetItemDatasByItemID(int _itemID)
     {
         return Itemslots.FindAll(x => x.InfoID == _itemID);
-    }
-
-    public List<int> GetItemIndexsByItemID(int _itemID)
-    {
-        List<int> indexs = new List<int>();
-        for(int i = 0; i< Itemslots.Count; i++)
-        {
-            if(Itemslots[i].InfoID == _itemID)
-                indexs.Add(i);
-        }
-        return indexs;
     }
     
     public int GetCountByItemID(int _itemID)
     {
         int count = 0;
-        foreach(ItemSlot data in GetItemDataByItemID(_itemID))
+        foreach(ItemSlot data in GetItemDatasByItemID(_itemID))
         {
             count += data.Amount;
         }
@@ -128,7 +128,7 @@ public abstract class ItemContainer : NetworkBehaviour
     public int GetEmptySpaceCount(int itemId)
     {
         int maxStack = ItemInfoDataBase.FindItemInfo(itemId).maxStack;
-        List<ItemSlot> datas = GetItemDataByItemID(itemId);
+        List<ItemSlot> datas = GetItemDatasByItemID(itemId);
         int count = 0;
         foreach (var VARIABLE in datas)
         {
@@ -145,7 +145,7 @@ public abstract class ItemContainer : NetworkBehaviour
     /// <param name="id"></param>
     /// <param name="amount"></param>
     /// <returns>인벤에 넣고 남은 갯수</returns>
-    public int TryUpdateItem(int id, int amount)
+    public int TryUpdateItemById(int id, int amount)
     {
         if (amount > 0)
         {
@@ -167,73 +167,153 @@ public abstract class ItemContainer : NetworkBehaviour
         }
 
     }
-    
-    //TODO:슬롯 업데이트 만들기
-    public int TryUpdateSlot(int id, int amount)
-    {
-        return amount;
-    }
-    
-    [Server]
-    protected void CmdEditInventoryBySlotID(int slotIndex, int value)
-    {
-        if(0 <= slotIndex && slotIndex < Itemslots.Count)
-        {
-            ItemSlot current = Itemslots[slotIndex];
-            if(current.Amount + value > 0)
-            {
-                if (current.Amount + value <= current.MAXStack)
-                {
-                    current.Amount = current.Amount + value;
-                    Debug.Log(current.Name + " is " + current.Amount);
-                }
-            }
-            else
-            {
-                Itemslots.RemoveAt(slotIndex);
-            }
-        }
-    }
 
     [Command(requiresAuthority = false)]
     protected void CmdEditInventoryByItemID(int id, int amount)
     {
-        List<int> indexes = GetItemIndexsByItemID(id);
+        List<ItemSlot> slots = GetItemDatasByItemID(id);
+        EditInventoryByItemID(id , amount, slots);
+    }
+    
+    [Server]
+    protected void EditInventoryByItemID(int id, int amount, List<ItemSlot> slots)
+    {
         ItemInfo info = ItemInfoDataBase.FindItemInfo(id);
-        if (indexes.Count == 0)
+        if (slots == null || slots.Count == 0)
         {
             if (amount > 0 && Itemslots.Count < MAX_SLOT)
             {
-                for (int i = amount; i > 0;)
+                int newItemAmount = amount;
+                if (amount > info.maxStack)
                 {
-                    ItemSlot @new = new ItemSlot(info, amount);
-                    Itemslots.Add(@new);
-                    i = i - info.maxStack;
+                    newItemAmount = info.maxStack;
                 }
+                ItemSlot @new = new ItemSlot(info, newItemAmount);
+                Itemslots.Add(@new);
+                amount -= newItemAmount;
+                EditInventoryByItemID(id, amount, null);
             }
         }
         else
         {
-            foreach (var idx in indexes)
+            if (amount < 0) //빼기일때
             {
-                if (amount <= 0) break;
-                else if (!_itemslots[idx].isFull() )
+                ItemSlot currentSlot = slots[0];
+                if (currentSlot.Amount > -amount)
                 {
-                    int availableCount = info.maxStack - _itemslots[idx].Amount;
-                    if (amount > availableCount)
-                    {
-                        amount -= availableCount;
-                        CmdEditInventoryBySlotID(idx, availableCount);
-                    }
-                    else
-                    {
-                        CmdEditInventoryBySlotID(idx, amount);
-                    }
+                    currentSlot.Amount += amount;
+                }
+                else if (currentSlot.Amount == amount)
+                {
+                    _itemslots.Remove(currentSlot);
+                }
+                else
+                {
+                    amount += currentSlot.Amount;
+                    slots.Remove(currentSlot);
+                    _itemslots.Remove(currentSlot);
+                    EditInventoryByItemID(id, amount, slots);
+                }
+            }
+            else if(amount > 0)//더하기일때
+            {
+                ItemSlot currentSlot = slots[0];
+                int availableCount = info.maxStack - currentSlot.Amount;
+                if (amount > availableCount)
+                {
+                    amount -= availableCount;
+                    currentSlot.Amount = info.maxStack;
+                    slots.Remove(currentSlot);
+                    EditInventoryByItemID(id, amount, slots);
+                }
+                else
+                {
+                    currentSlot.Amount += amount;
                 }
             }
         }
     }
 
+    /// <summary>
+    /// 빈자리에 채워넣는 것이 아니라 아이템을 [슬롯 하나]로 추가함
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="amount"></param>
+    /// <returns>공간없으면 -1, 있으면 추가한 인덱스</returns>
+    public int TryAddItemByID(int id, int amount)
+    {
+        if (_itemslots.Count >= MAX_SLOT) 
+            return -1;
+        else
+        {
+            int idx =  _itemslots.Count;
+            CmdAddItemByID(id, amount);
+            return _itemslots.Count;
+        }
+    }
+    
+    [Command(requiresAuthority = false)]
+    protected void CmdAddItemByID(int id, int amount)
+    {
+        _itemslots.Add(new ItemSlot(ItemInfoDataBase.FindItemInfo(id), amount));
+    }
+    
+    
+    /// <summary>
+    /// 해당 슬롯 수량 더하기 빼기.
+    /// </summary>
+    /// <param name="slot"></param>
+    /// <param name="amount"></param>
+    /// <returns></returns>
+    public void TryUpdateItemBySlot(ItemSlot slot, int amount)
+    {
+        CmdEditInventoryBySlotID(_itemslots.IndexOf(slot), amount);
+    }
+    
+    [Command(requiresAuthority = false)]
+    protected void CmdEditInventoryBySlotID(int id, int amount)
+    {
+        ItemSlot slot = _itemslots[id];
+        if (amount < 0) //빼기일때
+        {
+            if (slot.Amount > -amount)
+            {
+                slot.Amount += amount;
+            }
+            else if (slot.Amount <= -amount)
+            {
+                _itemslots.Remove(slot);
+            }
+        }
+        else if(amount > 0)//더하기일때
+        {
+            int availableCount = slot.itemInfo.maxStack - slot.Amount;
+            if (amount > availableCount)
+            {
+                slot.Amount = slot.itemInfo.maxStack;
+            }
+            else
+            {
+                slot.Amount += amount;
+            }
+        }
+    }
+    
+    /// <summary>
+    /// 해당 슬롯을 바꿔쳐버리기
+    /// </summary>
+    /// <param name="slot"></param>
+    /// <param name="newSlot"></param>
+    public void TryChangeItemBySlot(ItemSlot slot, ItemSlot newSlot)
+    {
+        CmdChangeItemBySlotID(_itemslots.IndexOf(slot), newSlot);
+    }
+    
+    [Command(requiresAuthority = false)]
+    protected void CmdChangeItemBySlotID(int id, ItemSlot newSlot)
+    {
+        _itemslots[id] = newSlot;
+    }
     #endregion
 
     public abstract void InvokeSaveInventoryData();

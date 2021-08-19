@@ -6,8 +6,11 @@ using UnityEngine;
 [RequireComponent(typeof(CanvasGroup))]
 public class UIComponent : MonoBehaviour
 {
-    [SerializeField]
-    private CanvasGroup canvasGroup;
+    [SerializeField] protected RectTransform rectTransform;
+    [SerializeField] protected CanvasGroup canvasGroup;
+
+    public bool IsShow { get => canvasGroup.alpha >= 1; }
+    public bool IsActive { get => canvasGroup.alpha >= 1 && canvasGroup.blocksRaycasts && canvasGroup.interactable; }
     public virtual void Init()
     {
 
@@ -27,4 +30,21 @@ public class UIComponent : MonoBehaviour
         }
     }
 
+    public virtual void On()
+    {
+        gameObject.SetActive(true);
+    }
+    
+    public virtual void Off()
+    {
+        gameObject.SetActive(false);
+    }    
+    
+    public virtual void Toggle()
+    {        
+        if (isActiveAndEnabled)
+            gameObject.SetActive(false);
+        else
+            gameObject.SetActive(true);
+    }
 }
