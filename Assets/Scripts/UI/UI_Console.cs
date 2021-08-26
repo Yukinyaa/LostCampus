@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.InputSystem;
+using UnityEngine.EventSystems;
 
 
 
@@ -31,6 +33,7 @@ public class UI_Console : UIComponent
                 SetParent(storage).
                 SetContent(default));
         }
+        inputField.onSubmit.AddListener(delegate { Send(); });
     }
 
     public void MakeLine(MessageManager.MessageData _data)
@@ -71,23 +74,20 @@ public class UI_Console : UIComponent
         }
     }
 
-    public void OnEndEdit()
-    {
-        //if (false == Input.GetKeyDown(KeyCode.Return)) return;
-        if (string.IsNullOrWhiteSpace(inputField.text)) return;
-        Send();
-    }
-
     public void OnClick_Enter()
     {
+        EventSystem.current.SetSelectedGameObject(null);
         Send();
     }
 
     private void Send()
     {
         //CmdSendMessage(inputField.text);
-        MessageManager.Instance.Send(inputField.text);
-        inputField.SetTextWithoutNotify(string.Empty);
+        if (!string.IsNullOrEmpty(inputField.text))
+        {
+            MessageManager.Instance.Send(inputField.text);
+            inputField.SetTextWithoutNotify(string.Empty);
+        }
     }
 
 
