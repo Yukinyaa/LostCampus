@@ -19,6 +19,8 @@ public class PlayerInventory : ItemContainer
     {
         if (isLocalPlayer)
         {
+            InputManager.Instance.ActionMap.FindAction("ToggleInventory").performed +=
+                OnInventoryPressed;
             InventoryUI = UIManager.Instance.GetUI<UI_Inventory>();
         }
     }
@@ -56,9 +58,10 @@ public class PlayerInventory : ItemContainer
     
     
 
-    public void OnToggleInventory(InputValue value)
+    public void OnInventoryPressed(InputAction.CallbackContext context)
     {
-        if(value.isPressed)
+        Debug.Log("ad");
+        if(context.control.IsPressed())
             InventoryUI?.Toggle();
     }
     
