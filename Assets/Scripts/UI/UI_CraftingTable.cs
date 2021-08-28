@@ -133,6 +133,7 @@ public class UI_CraftingTable : UIComponent
         {
             Blueprint blueprint = blueprintData[currentSlot];
             bool canMake = true;
+            int canMakeCount = 999;
             for (int i = 0; i < blueprint.needItems.Length; ++i)
             {
                 break;
@@ -150,7 +151,7 @@ public class UI_CraftingTable : UIComponent
                 {
                     UIManager.Instance.MakePopUp_Counter().
                         SetContent("제작 개수 선택").
-                        SetValue(1, 1, 999).onClick += (current, max) =>
+                        SetValue(1, 1, canMakeCount).onClick += (current, max) =>
                         {
                             UIManager.Instance.MakeNotice($"{itemInfo.Name}x{current} 제작 완료.");
                         };

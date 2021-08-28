@@ -201,7 +201,7 @@ public class Shelter : NetworkBehaviour
                 switch (hit.transform.name)
                 {
                     case "Armory":
-                        UIManager.Instance.GetUI<UI_Armory>().SetActive(true);
+                        //UIManager.Instance.GetUI<UI_Armory>().SetActive(true);
                         break;
                     case "Chest":
                     case "CraftingTable":

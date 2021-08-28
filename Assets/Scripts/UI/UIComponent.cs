@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(CanvasGroup))]
@@ -11,6 +9,7 @@ public class UIComponent : MonoBehaviour
 
     public bool IsShow { get => canvasGroup.alpha >= 1; }
     public bool IsActive { get => canvasGroup.alpha >= 1 && canvasGroup.blocksRaycasts && canvasGroup.interactable; }
+    public RectTransform RectTransform { get => rectTransform; }
     public virtual void Init()
     {
 

@@ -9,6 +9,14 @@ public class UI_TopBar : MonoBehaviour, IBeginDragHandler, IDragHandler
 
     Vector2 plusVector;
 
+    private void Start()
+    {
+        if (target == null)
+        {
+            target = GetComponentInParent<UIComponent>();
+        }
+    }
+
     public void OnBeginDrag(PointerEventData eventData)
     {
         if (target.IsActive)
