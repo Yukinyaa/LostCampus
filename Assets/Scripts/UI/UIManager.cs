@@ -101,7 +101,7 @@ public class UIManager : MonoBehaviour
             MakeNotice($"당신은 {index + 1} 번째 선택지를 골랐습니다.");
             if (index == 0)
             {
-                MakePopUp_Counter().SetContent("골라봐! 범위는 0부터 9999까지!").SetValue(5000, 9999).onClick += (current, max) =>
+                MakePopUp_Counter().SetContent("골라봐! 범위는 0부터 9999까지!").SetValue(0, 5000, 9999).onClick += (current, max) =>
                 {
                     MakeNotice($"당신은 {max}개 중에서 {current} 개를 골랐습니다.");
                 };

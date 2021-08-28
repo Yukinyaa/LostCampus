@@ -41,15 +41,21 @@ public class PopUp_Counter : MonoBehaviour
         return this;
     }
 
+    public PopUp_Counter SetMinValue(int _minValue)
+    {
+        slider.minValue = _minValue;
+        return this;
+    }
+
     public PopUp_Counter SetMaxValue(int _maxValue)
     {
         slider.maxValue = _maxValue;
         return this;
     }
 
-    public PopUp_Counter SetValue(int _currentValue, int _maxValue)
+    public PopUp_Counter SetValue(int _minValue, int _currentValue, int _maxValue)
     {
-        return SetMaxValue(_maxValue).SetCurrentValue(_currentValue);
+        return SetMaxValue(_maxValue).SetMinValue(_minValue).SetCurrentValue(_currentValue);
     }
 
     private PopUp_Counter SetActive(bool _state)

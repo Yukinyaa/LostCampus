@@ -11,7 +11,7 @@ using UnityEngine.InputSystem;
 public class UI_CraftingTable : UIComponent
 {
     private int currentSlot = -1;
-    private ItemCategory currentCategory;
+    private ItemType currentCategory;
 
     private List<Blueprint> blueprintData;
     private List<UI_CraftingTableSlot> blueprintSlot;
@@ -40,6 +40,7 @@ public class UI_CraftingTable : UIComponent
                 if (File.Exists(path))
                 {
                     string json = File.ReadAllText(path);
+                    Debug.Log(json);
                     InitBlueprint(new List<Blueprint>(JsonHelper.FromJson<Blueprint>(json)));
                 }
             }
@@ -62,7 +63,7 @@ public class UI_CraftingTable : UIComponent
         if (_state)
         {
             currentSlot = -1;
-            currentCategory = ItemCategory.None;
+            currentCategory = ItemType.None;
             blueprintInfo.alpha = 0;
             blueprintInfo.interactable = false;
             blueprintInfo.blocksRaycasts = false;
@@ -72,15 +73,15 @@ public class UI_CraftingTable : UIComponent
 
     public void OnClick_Category(int _category)
     {
-        if (Enum.IsDefined(typeof(ItemCategory), _category))
+        if (Enum.IsDefined(typeof(ItemType), _category))
         {
-            currentCategory = (ItemCategory)_category;
+            currentCategory = (ItemType)_category;
             for(int i = 0; i < categoryList.Length; ++i)
             {
                 categoryList[i].interactable = i != _category;
             }
         }
-        else currentCategory = ItemCategory.None;
+        else currentCategory = ItemType.None;
         MakeBlueprintList();
     }
 
@@ -90,17 +91,19 @@ public class UI_CraftingTable : UIComponent
         {
             currentSlot = _slotIndex;
             Blueprint blueprint = blueprintData[currentSlot];
-            MyItemData itemData = MyItemManager.Instance.GetItemData(blueprint.itemID);
-            image_Thumbnail.sprite = MyItemManager.Instance.GetSprite(blueprint.itemID);
+            //MyItemData itemData = MyItemManager.Instance.GetItemData(blueprint.itemID);
+            ItemInfo itemInfo = ItemInfoDataBase.FindItemInfo(blueprint.itemID);
+            //image_Thumbnail.sprite = MyItemManager.Instance.GetSprite(blueprint.itemID);
+            image_Thumbnail.sprite = ItemInfoDataBase.GetSprite(itemInfo.Sprite);
             if(blueprintInfo.alpha <= 0)
             {
                 blueprintInfo.alpha = 1;
                 blueprintInfo.interactable = true;
                 blueprintInfo.blocksRaycasts = true;
             }
-            text_ItemName.SetText(itemData.name);
+            text_ItemName.SetText(itemInfo.Name);
             //text_ItemCount.SetText(아이템개수);
-            text_ItemDescription.SetText(itemData.description);
+            text_ItemDescription.SetText(itemInfo.FlavorText);
             for (int i = 0; i < needItemSlot.Length; ++i)
             {
                 if (i < blueprint.needItems.Length)
@@ -111,10 +114,13 @@ public class UI_CraftingTable : UIComponent
                         SetSprite(MyItemManager.Instance.GetSprite(blueprint.needItems[i].id)).
                         SetCount(Shelter.Instance.Inventory.GetCountByItemID(blueprint.needItems[i].id), blueprint.needItems[i].count);
                     */
+
+                    ItemInfo needItemInfo = ItemInfoDataBase.FindItemInfo(blueprint.needItems[i].id);
                     needItemSlot[i].
                         SetActive(true).
-                        SetName(MyItemManager.Instance.GetItemData(blueprint.needItems[i].id).name).
-                        SetSprite(MyItemManager.Instance.GetSprite(blueprint.needItems[i].id));
+                        SetName(needItemInfo.Name).
+                        SetCount(999, blueprint.needItems[i].count).
+                        SetSprite(ItemInfoDataBase.GetSprite(needItemInfo.Sprite));
                 }
                 else needItemSlot[i].SetActive(false);
             }
@@ -139,24 +145,25 @@ public class UI_CraftingTable : UIComponent
             }
             if (canMake)
             {
+                ItemInfo itemInfo = ItemInfoDataBase.FindItemInfo(blueprint.itemID);
                 if (Keyboard.current[Key.LeftShift].IsPressed())
                 {
                     UIManager.Instance.MakePopUp_Counter().
                         SetContent("제작 개수 선택").
-                        SetValue(0, 999).onClick += (current, max) =>
+                        SetValue(1, 1, 999).onClick += (current, max) =>
                         {
-                            UIManager.Instance.MakeNotice($"{MyItemManager.Instance.GetItemData(blueprint.itemID).name}x{current} 제작 완료.");
+                            UIManager.Instance.MakeNotice($"{itemInfo.Name}x{current} 제작 완료.");
                         };
                 }
                 else
                 {
                     UIManager.Instance.MakePopUp_Selection().
-                        SetContent($"{MyItemManager.Instance.GetItemData(blueprint.itemID).name}x1\n제작하시겠습니까?").
+                        SetContent($"{itemInfo.Name}x1\n제작하시겠습니까?").
                         SetSelection("확인", "취소").onClick += (index) =>
                         {
                             if(index == 0)
                             {
-                                UIManager.Instance.MakeNotice($"{MyItemManager.Instance.GetItemData(blueprint.itemID).name}x1 제작 완료.");
+                                UIManager.Instance.MakeNotice($"{itemInfo.Name}x1 제작 완료.");
                             }
                         };
                 }
@@ -209,7 +216,7 @@ public class UI_CraftingTable : UIComponent
             blueprintSlot.Add(
                 newSlot.
                 SetIndex(blueprintData[i].id).
-                SetIcon(MyItemManager.Instance.GetSprite(blueprintData[i].itemID)));
+                SetIcon(ItemInfoDataBase.GetSprite(ItemInfoDataBase.FindItemInfo(blueprintData[i].itemID).Sprite)));
         }
         MakeBlueprintList();
     }
@@ -220,13 +227,14 @@ public class UI_CraftingTable : UIComponent
         {
             blueprintListContent.GetChild(i).SetParent(blueprintSlotStorage);
         }
+        Debug.Log(currentCategory);
 
         List<Blueprint> currentData;
-        if(currentCategory == ItemCategory.None)
+        if(currentCategory == ItemType.None)
         {
             currentData = blueprintData;   
         }
-        else currentData = blueprintData.FindAll(x => x.category == currentCategory);
+        else currentData = blueprintData.FindAll(x => ItemInfoDataBase.FindItemInfo(x.itemID).Type == currentCategory);
 
         for(int i = 0; i < currentData.Count; ++i)
         {
