@@ -1,66 +1,63 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class Weapon : MonoBehaviour
 {
-    [SerializeField] private Status PlayerStatus;
+    [SerializeField] private Status playerStatus;
     private MeshCollider WeaponCollider;
     private GameObject PlayerGameObject;
-    private List<Status> OtherStatus;
+    private List<Status> otherStatus;
 
     private void Awake()
     {
-        Debug.Assert(PlayerStatus != null);
+        Debug.Assert(playerStatus != null);
 
         this.WeaponCollider = GetComponentInChildren<MeshCollider>();
         this.WeaponCollider.enabled = false;
-        this.PlayerStatus = GetComponentInParent<Status>();
+        this.playerStatus = GetComponentInParent<Status>();
+        this.otherStatus = new List<Status>();
     }
 
     public void Set(bool tmp)
     {
         if (tmp)
         {
+            this.otherStatus.Clear();
             WeaponCollider.enabled = true;
-            OtherStatus = new List<Status>();
         }
-        else{
+        else
+        {
             WeaponCollider.enabled = false;
         }
-        
+
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        try
+        if (other.tag=="Skeleton")
         {
-            if (other.GetComponentInParent<Status>() != PlayerStatus)
+            try
             {
-                Status OtherStatus;
-                try
+                Status otherStatus = other.GetComponentInParent<Status>();
+                if (otherStatus.team != this.playerStatus.team)
                 {
-                    if (!other.gameObject.TryGetComponent<Status>(out OtherStatus))
-                        OtherStatus = other.gameObject.GetComponentInParent<Status>();
-                    if (!this.OtherStatus.Contains(OtherStatus))
+                    if (!this.otherStatus.Contains(otherStatus))
                     {
-                        this.OtherStatus.Add(OtherStatus);
+                        this.otherStatus.Add(otherStatus);
                         //여기서부터 데미지 처리
 
-                        OtherStatus.HP = OtherStatus.HP - this.PlayerStatus.ATK;
+                        otherStatus.HP -= this.playerStatus.ATK;
 
-                        Debug.Log(OtherStatus.HP);
+                        Debug.Log(otherStatus.name + ":" + otherStatus.HP);
                     }
                 }
-                catch (NullReferenceException)
-                {
-                }
+            }
+            catch (NullReferenceException)
+            {
             }
         }
-        catch (NullReferenceException)
-        {
-        }
+        
 
     }
 }
