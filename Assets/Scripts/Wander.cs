@@ -37,15 +37,18 @@ public class Wander : NetworkBehaviour {
         target = FindClosestPlayer();
         distance = Vector3.Distance(target.transform.position, transform.position);
         timer += Time.deltaTime;
-        if (distance < 10)
+        if (distance < 5)
         {
      
+
             anim.SetBool("isWalk", true);
-            agent.SetDestination(target.transform.position);
+            agent.SetDestination(target.transform.position); 
             isChase = true;
 
             if (isAttack)
+            {
                 agent.isStopped = true;
+            }
             else
                 agent.isStopped = false;
 
