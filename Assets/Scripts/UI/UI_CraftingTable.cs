@@ -54,18 +54,18 @@ public class UI_CraftingTable : UIComponent
     {
         if (Keyboard.current[Key.C].wasPressedThisFrame)
         {
-            SetActive(!IsActive);
+            SetState(!IsActive);
         }
     }
 
-    protected override void OnActive()
+    protected override void OnShow()
     {
+        base.OnShow();
         currentSlot = -1;
         currentCategory = ItemType.None;
         blueprintInfo.alpha = 0;
         blueprintInfo.interactable = false;
         blueprintInfo.blocksRaycasts = false;
-        base.OnActive();
     }
 
     public void OnClick_Category(int _category)

@@ -9,11 +9,13 @@ public class UIComponent : MonoBehaviour
     [SerializeField] protected RectTransform rectTransform;
     [SerializeField] protected CanvasGroup canvasGroup;
 
+    public System.Action onShow;
+    public System.Action onHide;
     public System.Action onFocus;
     public System.Action onBlur;
 
     public bool IsShow { get => canvasGroup.alpha >= 1; }
-    public bool IsFocus { get => UIManager.Instance.Current.Equals(this); }
+    public bool IsFocus { get => Equals(UIManager.Instance.Current); }
     public bool IsActive { get => canvasGroup.alpha >= 1 && canvasGroup.blocksRaycasts && canvasGroup.interactable; }
 
     public bool IsTooltip { get; private set; }
@@ -32,20 +34,17 @@ public class UIComponent : MonoBehaviour
         }
         onFocus += OnFocus;
         onBlur += OnBlur;
+        onShow += OnShow;
+        onHide += OnHide;
     }
 
-    public virtual void SetActive(bool _state, bool _callback = true)
+    protected void SetState(bool _state)
     {
         try
         {
             canvasGroup.alpha = _state ? 1 : 0;
             canvasGroup.blocksRaycasts = _state;
             canvasGroup.interactable = _state;
-            if (_callback)
-            {
-                if (_state) OnActive();
-                else OnInactive();
-            }
         }
         catch (NullReferenceException)
         {
@@ -55,18 +54,44 @@ public class UIComponent : MonoBehaviour
 
     public void Focus()
     {
-        UIManager.Instance.Focus(this);
-        onFocus?.Invoke();
+        if (!IsFocus)
+        {
+            onFocus?.Invoke();
+        }
     }
 
-    protected virtual void OnActive()
+    public void Blur()
     {
-
+        if (IsFocus)
+        {
+            onBlur?.Invoke();
+        }
     }
 
-    protected virtual void OnInactive()
+    public void Show()
     {
+        if (!IsShow)
+        {
+            onShow?.Invoke();
+        }
+    }
 
+    public void Hide()
+    {
+        if (IsShow)
+        {
+            onHide?.Invoke();
+        }
+    }
+
+    protected virtual void OnShow()
+    {
+        SetState(true);
+    }
+
+    protected virtual void OnHide()
+    {
+        SetState(false);
     }
 
     protected virtual void OnFocus()

@@ -25,8 +25,20 @@ public class UIManager : MonoBehaviour
         ui = new Dictionary<Type, UIComponent>();
         for (int i = 0; i < components.Length; ++i)
         {
-            components[i].Init();
-            ui.Add(components[i].GetType(), components[i]);
+            UIComponent target = components[i];
+            target.Init();
+            target.onFocus += () =>
+            {
+                target.transform.SetAsLastSibling();
+                if ((object)current != null) current.Blur();
+                current = target;
+            };
+            target.onBlur += () =>
+            {
+                target.transform.SetAsFirstSibling();
+                current = null;
+            };
+            ui.Add(target.GetType(), target);
         }
 
         try
@@ -93,12 +105,33 @@ public class UIManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// UI Component를 보이게 합니다.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public void Show<T>() where T : UIComponent
     {
         try
         {
             UIComponent target = ui[typeof(T)];
-            target.SetActive(true);
+            target.Show();
+        }
+        catch (Exception)
+        {
+
+        }
+    }
+
+    /// <summary>
+    /// UI Component를 보이게 하고, Focus 합니다.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    public void Focus<T>() where T : UIComponent
+    {
+        try
+        {
+            UIComponent target = ui[typeof(T)];
+            target.Show();
             target.Focus();
         }
         catch (Exception)
@@ -107,13 +140,17 @@ public class UIManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// UI Component를 Blur 처리하고, Hide 합니다.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public void Hide<T>() where T : UIComponent
     {
         try
         {
             UIComponent target = ui[typeof(T)];
-            target.SetActive(false);
-            target.transform.SetAsFirstSibling();
+            target.Blur();
+            target.Hide();
         }
         catch (Exception)
         {
@@ -121,11 +158,21 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    public void Focus(UIComponent _target)
+    /// <summary>
+    /// UI Component를 Blur 처리합니다.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    public void Blur<T>() where T : UIComponent
     {
-        _target.transform.SetAsLastSibling();
-        if ((object)current != null) current.onBlur?.Invoke();
-        current = _target;
+        try
+        {
+            UIComponent target = ui[typeof(T)];
+            target.Blur();
+        }
+        catch (Exception)
+        {
+
+        }
     }
 
     public void MakeNotice(string _content)

@@ -206,7 +206,7 @@ public class Shelter : NetworkBehaviour
                     case "Chest":
                     case "CraftingTable":
                         inventory.ActiveContainerUI();
-                        UIManager.Instance.GetUI<UI_CraftingTable>().SetActive(true);
+                        //UIManager.Instance.GetUI<UI_CraftingTable>().SetState(true);
                         break;
                     case "Door":
                         MessageManager.Instance.Send("/moveto Field");

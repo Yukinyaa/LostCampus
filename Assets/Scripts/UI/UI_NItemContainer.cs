@@ -17,9 +17,9 @@ public class UI_NItemContainer : UIComponent
             itemSlot[i].SetIndex(i).SetContainer(this);
         }
     }
-    protected override void OnInactive()
+    protected override void OnHide()
     {
-        base.OnInactive();
+        base.OnHide();
         UI_NItemSlot.StopDrag(this);
     }
 }
