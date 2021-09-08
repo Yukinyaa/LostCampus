@@ -58,17 +58,14 @@ public class UI_CraftingTable : UIComponent
         }
     }
 
-    public override void SetActive(bool _state)
+    protected override void OnActive()
     {
-        if (_state)
-        {
-            currentSlot = -1;
-            currentCategory = ItemType.None;
-            blueprintInfo.alpha = 0;
-            blueprintInfo.interactable = false;
-            blueprintInfo.blocksRaycasts = false;
-        }
-        base.SetActive(_state);
+        currentSlot = -1;
+        currentCategory = ItemType.None;
+        blueprintInfo.alpha = 0;
+        blueprintInfo.interactable = false;
+        blueprintInfo.blocksRaycasts = false;
+        base.OnActive();
     }
 
     public void OnClick_Category(int _category)

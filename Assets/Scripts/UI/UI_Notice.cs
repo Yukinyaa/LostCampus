@@ -21,6 +21,7 @@ public class UI_Notice : UIComponent
 
     public override void Init()
     {
+        base.Init();
         noticeQueue = new Queue<string>();
         storageQueue = new Queue<UI_NoticeLine>(MAX_LINECOUNT);
         sequenceQueue = new Queue<Sequence>(MAX_NOTICECOUNT);

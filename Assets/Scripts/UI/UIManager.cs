@@ -3,16 +3,21 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.EventSystems;
 
 public class UIManager : MonoBehaviour
 {
     public static UIManager Instance { get; private set; } = null;
+    [Header("- Current UI")]
+    [SerializeField] private UIComponent current;
+    [Header("- Default UI")]
+    [SerializeField] private UI_PopUp popUp;
     [SerializeField] private UI_Notice notice;
     [SerializeField] private UI_Effect effect;
-    [SerializeField] private UI_PopUp popUp;
     [Header("- UI Components")]
     [SerializeField] private UIComponent[] components;
     private Dictionary<Type, UIComponent> ui;
+    public UIComponent Current { get => current; }
 
     private void Awake()
     {
@@ -68,6 +73,12 @@ public class UIManager : MonoBehaviour
                 effect.transform.SetAsLastSibling();
             }
         }
+        
+    }
+
+    public void SetUIToTop(Transform _transform)
+    {
+        effect.SetUIToTop(_transform);
     }
 
     public T GetUI<T>() where T : UIComponent
@@ -80,6 +91,41 @@ public class UIManager : MonoBehaviour
         {
             return null;
         }
+    }
+
+    public void Show<T>() where T : UIComponent
+    {
+        try
+        {
+            UIComponent target = ui[typeof(T)];
+            target.SetActive(true);
+            target.Focus();
+        }
+        catch (Exception)
+        {
+
+        }
+    }
+
+    public void Hide<T>() where T : UIComponent
+    {
+        try
+        {
+            UIComponent target = ui[typeof(T)];
+            target.SetActive(false);
+            target.transform.SetAsFirstSibling();
+        }
+        catch (Exception)
+        {
+
+        }
+    }
+
+    public void Focus(UIComponent _target)
+    {
+        _target.transform.SetAsLastSibling();
+        if ((object)current != null) current.onBlur?.Invoke();
+        current = _target;
     }
 
     public void MakeNotice(string _content)
@@ -159,4 +205,45 @@ public class UIManager : MonoBehaviour
         return popUp.MakePopUp_Counter();
     }
 
+    public void ShowItemInfo(ItemSlot _data, Vector3 _pos)
+    {
+        popUp.ShowItemInfo(_data, _pos);
+    }
+
+    public void HideItemInfo()
+    {
+        popUp.HideItemInfo();
+    }
+
+    public PopUp_MiniMenu MakeMiniMenu(UIComponent _root)
+    {
+        return popUp.MakeMiniMenu(_root);
+    }
+
+    private void Update()
+    {
+        if (Mouse.current.leftButton.wasPressedThisFrame || Mouse.current.rightButton.wasPressedThisFrame)
+        {
+            PointerEventData eventData = new PointerEventData(EventSystem.current);
+            eventData.position = Mouse.current.position.ReadValue();
+            List<RaycastResult> results = new List<RaycastResult>();
+            EventSystem.current.RaycastAll(eventData, results);
+            for(int i = 0; i < results.Count; ++i)
+            {
+                if (results[i].gameObject.layer.Equals(LayerMask.NameToLayer("UI")))
+                {
+                    UIComponent target = results[i].gameObject.GetComponentInParent<UIComponent>();
+                    if ((object)target != null 
+                        && !target.Equals(popUp)
+                        && !target.Equals(notice)
+                        && !target.Equals(effect)
+                        && !target.Equals(current))
+                    {
+                        target.Focus();
+                        break;
+                    }
+                }
+            }
+        }
+    }
 }
