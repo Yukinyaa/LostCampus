@@ -51,38 +51,25 @@ public class UIComponent : MonoBehaviour
             Debug.Log("CanvasGroup 컴포넌트를 추가해야 합니다.");
         }
     }
-
-    public void Focus()
-    {
-        if (!IsFocus)
-        {
-            onFocus?.Invoke();
-        }
-    }
-
-    public void Blur()
-    {
-        if (IsFocus)
-        {
-            onBlur?.Invoke();
-        }
-    }
-
     public void Show()
     {
-        if (!IsShow)
-        {
-            onShow?.Invoke();
-        }
+        if (!IsShow) onShow?.Invoke();
     }
-
+    public void Focus()
+    {
+        Show();
+        if (!IsFocus) onFocus?.Invoke();
+    }
+    public void Blur()
+    {
+        if (IsFocus) onBlur?.Invoke();
+    }
     public void Hide()
     {
-        if (IsShow)
-        {
-            onHide?.Invoke();
-        }
+        Blur();
+        if (IsShow) onHide?.Invoke();
     }
+
 
     protected virtual void OnShow()
     {
