@@ -209,19 +209,19 @@ public class ThirdPersonController : NetworkBehaviour
 	{
 		if (_input.sprint)
         {
-			if (this.Status.AP <= 0)
+			if (this.Status.Ap <= 0)
 			{
 				_input.sprint = false;
 			}
-			this.Status.AP -= 1 * Time.deltaTime;
-			if (this.Status.AP <= 0)
-				this.Status.AP = 0;
+			this.Status.Ap -= 1 * Time.deltaTime;
+			if (this.Status.Ap <= 0)
+				this.Status.Ap = 0;
 		}
         else
         {
-			this.Status.AP += 2 * Time.deltaTime;
-			if (this.Status.AP >= this.Status.MaxAP)
-				this.Status.AP = this.Status.MaxAP;
+			this.Status.Ap += 2 * Time.deltaTime;
+			if (this.Status.Ap >= this.Status.MaxAp)
+				this.Status.Ap = this.Status.MaxAp;
 		}
 		// set target speed based on move speed, sprint speed and if sprint is pressed
 		float targetSpeed = _input.sprint ? SprintSpeed : MoveSpeed;

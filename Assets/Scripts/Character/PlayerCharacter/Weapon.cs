@@ -33,23 +33,22 @@ public class Weapon : MonoBehaviour
 
     }
 
-    private void OnTriggerEnter(Collider other)
+    public void OnTriggerEnter(Collider other)
     {
         if (other.tag=="Skeleton")
         {
             try
             {
                 Status otherStatus = other.GetComponentInParent<Status>();
-                if (otherStatus.team != this.playerStatus.team)
+                if (otherStatus.MyFaction != this.playerStatus.MyFaction)
                 {
                     if (!this.otherStatus.Contains(otherStatus))
                     {
                         this.otherStatus.Add(otherStatus);
                         //여기서부터 데미지 처리
+                        otherStatus.GetAttacked(playerStatus.Atk, other.ClosestPointOnBounds(transform.position));
 
-                        otherStatus.HP -= this.playerStatus.ATK;
-
-                        Debug.Log(otherStatus.name + ":" + otherStatus.HP);
+                        Debug.Log(otherStatus.name + ":" + otherStatus.Hp);
                     }
                 }
             }
