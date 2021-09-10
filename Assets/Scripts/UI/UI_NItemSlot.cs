@@ -91,7 +91,7 @@ public class UI_NItemSlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IDro
             isSwap = true;
             currentSlot = this;
             UIManager.Instance.SetUIToTop(item);
-            UIManager.Instance.HideItemInfo();
+            Container.HideTooltip();
         }
     }
 
@@ -157,7 +157,7 @@ public class UI_NItemSlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IDro
         toolTipSequence = DOTween.Sequence();
         toolTipSequence.
             AppendInterval(0.5f).
-            AppendCallback(() => Container.MakeTooltip(this.SlotData, eventData.position)).
+            AppendCallback(() => Container.ShowTooltip(this.SlotData, eventData.position)).
             OnKill(() => toolTipSequence = null);
     }
 
