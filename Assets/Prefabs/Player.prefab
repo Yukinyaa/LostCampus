@@ -251,6 +251,8 @@ MonoBehaviour:
   syncInterval: 0.1
   MoveSpeed: 2
   SprintSpeed: 5.335
+  DodgePower: 0.5
+  DodgeApCost: 1
   RotationSmoothTime: 0.12
   SpeedChangeRate: 10
   Health: 100
@@ -258,6 +260,7 @@ MonoBehaviour:
   Gravity: -15
   JumpTimeout: 0.3
   FallTimeout: 0.15
+  DodgeTimeout: 0.5
   Grounded: 1
   GroundedOffset: -0.14
   GroundedRadius: 0.28
@@ -285,6 +288,7 @@ MonoBehaviour:
   syncInterval: 0.1
   isWeaponFullyUndrawn: 1
   attackCoolDown: 1
+  attackCost: 1
   WeaponDrawn: 0
   autoAttackOnDownEnabled: 1
   weaponAnchor: {fileID: 7857932846791416912}
@@ -329,6 +333,7 @@ MonoBehaviour:
   attack: 0
   drawWeapon: 0
   action: 0
+  dodge: 0
   analogMovement: 0
   cursorLocked: 0
   cursorInputForLook: 1
