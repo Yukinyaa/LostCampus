@@ -20,12 +20,8 @@ public class Status : NetworkBehaviour
 
     #endregion
 
-    public float MaxAP = 1000;
-    public float MaxHP = 100;
-
     private bool isInvincible = false;
     [SerializeField] private ParticleSystem hitParticle;
-    #endregion
 
     public void GetAttacked(float dam, Vector3? colPos = null)
     {

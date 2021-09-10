@@ -1,11 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class UI_NItemContainer : UIComponent
 {
     [Header("UI ItemContainer")]
-    [SerializeField] protected EventHandler eventHandler;
+    [SerializeField] protected UI_EventHandler eventHandler;
     protected List<UI_NItemSlot> itemSlot;
 
     public override void Init()

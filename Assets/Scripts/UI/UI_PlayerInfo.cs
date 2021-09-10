@@ -16,7 +16,7 @@ public class UI_PlayerInfo : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        this.HP.BroadcastMessage("Set", new float[2]{ this.PlayerStatus.HP, this.PlayerStatus.MaxHP });
-        this.AP.BroadcastMessage("Set", new float[2] { this.PlayerStatus.AP, this.PlayerStatus.MaxAP });
+        this.HP.BroadcastMessage("Set", new float[2]{ this.PlayerStatus.Hp, this.PlayerStatus.MaxHp });
+        this.AP.BroadcastMessage("Set", new float[2] { this.PlayerStatus.Ap, this.PlayerStatus.MaxAp });
     }
 }
