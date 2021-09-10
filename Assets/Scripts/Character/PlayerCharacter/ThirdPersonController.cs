@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using Mirror;
 using System;
 using UnityEngine.InputSystem;
@@ -14,6 +14,10 @@ public class ThirdPersonController : NetworkBehaviour
 	public float MoveSpeed = 2.0f;
 	[Tooltip("Sprint speed of the character in m/s")]
 	public float SprintSpeed = 5.335f;
+	[Tooltip("Dodge move power")]
+	public float DodgePower = 0.5f;
+	[Tooltip("Dodge move power")]
+	public float DodgeApCost = 1f;
 	[Tooltip("How fast the character turns to face movement direction")]
 	[Range(0.0f, 0.3f)]
 	public float RotationSmoothTime = 0.12f;
@@ -33,6 +37,8 @@ public class ThirdPersonController : NetworkBehaviour
 	public float JumpTimeout = 0.50f;
 	[Tooltip("Time required to pass before entering the fall state. Useful for walking down stairs")]
 	public float FallTimeout = 0.15f;
+	[Tooltip("Dodge cooldown")]
+	public float DodgeTimeout = 0.50f;
 
 	[Header("Player Grounded")]
 	[Tooltip("If the character is grounded or not. Not part of the CharacterController built in grounded check")]
@@ -77,7 +83,10 @@ public class ThirdPersonController : NetworkBehaviour
 	// timeout deltatime
 	private float _jumpTimeoutDelta;
 	private float _fallTimeoutDelta;
+	private float _dodgeTimeoutDelta;
 
+	private bool _dodgeBtnLastState = false;
+	
 	// animation IDs
 	private int _animIDSpeed;
 	private int _animIDGrounded;
@@ -132,6 +141,7 @@ public class ThirdPersonController : NetworkBehaviour
 		// reset our timeouts on start
 		_jumpTimeoutDelta = JumpTimeout;
 		_fallTimeoutDelta = FallTimeout;
+		_dodgeTimeoutDelta = DodgeTimeout;
 	}
 
 	public override void OnStartClient()
@@ -152,6 +162,7 @@ public class ThirdPersonController : NetworkBehaviour
 		if (!isLocalPlayer) return;
 		JumpAndGravity();
 		GroundedCheck();
+		Dodge();
 		Move();
 	}
 
@@ -209,19 +220,19 @@ public class ThirdPersonController : NetworkBehaviour
 	{
 		if (_input.sprint)
         {
-			if (this.Status.AP <= 0)
+			if (this.Status.Ap <= 0)
 			{
 				_input.sprint = false;
 			}
-			this.Status.AP -= 1 * Time.deltaTime;
-			if (this.Status.AP <= 0)
-				this.Status.AP = 0;
+			this.Status.Ap -= 1 * Time.deltaTime;
+			if (this.Status.Ap <= 0)
+				this.Status.Ap = 0;
 		}
         else
         {
-			this.Status.AP += 2 * Time.deltaTime;
-			if (this.Status.AP >= this.Status.MaxAP)
-				this.Status.AP = this.Status.MaxAP;
+			this.Status.Ap += 2 * Time.deltaTime;
+			if (this.Status.Ap >= this.Status.MaxAp)
+				this.Status.Ap = this.Status.MaxAp;
 		}
 		// set target speed based on move speed, sprint speed and if sprint is pressed
 		float targetSpeed = _input.sprint ? SprintSpeed : MoveSpeed;
@@ -338,6 +349,22 @@ public class ThirdPersonController : NetworkBehaviour
 		{
 			_verticalVelocity += Gravity * Time.deltaTime;
 		}
+	}
+
+	public void Dodge()
+	{
+		_dodgeTimeoutDelta -= Time.deltaTime;
+		if (_dodgeTimeoutDelta <= 0f)
+		{
+			_dodgeTimeoutDelta = 0f;
+			if (Status.Ap > DodgeApCost && _input.dodge && !_dodgeBtnLastState)
+			{
+				Status.Ap -= DodgeApCost;
+				_controller.Move(new Vector3(_input.move.x, 0, _input.move.y)*DodgePower);
+				_dodgeTimeoutDelta = DodgeTimeout;
+			}
+		}
+		_dodgeBtnLastState = _input.dodge;
 	}
 
 	private static float ClampAngle(float lfAngle, float lfMin, float lfMax)

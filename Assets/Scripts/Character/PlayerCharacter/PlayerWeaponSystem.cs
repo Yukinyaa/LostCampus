@@ -26,6 +26,8 @@ public class PlayerWeaponSystem : NetworkBehaviour
 	float attackCoolDown = 0;
 	float timeSinceLastAttack = 0;
 	[SerializeField]
+	float attackCost = 1f;
+	[SerializeField]
 	bool WeaponDrawn = false;
 	[SerializeField]
 	bool autoAttackOnDownEnabled = true; // 마우스 다운시 연속공격
@@ -131,15 +133,16 @@ public class PlayerWeaponSystem : NetworkBehaviour
 				WeaponDrawn = true;
 				_animator.SetBool(_animIDWeaponDrawn, true);
 			}
-			if (attackCoolDown < 0)
+			if (Status.Ap > attackCost && attackCoolDown < 0)
 			{
 				attackCoolDown = 1f;
 				timeSinceLastAttack = 0f;
-
+				
+				Status.Ap -= attackCost;
 				_animator.SetTrigger(_animIDAttack1);
 				_nAnimator.SetTrigger(_animIDAttack1);
 				StartCoroutine(AttackCollider());
-
+				
 			}
 		}
 		else if (attackCoolDown < 0.5f)
