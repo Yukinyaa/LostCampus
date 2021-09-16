@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Mirror;
+using TMPro;
 using UnityEngine;
 
 public class Status : NetworkBehaviour
@@ -22,9 +23,17 @@ public class Status : NetworkBehaviour
 
     private bool isInvincible = false;
     [SerializeField] private ParticleSystem hitParticle;
+    [SerializeField] private GameObject DamageIndicator;
+    private TextMeshPro damageIndicatorText;
+    private void Awake()
+    {
+        this.damageIndicatorText=DamageIndicator.GetComponent<TextMeshPro>();
+    }
 
     public void GetAttacked(float dam, Vector3? colPos = null)
     {
+        
+        this.PlayDamageIndicator(dam);
         PlayHitParticle(colPos);
         if (isInvincible) return;
         CmdGetDamaged(dam);
@@ -39,7 +48,18 @@ public class Status : NetworkBehaviour
             GetEliminated();
         }
     }
-
+    private void PlayDamageIndicator(float dmg)
+    {
+        this.damageIndicatorText.text = dmg.ToString();
+        this.DamageIndicator.transform.position = gameObject.transform.position;
+        Instantiate(this.DamageIndicator);
+    }
+    private void PlayDamageIndicator(string dmg)
+    {
+        this.damageIndicatorText.text = dmg;
+        this.DamageIndicator.transform.position = gameObject.transform.position;
+        Instantiate(this.DamageIndicator);
+    }
     public void PlayHitParticle(Vector3? pos = null)
     {
         if (hitParticle == null) return;
@@ -47,7 +67,7 @@ public class Status : NetworkBehaviour
             hitParticle.transform.position = (Vector3) pos;
         hitParticle.Play();
     }
-    
+
     public void GetEliminated()
     {
         NetworkServer.Destroy(gameObject);

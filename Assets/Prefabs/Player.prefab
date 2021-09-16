@@ -315,6 +315,7 @@ MonoBehaviour:
   MaxAp: 5
   MyFaction: 0
   hitParticle: {fileID: 663889129897616865}
+  damageIndicator: {fileID: 8017695008282437103, guid: 4683936f117dcf04eaef18b047a15051, type: 3}
 --- !u!114 &345209283141304070
 MonoBehaviour:
   m_ObjectHideFlags: 0
