@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
 
+[RequireComponent(typeof(Rigidbody))]
 public class Weapon : MonoBehaviour
 {
     [FormerlySerializedAs("playerStatus")] 
@@ -56,7 +57,6 @@ public class Weapon : MonoBehaviour
             }
             catch (NullReferenceException)
             {
-                Debug.Log("as");
             }
         }
         
