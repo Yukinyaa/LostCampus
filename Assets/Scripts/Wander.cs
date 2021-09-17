@@ -2,23 +2,23 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using Mirror;
 
-public class Wander : MonoBehaviour
-{
+public class Wander : NetworkBehaviour { 
 
     public float wanderRadius;
     public float wanderTimer;
     public bool isChase;
     public bool isAttack;
+    public GameObject target;
 
     private NavMeshAgent agent;
     private float timer;
     private float distance;
-    private Transform target;
     private Animator anim;
     private Rigidbody rigid;
     private Weapon weapon;
-
+    
 
     // Use this for initialization
     void OnEnable()
@@ -34,18 +34,21 @@ public class Wander : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        target = GameObject.FindWithTag("Player").transform;
-        distance = Vector3.Distance(target.position, transform.position);
+        target = FindClosestPlayer();
+        distance = Vector3.Distance(target.transform.position, transform.position);
         timer += Time.deltaTime;
-        if (distance < 10)
+        if (distance < 5)
         {
      
+
             anim.SetBool("isWalk", true);
-            agent.SetDestination(target.position);
+            agent.SetDestination(target.transform.position); 
             isChase = true;
 
             if (isAttack)
+            {
                 agent.isStopped = true;
+            }
             else
                 agent.isStopped = false;
 
@@ -63,6 +66,26 @@ public class Wander : MonoBehaviour
                 timer = 0;
             }
         }
+    }
+
+    GameObject FindClosestPlayer()
+    {
+        GameObject[] gos;
+        gos = GameObject.FindGameObjectsWithTag("Player");
+        GameObject closest = null;
+        float distance = Mathf.Infinity;
+        Vector3 position = transform.position;
+        foreach (GameObject go in gos)
+        {
+            Vector3 diff = go.transform.position - position;
+            float curDistance = diff.sqrMagnitude;
+            if (curDistance < distance)
+            {
+                closest = go;
+                distance = curDistance;
+            }
+        }
+        return closest;
     }
     
     void FreezeVelocity()
