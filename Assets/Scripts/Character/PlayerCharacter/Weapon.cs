@@ -1,21 +1,23 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class Weapon : MonoBehaviour
 {
-    [SerializeField] private Status playerStatus;
+    [FormerlySerializedAs("playerStatus")] 
+    [SerializeField] private Status myStatus;
     private MeshCollider WeaponCollider;
-    private GameObject PlayerGameObject;
+    private GameObject myGameObject;
     private List<Status> otherStatus;
 
     private void Awake()
     {
-        Debug.Assert(playerStatus != null);
+        Debug.Assert(myStatus != null);
 
         this.WeaponCollider = GetComponentInChildren<MeshCollider>();
         this.WeaponCollider.enabled = false;
-        this.playerStatus = GetComponentInParent<Status>();
+        this.myStatus = GetComponentInParent<Status>();
         this.otherStatus = new List<Status>();
     }
 
@@ -40,13 +42,13 @@ public class Weapon : MonoBehaviour
             try
             {
                 Status otherStatus = other.GetComponentInParent<Status>();
-                if (otherStatus.MyFaction != this.playerStatus.MyFaction)
+                if (otherStatus.MyFaction != this.myStatus.MyFaction)
                 {
                     if (!this.otherStatus.Contains(otherStatus))
                     {
                         this.otherStatus.Add(otherStatus);
                         //여기서부터 데미지 처리
-                        otherStatus.GetAttacked(playerStatus.Atk, other.ClosestPointOnBounds(transform.position));
+                        otherStatus.GetAttacked(myStatus.Atk, other.ClosestPointOnBounds(transform.position));
 
                         Debug.Log(otherStatus.name + ":" + otherStatus.Hp);
                     }
@@ -54,6 +56,7 @@ public class Weapon : MonoBehaviour
             }
             catch (NullReferenceException)
             {
+                Debug.Log("as");
             }
         }
         

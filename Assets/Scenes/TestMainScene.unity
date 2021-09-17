@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 8900000, guid: 619e305f5165a9946b7f72464e44ca4a, type: 3}
   m_Sun: {fileID: 2114283754330233425}
-  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
+  m_IndirectSpecularColor: {r: 0.017820667, g: 0.017346054, b: 0.024196237, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -3079,7 +3079,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 12
+  m_RootOrder: 13
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1221041499
 PrefabInstance:
@@ -3493,9 +3493,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5dad363078df4e74d873a5691708b403, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  current: {fileID: 0}
+  popUp: {fileID: 0}
   notice: {fileID: 0}
   effect: {fileID: 0}
-  popUp: {fileID: 0}
   components:
   - {fileID: 863501187}
   - {fileID: 1422167122}
@@ -4918,9 +4919,17 @@ PrefabInstance:
       propertyPath: m_AssetId
       value: be8bf506a5d35924691a2c4abf63abd5
       objectReference: {fileID: 0}
+    - target: {fileID: 7355031039198739997, guid: be8bf506a5d35924691a2c4abf63abd5, type: 3}
+      propertyPath: chaseRadius
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 7355031039198740002, guid: be8bf506a5d35924691a2c4abf63abd5, type: 3}
       propertyPath: m_Name
       value: ant_move_fix
+      objectReference: {fileID: 0}
+    - target: {fileID: 7355031039198740002, guid: be8bf506a5d35924691a2c4abf63abd5, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7879471334283666584, guid: be8bf506a5d35924691a2c4abf63abd5, type: 3}
       propertyPath: m_RootOrder

@@ -23,8 +23,6 @@ public class ThirdPersonController : NetworkBehaviour
 	public float RotationSmoothTime = 0.12f;
 	[Tooltip("Acceleration and deceleration")]
 	public float SpeedChangeRate = 10.0f;
-	[Tooltip("Health")]
-	public float Health = 100;
 
 	[Space(10)]
 	[Tooltip("The height the player can jump")]

@@ -364,13 +364,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2688203311151542022}
-  m_LocalRotation: {x: 0.00000013567991, y: 0.000000067106804, z: 0.86288375, w: 0.5054025}
-  m_LocalPosition: {x: -0.00299, y: -0.00028, z: -0.00029}
-  m_LocalScale: {x: 0.00021428576, y: 0.00067535747, z: 0.0011765718}
+  m_LocalRotation: {x: 0.002972559, y: 0.037162192, z: 0.79759896, w: 0.602035}
+  m_LocalPosition: {x: -0.00748, y: -0.00058, z: -0.00019}
+  m_LocalScale: {x: 0.004654084, y: 0.0028768557, z: 0.0038160528}
   m_Children: []
   m_Father: {fileID: 1487733577526013416}
   m_RootOrder: 4
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 108.913}
+  m_LocalEulerAnglesHint: {x: -3.193, y: 2.841, z: 105.829}
 --- !u!64 &4822262425072768548
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -1570,7 +1570,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 01c136764d92f3940969d5ea6543796c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerStatus: {fileID: 0}
+  myStatus: {fileID: -8349866128484112720}
 --- !u!1 &8512106913895753307
 GameObject:
   m_ObjectHideFlags: 0
@@ -1854,11 +1854,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
-  wanderRadius: 3
-  wanderTimer: 1
-  isChase: 0
-  isAttack: 0
-  target: {fileID: 0}
+  attackRadius: 0.7
+  attackRange: 1
+  attackPreDelay: 1.2
+  moveRadius: 3
+  moveTimer: 0.1
+  chaseRadius: 5
 --- !u!114 &-8349866128484112720
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1871,11 +1872,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dfbb1c6d52a0f584d84c628ef98b8065, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HP: 100
-  ATK: 1
-  AP: 100
-  MaxAP: 100
-  team: 1
+  syncMode: 0
+  syncInterval: 0.1
+  Hp: 100
+  MaxHp: 100
+  Atk: 1
+  Ap: 5
+  MaxAp: 5
+  MyFaction: 1
+  hitParticle: {fileID: 0}
 --- !u!114 &-255925296230643981
 MonoBehaviour:
   m_ObjectHideFlags: 0
