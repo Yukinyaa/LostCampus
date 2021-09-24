@@ -5,6 +5,7 @@ using DG.Tweening;
 
 public class UI_Effect : UIComponent
 {
+    [SerializeField] private Transform topObject;
     [SerializeField] private CanvasGroup fadeObject;
     private Sequence fadeSequence;
 
@@ -56,6 +57,11 @@ public class UI_Effect : UIComponent
             fadeObject.interactable = _state;
             fadeObject.blocksRaycasts = _state;
         }
+    }
+
+    public void SetUIToTop(Transform _transform)
+    {
+        _transform.SetParent(topObject);
     }
 
 }

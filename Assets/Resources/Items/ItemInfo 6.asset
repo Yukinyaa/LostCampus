@@ -15,7 +15,7 @@ MonoBehaviour:
   id: 6
   name: "\uAC15\uCCA0"
   rarity: 1
-  type: 2
+  type: 65536
   flavorText: "\uCCA0\uC744 \uC81C\uB828\uD574 \uB9CC\uB4E0 \uAC15\uCCA0. \uC81C\uC870\uBC95\uC740
     \uC544\uBB34\uB3C4 \uBAA8\uB978\uB2E4."
   maxStack: 999

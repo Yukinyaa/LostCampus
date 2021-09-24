@@ -2,103 +2,42 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.EventSystems;
 
-public class EventHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, IDropHandler
-    , IEndDragHandler, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
+public class EventHandler : MonoBehaviour
 {
-    private UnityEvent<EventHandler, PointerEventData> onBeginDragEvent = new UnityEvent<EventHandler, PointerEventData>();
-    private UnityEvent<EventHandler, PointerEventData> onDragEvent = new UnityEvent<EventHandler, PointerEventData>();
-    private UnityEvent<EventHandler, PointerEventData> onDropEvent = new UnityEvent<EventHandler, PointerEventData>();
-    private UnityEvent<EventHandler, PointerEventData> onEndDragEvent = new UnityEvent<EventHandler, PointerEventData>();
-    private UnityEvent<EventHandler, PointerEventData> onPointerEnterEvent = new UnityEvent<EventHandler, PointerEventData>();
-    private UnityEvent<EventHandler, PointerEventData> onPointerExitEvent = new UnityEvent<EventHandler, PointerEventData>();
-    private UnityEvent<EventHandler, PointerEventData> onPointerClickEvent = new UnityEvent<EventHandler, PointerEventData>();
-
-    public UnityEvent<EventHandler, PointerEventData> OnBeginDragEvent
+    public UnityEvent<EventHandler, Collider> OnTriggerEnterEvent = new UnityEvent<EventHandler, Collider>();
+    public UnityEvent<EventHandler, Collider> OnTriggerEvent = new UnityEvent<EventHandler, Collider>();
+    public UnityEvent<EventHandler, Collider> OnTriggerExitEvent = new UnityEvent<EventHandler, Collider>();
+    public UnityEvent<EventHandler, Collision> OnCollisionEnterEvent = new UnityEvent<EventHandler, Collision>();
+    public UnityEvent<EventHandler, Collision> OnCollisionEvent = new UnityEvent<EventHandler, Collision>();
+    public UnityEvent<EventHandler, Collision> OnCollisionExitEvent = new UnityEvent<EventHandler, Collision>();
+    private void OnTriggerEnter(Collider other)
     {
-        get => onBeginDragEvent;
-        set => onBeginDragEvent = value;
+        OnTriggerEnterEvent.Invoke(this, other);
     }
 
-    public UnityEvent<EventHandler, PointerEventData> OnDragEvent
+    private void OnTriggerStay(Collider other)
     {
-        get => onDragEvent;
-        set => onDragEvent = value;
+        OnTriggerEvent.Invoke(this, other);
     }
 
-    public UnityEvent<EventHandler, PointerEventData> OnDropEvent
+    private void OnTriggerExit(Collider other)
     {
-        get => onDropEvent;
-        set => onDropEvent = value;
+        OnTriggerExitEvent.Invoke(this, other);
     }
 
-    public UnityEvent<EventHandler, PointerEventData> OnEndDragEvent
+    private void OnCollisionEnter(Collision other)
     {
-        get => onEndDragEvent;
-        set => onEndDragEvent = value;
+        OnCollisionEnterEvent.Invoke(this, other);
+    }
+    
+    private void OnCollisionStay(Collision other)
+    {
+        OnCollisionEvent.Invoke(this, other);
     }
 
-    public UnityEvent<EventHandler, PointerEventData> OnPointerEnterEvent
+    private void OnCollisionExit(Collision other)
     {
-        get => onPointerEnterEvent;
-        set => onPointerEnterEvent = value;
-    }
-
-    public UnityEvent<EventHandler, PointerEventData> OnPointerExitEvent
-    {
-        get => onPointerExitEvent;
-        set => onPointerExitEvent = value;
-    }
-
-    public UnityEvent<EventHandler, PointerEventData> OnPointerClickEvent
-    {
-        get => onPointerClickEvent;
-        set => onPointerClickEvent = value;
-    }
-
-
-    private bool isDragging = false;
-    private bool isPointerFloating = false;
-    public bool IsDragging => isDragging;
-    public bool IsPointerFloating => isPointerFloating;
-
-    public void OnBeginDrag(PointerEventData eventData)
-    {
-        isDragging = true;
-        onBeginDragEvent.Invoke(this, eventData);
-    }
-
-    public void OnDrag(PointerEventData eventData)
-    {
-        onDragEvent.Invoke(this, eventData);
-    }
-
-    public void OnDrop(PointerEventData eventData)
-    {
-        onDropEvent.Invoke(this, eventData);
-    }
-
-    public void OnEndDrag(PointerEventData eventData)
-    {
-        isDragging = false;
-        onEndDragEvent.Invoke(this, eventData);
-    }
-
-    public void OnPointerEnter(PointerEventData eventData)
-    {
-        isPointerFloating = true;
-        onPointerEnterEvent.Invoke(this, eventData);
-    }
-
-    public void OnPointerExit(PointerEventData eventData)
-    {
-        isPointerFloating = false;
-        onPointerExitEvent.Invoke(this, eventData);
-    }
-
-    public void OnPointerClick(PointerEventData eventData)
-    {
-        onPointerClickEvent.Invoke(this, eventData);
+        OnCollisionExitEvent.Invoke(this, other);
     }
 }

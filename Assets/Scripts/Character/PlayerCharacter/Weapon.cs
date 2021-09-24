@@ -1,21 +1,24 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
+[RequireComponent(typeof(Rigidbody))]
 public class Weapon : MonoBehaviour
 {
-    [SerializeField] private Status playerStatus;
+    [FormerlySerializedAs("playerStatus")] 
+    [SerializeField] private Status myStatus;
     private MeshCollider WeaponCollider;
-    private GameObject PlayerGameObject;
+    private GameObject myGameObject;
     private List<Status> otherStatus;
 
     private void Awake()
     {
-        Debug.Assert(playerStatus != null);
+        //Debug.Assert(myStatus != null);
 
         this.WeaponCollider = GetComponentInChildren<MeshCollider>();
         this.WeaponCollider.enabled = false;
-        this.playerStatus = GetComponentInParent<Status>();
+        this.myStatus = GetComponentInParent<Status>();
         this.otherStatus = new List<Status>();
     }
 
@@ -33,23 +36,23 @@ public class Weapon : MonoBehaviour
 
     }
 
-    private void OnTriggerEnter(Collider other)
+    public void OnTriggerEnter(Collider other)
     {
         if (other.tag=="Skeleton")
         {
             try
             {
                 Status otherStatus = other.GetComponentInParent<Status>();
-                if (otherStatus.team != this.playerStatus.team)
+                if (otherStatus.MyFaction != this.myStatus.MyFaction)
                 {
                     if (!this.otherStatus.Contains(otherStatus))
                     {
                         this.otherStatus.Add(otherStatus);
                         //여기서부터 데미지 처리
+                        myStatus.PlayHitParticle(transform.position);
+                        otherStatus.GetAttacked(myStatus.Atk, other.ClosestPointOnBounds(transform.position));
 
-                        otherStatus.HP -= this.playerStatus.ATK;
-
-                        Debug.Log(otherStatus.name + ":" + otherStatus.HP);
+                        Debug.Log(otherStatus.name + ":" + otherStatus.Hp);
                     }
                 }
             }

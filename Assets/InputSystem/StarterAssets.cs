@@ -97,6 +97,14 @@ public class @StarterInputAssets : IInputActionCollection, IDisposable
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""Dodge"",
+                    ""type"": ""PassThrough"",
+                    ""id"": ""f448c15a-7589-4703-9b4b-16b045b62e5e"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -330,6 +338,17 @@ public class @StarterInputAssets : IInputActionCollection, IDisposable
                     ""action"": ""Alternate"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""73b173db-93b8-4952-8f20-bb30f57ce666"",
+                    ""path"": ""<Keyboard>/ctrl"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""KeyboardMouse"",
+                    ""action"": ""Dodge"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -396,6 +415,7 @@ public class @StarterInputAssets : IInputActionCollection, IDisposable
         m_Player_Exit = m_Player.FindAction("Exit", throwIfNotFound: true);
         m_Player_Action = m_Player.FindAction("Action", throwIfNotFound: true);
         m_Player_Alternate = m_Player.FindAction("Alternate", throwIfNotFound: true);
+        m_Player_Dodge = m_Player.FindAction("Dodge", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -455,6 +475,7 @@ public class @StarterInputAssets : IInputActionCollection, IDisposable
     private readonly InputAction m_Player_Exit;
     private readonly InputAction m_Player_Action;
     private readonly InputAction m_Player_Alternate;
+    private readonly InputAction m_Player_Dodge;
     public struct PlayerActions
     {
         private @StarterInputAssets m_Wrapper;
@@ -469,6 +490,7 @@ public class @StarterInputAssets : IInputActionCollection, IDisposable
         public InputAction @Exit => m_Wrapper.m_Player_Exit;
         public InputAction @Action => m_Wrapper.m_Player_Action;
         public InputAction @Alternate => m_Wrapper.m_Player_Alternate;
+        public InputAction @Dodge => m_Wrapper.m_Player_Dodge;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -508,6 +530,9 @@ public class @StarterInputAssets : IInputActionCollection, IDisposable
                 @Alternate.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnAlternate;
                 @Alternate.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnAlternate;
                 @Alternate.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnAlternate;
+                @Dodge.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnDodge;
+                @Dodge.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnDodge;
+                @Dodge.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnDodge;
             }
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
@@ -542,6 +567,9 @@ public class @StarterInputAssets : IInputActionCollection, IDisposable
                 @Alternate.started += instance.OnAlternate;
                 @Alternate.performed += instance.OnAlternate;
                 @Alternate.canceled += instance.OnAlternate;
+                @Dodge.started += instance.OnDodge;
+                @Dodge.performed += instance.OnDodge;
+                @Dodge.canceled += instance.OnDodge;
             }
         }
     }
@@ -594,5 +622,6 @@ public class @StarterInputAssets : IInputActionCollection, IDisposable
         void OnExit(InputAction.CallbackContext context);
         void OnAction(InputAction.CallbackContext context);
         void OnAlternate(InputAction.CallbackContext context);
+        void OnDodge(InputAction.CallbackContext context);
     }
 }
