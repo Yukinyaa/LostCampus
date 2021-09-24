@@ -542,19 +542,7 @@ MonoBehaviour:
   m_CharacterLimit: 0
   m_OnEndEdit:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 5839276649870769499}
-        m_TargetAssemblyTypeName: UI_Console, Assembly-CSharp
-        m_MethodName: OnEndEdit
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
   m_OnSubmit:
     m_PersistentCalls:
       m_Calls: []
@@ -709,10 +697,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Enter text...
+  m_text: "\uBC14\uB978 \uB9D0 \uACE0\uC6B4 \uB9D0"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 285713f24ab7b3f49a56b0e9f450b3ba, type: 2}
+  m_sharedMaterial: {fileID: -954126183041914366, guid: 285713f24ab7b3f49a56b0e9f450b3ba, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -1040,8 +1028,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "\u200B"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 285713f24ab7b3f49a56b0e9f450b3ba, type: 2}
+  m_sharedMaterial: {fileID: -954126183041914366, guid: 285713f24ab7b3f49a56b0e9f450b3ba, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -1171,6 +1159,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b755282545761164ab5f0a2dbae7b583, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  rectTransform: {fileID: 7330629643793477919}
   canvasGroup: {fileID: 5566851329562316023}
   inputField: {fileID: 9134815751438795766}
   storage: {fileID: 5178344531534511153}
@@ -1189,6 +1178,7 @@ GameObject:
   - component: {fileID: 5556497181865405077}
   - component: {fileID: 4140501672619261738}
   - component: {fileID: 958336705132320946}
+  - component: {fileID: 1705280231351763813}
   m_Layer: 5
   m_Name: Viewport
   m_TagString: Untagged
@@ -1267,3 +1257,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_ShowMaskGraphic: 0
+--- !u!225 &1705280231351763813
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9217627438384771074}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 0
+  m_IgnoreParentGroups: 0
