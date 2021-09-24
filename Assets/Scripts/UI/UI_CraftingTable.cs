@@ -54,21 +54,18 @@ public class UI_CraftingTable : UIComponent
     {
         if (Keyboard.current[Key.C].wasPressedThisFrame)
         {
-            SetActive(!IsActive);
+            SetState(!IsActive);
         }
     }
 
-    public override void SetActive(bool _state)
+    protected override void OnShow()
     {
-        if (_state)
-        {
-            currentSlot = -1;
-            currentCategory = ItemType.None;
-            blueprintInfo.alpha = 0;
-            blueprintInfo.interactable = false;
-            blueprintInfo.blocksRaycasts = false;
-        }
-        base.SetActive(_state);
+        base.OnShow();
+        currentSlot = -1;
+        currentCategory = ItemType.None;
+        blueprintInfo.alpha = 0;
+        blueprintInfo.interactable = false;
+        blueprintInfo.blocksRaycasts = false;
     }
 
     public void OnClick_Category(int _category)
@@ -133,6 +130,7 @@ public class UI_CraftingTable : UIComponent
         {
             Blueprint blueprint = blueprintData[currentSlot];
             bool canMake = true;
+            int canMakeCount = 999;
             for (int i = 0; i < blueprint.needItems.Length; ++i)
             {
                 break;
@@ -148,16 +146,16 @@ public class UI_CraftingTable : UIComponent
                 ItemInfo itemInfo = ItemInfoDataBase.FindItemInfo(blueprint.itemID);
                 if (Keyboard.current[Key.LeftShift].IsPressed())
                 {
-                    UIManager.Instance.MakePopUp_Counter().
+                    UIManager.Instance.MakeCounter().
                         SetContent("제작 개수 선택").
-                        SetValue(1, 1, 999).onClick += (current, max) =>
+                        SetValue(1, 1, canMakeCount).onClick += (current, max) =>
                         {
                             UIManager.Instance.MakeNotice($"{itemInfo.Name}x{current} 제작 완료.");
                         };
                 }
                 else
                 {
-                    UIManager.Instance.MakePopUp_Selection().
+                    UIManager.Instance.MakeSelection().
                         SetContent($"{itemInfo.Name}x1\n제작하시겠습니까?").
                         SetSelection("확인", "취소").onClick += (index) =>
                         {

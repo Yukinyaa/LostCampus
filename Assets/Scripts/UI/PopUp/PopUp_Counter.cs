@@ -17,7 +17,7 @@ public class PopUp_Counter : MonoBehaviour
     // 현재 값과 최대 값을 반환, Accept를 눌렀을 때만 발동
     public System.Action<int, int> onClick;
 
-    public void Init()
+    private void Awake()
     {
         popUp.sizeDelta = DEFAULT_SIZE;
         slider.onValueChanged.AddListener(delegate { SetCounter((int)slider.value); });
@@ -66,7 +66,7 @@ public class PopUp_Counter : MonoBehaviour
         return this;
     }
 
-    public PopUp_Counter Clear()
+    public PopUp_Counter Init()
     {
         onClick = null;
         return SetContent(string.Empty).SetCounter(0).SetActive(true);

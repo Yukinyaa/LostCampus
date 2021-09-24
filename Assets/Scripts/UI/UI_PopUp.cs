@@ -2,26 +2,47 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class UI_PopUp : UIComponent
+public class UI_PopUp : MonoBehaviour
 {
     [Header("- PopUp")]
+    [SerializeField] PopUp_ItemInfo popUp_ItemInfo;
+    [SerializeField] PopUp_MiniMenu popUp_MiniMenu;
     [SerializeField] PopUp_Counter popUp_Counter;
     [SerializeField] PopUp_Selection popUp_Selection;
 
-    public override void Init()
+    public void ShowTooltip(ItemSlot _data, Vector3 _pos)
     {
-        popUp_Counter.Init();
-        popUp_Selection.Init();
+        popUp_ItemInfo.
+            SetName(_data.Name + (_data.Amount > 1 ? $"x{_data.Amount}" : string.Empty)).
+            SetContent(_data.FlavorText).
+            SetIcon(ItemInfoDataBase.GetSprite(_data.Sprite)).
+            SetPosition(_pos).
+            SetActive(true);
     }
 
-    public PopUp_Counter MakePopUp_Counter()
+    public void HideTooltip()
     {
-        return popUp_Counter.Clear();
+        popUp_ItemInfo.SetActive(false);
     }
 
-    public PopUp_Selection MakePopUp_Selection()
+    public PopUp_Counter MakeCounter()
     {
-        return popUp_Selection.Clear();
+        return popUp_Counter.Init();
+    }
+
+    public PopUp_Selection MakeSelection()
+    {
+        return popUp_Selection.Init();
+    }
+
+    public PopUp_MiniMenu MakeMiniMenu(UIComponent _root)
+    {
+        return popUp_MiniMenu.Init(_root);
+    }
+
+    public void HideMiniMenu()
+    {
+        popUp_MiniMenu.Kill();
     }
 
 }

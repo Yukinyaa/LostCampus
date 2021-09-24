@@ -41,8 +41,7 @@ public class Shelter : NetworkBehaviour
 {
     public static Shelter Instance { get; private set; } = null;
 
-    [SerializeField] private Transform shelterCameraAnchor;
-    [SerializeField] private Transform[] restPoint;
+    [SerializeField] private Transform joinPoint;
     [SerializeField] private Transform exitPoint;
     [SerializeField] private bool isShelter = false;
 
@@ -140,8 +139,7 @@ public class Shelter : NetworkBehaviour
     public void JoinToShelter(MyPlayer _player)
     {
         isShelter = true;
-        _player.LockCamera(shelterCameraAnchor);
-        _player.transform.position = restPoint[playerCount % restPoint.Length].position;
+        _player.transform.position = joinPoint.position;
         Physics.SyncTransforms();
         CmdJoinToShelter();
     }
@@ -151,7 +149,6 @@ public class Shelter : NetworkBehaviour
     {
         isShelter = false;
         _player.transform.position = exitPoint.position;
-        _player.UnlockCameraPos();
         Physics.SyncTransforms();
         CmdExitFromShelter();
     }
@@ -201,12 +198,12 @@ public class Shelter : NetworkBehaviour
                 switch (hit.transform.name)
                 {
                     case "Armory":
-                        UIManager.Instance.GetUI<UI_Armory>().SetActive(true);
+                        //UIManager.Instance.GetUI<UI_Armory>().SetActive(true);
                         break;
                     case "Chest":
                     case "CraftingTable":
                         inventory.ActiveContainerUI();
-                        UIManager.Instance.GetUI<UI_CraftingTable>().SetActive(true);
+                        //UIManager.Instance.GetUI<UI_CraftingTable>().SetState(true);
                         break;
                     case "Door":
                         MessageManager.Instance.Send("/moveto Field");

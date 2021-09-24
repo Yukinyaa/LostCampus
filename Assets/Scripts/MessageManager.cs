@@ -134,6 +134,7 @@ public class MessageManager : NetworkBehaviour
             players.Add(_newPlayer);
             SetUserName(_newPlayer, _newPlayer.username);
             RpcSendAll(MessageType.Notice, $"{_newPlayer.username} Joined The Server");
+            Shelter.Instance.RpcJoinPlayerToShelter(_newPlayer.netIdentity.connectionToClient, _newPlayer);
             print($"{_newPlayer.username} 이 서버에 입장.");
         }
         catch (Exception)
