@@ -3,22 +3,20 @@ using System.Collections.Generic;
 using Mirror;
 using TMPro;
 using UnityEngine;
-
-public class Status : NetworkBehaviour
+/*
+public class Status : MonoBehaviour
 {
-    public enum Faction
-    { 
-        Friendly, Enemy, Neutral
-    }
-    #region Stat
-    [SyncVar]
-    public float Hp = 100;
-    public float MaxHp = 100;
-    public float Atk = 1;
-    public float Ap = 5;
-    public float MaxAp = 5;
-    public Faction MyFaction;
+    #region SerializedFields
+    [Tooltip("Health")]
+    public float HP;
+    [Tooltip("Attack power")]
+    public float ATK;
+    #endregion
 
+    #region localValues
+    private float ATKDelaySecond = 1f;
+    private WaitForSeconds WaitForATKDelaySecond;
+    private bool Delay = false;
     #endregion
 
     private bool isInvincible = false;
@@ -30,7 +28,7 @@ public class Status : NetworkBehaviour
         this.damageIndicatorText=DamageIndicator.GetComponent<TextMeshPro>();
     }
 
-    public void GetAttacked(float dam, Vector3? colPos = null)
+    public float GetATK()
     {
         
         this.PlayDamageIndicator(dam);
@@ -39,14 +37,15 @@ public class Status : NetworkBehaviour
         CmdGetDamaged(dam);
     }
 
-    [Command(requiresAuthority = false)]
-    public void CmdGetDamaged(float dam)
+    public float TotalATK()
     {
-        Hp = Hp - dam;
-        if (Hp <= 0)
+        float ATK = 0;
+        if (!this.Delay)
         {
-            GetEliminated();
+            ATK = this.ATK;
+            StartCoroutine(ATKIEnumerator());
         }
+        return ATK;
     }
     private void PlayDamageIndicator(float dmg)
     {
@@ -62,15 +61,46 @@ public class Status : NetworkBehaviour
     }
     public void PlayHitParticle(Vector3? pos = null)
     {
-        if (hitParticle == null) return;
-        if(pos !=null)
-            hitParticle.transform.position = (Vector3) pos;
-        hitParticle.Play();
+        Delay = true;
+        yield return WaitForATKDelaySecond;
+        Delay = false;
     }
 
     public void GetEliminated()
     {
-        NetworkServer.Destroy(gameObject);
+        return this.HP;
     }
 
+    public float ApplyATK(float ATK)
+    {
+        this.HP = this.HP > ATK ? this.HP - ATK : this.HP = 0;
+        return this.HP;
+    }
+}
+*/
+
+public class Status : MonoBehaviour
+{
+    public enum Team
+    { 
+        Friendly, Enemy, Neutral
+    }
+    #region SerializedFields
+    [Tooltip("Health")]
+    public float HP;
+    [Tooltip("Attack power")]
+    public float ATK;
+
+    public float AP;
+
+    public float MaxAP = 1000;
+
+    public Team team;
+    #endregion
+
+    #region localValues
+    
+    #endregion
+
+    
 }

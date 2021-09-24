@@ -15,7 +15,7 @@ MonoBehaviour:
   id: 1
   name: "\uB3CC\uBA69\uC774"
   rarity: 0
-  type: 16384
+  type: 2
   flavorText: "\uAE38\uAC00\uC5D0\uC11C \uD754\uD788 \uBCFC \uC218 \uC788\uB294 \uB3CC\uBA69\uC774"
   maxStack: 10
   sprite: 1

@@ -36,7 +36,7 @@ public class Weapon : MonoBehaviour
 
     }
 
-    public void OnTriggerEnter(Collider other)
+    private void OnTriggerEnter(Collider other)
     {
         if (other.tag=="Skeleton")
         {
@@ -52,7 +52,9 @@ public class Weapon : MonoBehaviour
                         myStatus.PlayHitParticle(transform.position);
                         otherStatus.GetAttacked(myStatus.Atk, other.ClosestPointOnBounds(transform.position));
 
-                        Debug.Log(otherStatus.name + ":" + otherStatus.Hp);
+                        otherStatus.HP -= this.playerStatus.ATK;
+
+                        Debug.Log(otherStatus.name + ":" + otherStatus.HP);
                     }
                 }
             }

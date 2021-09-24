@@ -24,7 +24,6 @@ public class UI_Console : UIComponent
 
     public override void Init()
     {
-        base.Init();
         consoleQueue = new Queue<UI_ConsoleLine>(MAX_LINECOUNT);
         storageQueue = new Queue<UI_ConsoleLine>(MAX_LINECOUNT);
         for (int lineIndex = 0; lineIndex < MAX_LINECOUNT; ++lineIndex)

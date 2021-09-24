@@ -46,9 +46,9 @@ public class UI_ItemContainer : UIComponent
             / contentLayoutGroup.constraintCount;
 
         contentLayoutGroup.cellSize = new Vector2(width, width);
-        backPanel.GetComponent<UI_EventHandler>().OnDragEvent.AddListener(OnWindowDrag);
-        backPanel.GetComponent<UI_EventHandler>().OnBeginDragEvent.AddListener(OnBeginWindowDrag);
-        backPanel.GetComponent<UI_EventHandler>().OnDropEvent.AddListener(OnItemDrop);
+        backPanel.GetComponent<EventHandler>().OnDragEvent.AddListener(OnWindowDrag);
+        backPanel.GetComponent<EventHandler>().OnBeginDragEvent.AddListener(OnBeginWindowDrag);
+        backPanel.GetComponent<EventHandler>().OnDropEvent.AddListener(OnItemDrop);
     }
 
     public void SetContainer(ItemContainer inv)
@@ -160,12 +160,12 @@ public class UI_ItemContainer : UIComponent
         currentSlotIndex = _slotIndex;
     }
 
-    protected void OnBeginWindowDrag(UI_EventHandler evHnd, PointerEventData evData )
+    protected void OnBeginWindowDrag(EventHandler evHnd, PointerEventData evData )
     {
         pivotDiff = evData.position - (Vector2) evHnd.transform.position;
     }
     
-    protected void OnWindowDrag(UI_EventHandler evHnd, PointerEventData evData )
+    protected void OnWindowDrag(EventHandler evHnd, PointerEventData evData )
     {
         evHnd.transform.position = evData.position - pivotDiff;
     }
@@ -201,7 +201,7 @@ public class UI_ItemContainer : UIComponent
         base.Off();
     }
 
-    public void OnItemDrop(UI_EventHandler evhnd, PointerEventData eventData)
+    public void OnItemDrop(EventHandler evhnd, PointerEventData eventData)
     {
         if (UI_ItemSlot.DraggingSlot != null && UI_ItemSlot.DraggingSlot.ContainerUI != this)
         {
