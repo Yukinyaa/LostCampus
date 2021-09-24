@@ -34,10 +34,13 @@ public class Wander : NetworkBehaviour {
     // Update is called once per frame
     void Update()
     {
-        target = FindClosestPlayer();
-        distance = Vector3.Distance(target.transform.position, transform.position);
+        target = FindTarget();
+        if (target)
+            distance = Vector3.Distance(target.transform.position, transform.position);
+
+        Debug.Log(target.tag);
         timer += Time.deltaTime;
-        if (distance < 5)
+        if (distance < 8)
         {
      
 
@@ -86,6 +89,38 @@ public class Wander : NetworkBehaviour {
             }
         }
         return closest;
+    }
+
+    GameObject FindTarget()
+    {
+        Collider[] hitColliders = Physics.OverlapSphere(transform.position, 10f);
+
+        GameObject targetGameObject = null;
+
+        float temp = 0;
+
+        float shortTemp = 10;
+
+        for (int i = 0; i < hitColliders.Length; i++)
+        {
+
+            if (hitColliders[i].tag == "Player")
+            {
+
+                temp = Vector3.Distance(hitColliders[i].transform.position, transform.position);
+
+                if (temp < shortTemp)
+                {
+
+                    targetGameObject = hitColliders[i].gameObject;
+
+                }
+
+            }
+
+        }
+
+        return targetGameObject;
     }
     
     void FreezeVelocity()
