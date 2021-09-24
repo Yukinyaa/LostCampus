@@ -49,7 +49,7 @@ public class Weapon : MonoBehaviour
                     {
                         this.otherStatus.Add(otherStatus);
                         //여기서부터 데미지 처리
-                        playerStatus.PlayHitParticle(transform.position);
+                        myStatus.PlayHitParticle(transform.position);
                         otherStatus.GetAttacked(myStatus.Atk, other.ClosestPointOnBounds(transform.position));
 
                         Debug.Log(otherStatus.name + ":" + otherStatus.Hp);

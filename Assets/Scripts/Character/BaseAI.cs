@@ -93,7 +93,7 @@ public abstract class BaseAI : NetworkBehaviour
         return closest;
     }
     
-    GameObject FindTarget()
+    protected GameObject FindTarget()
     {
         Collider[] hitColliders = Physics.OverlapSphere(transform.position, 10f);
 
