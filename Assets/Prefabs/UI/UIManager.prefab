@@ -114,6 +114,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5dad363078df4e74d873a5691708b403, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  canvas: {fileID: 97820095827290379}
+  rectTransform: {fileID: 97820095827290376}
+  current: {fileID: 0}
   popUp: {fileID: 97820094224127406}
   notice: {fileID: 7567414251786866748}
   effect: {fileID: 97820095179900987}

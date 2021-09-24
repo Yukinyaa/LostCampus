@@ -146,7 +146,7 @@ public class UI_CraftingTable : UIComponent
                 ItemInfo itemInfo = ItemInfoDataBase.FindItemInfo(blueprint.itemID);
                 if (Keyboard.current[Key.LeftShift].IsPressed())
                 {
-                    UIManager.Instance.MakePopUp_Counter().
+                    UIManager.Instance.MakeCounter().
                         SetContent("제작 개수 선택").
                         SetValue(1, 1, canMakeCount).onClick += (current, max) =>
                         {
@@ -155,7 +155,7 @@ public class UI_CraftingTable : UIComponent
                 }
                 else
                 {
-                    UIManager.Instance.MakePopUp_Selection().
+                    UIManager.Instance.MakeSelection().
                         SetContent($"{itemInfo.Name}x1\n제작하시겠습니까?").
                         SetSelection("확인", "취소").onClick += (index) =>
                         {

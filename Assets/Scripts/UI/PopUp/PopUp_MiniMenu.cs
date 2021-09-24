@@ -17,9 +17,11 @@ public class PopUp_MiniMenu : MonoBehaviour
     private List<TextMeshProUGUI> selectionText;
     private UIComponent root;
 
+    public bool IsAlive { get; private set; }
+
     public System.Action<int> onClick;
 
-    public void Init()
+    private void Awake()
     {
         popUp.sizeDelta = DEFAULT_SIZE;
         selectionText = new List<TextMeshProUGUI>(selection.Length);
@@ -29,8 +31,7 @@ public class PopUp_MiniMenu : MonoBehaviour
             selection[selectionIndex].onClick.AddListener(
                 delegate
                 {
-                    SetActive(false);
-                    root.onBlur -= OnBlur;
+                    Kill();
                     if (onClick != null)
                     {
                         System.Action<int> popupEvent = new System.Action<int>(onClick);
@@ -47,19 +48,6 @@ public class PopUp_MiniMenu : MonoBehaviour
         canvasGroup.alpha = _state ? 1 : 0;
         canvasGroup.interactable = _state;
         canvasGroup.blocksRaycasts = _state;
-        return this;
-    }
-
-    private void OnBlur()
-    {
-        SetActive(false);
-        root.onBlur -= OnBlur;
-    }
-
-    public PopUp_MiniMenu SetRoot(UIComponent _root)
-    {
-        root = _root;
-        root.onBlur += OnBlur;
         return this;
     }
 
@@ -91,14 +79,28 @@ public class PopUp_MiniMenu : MonoBehaviour
         return this;
     }
 
-    public PopUp_MiniMenu Clear()
+    public PopUp_MiniMenu Init(UIComponent _root)
     {
         onClick = null;
+        root = _root;
+        root.onBlur += Kill;
         for (int i = 0; i < selection.Length; ++i)
         {
             selection[i].gameObject.SetActive(false);
             selectionText[i].SetText(string.Empty);
         }
+        IsAlive = true;
         return SetActive(true);
     }
+
+    public void Kill()
+    {
+        if (IsAlive)
+        {
+            IsAlive = false;
+            SetActive(false);
+            root.onBlur -= Kill;
+        }
+    }
+
 }
