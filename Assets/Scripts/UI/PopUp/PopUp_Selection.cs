@@ -19,15 +19,15 @@ public class PopUp_Selection : MonoBehaviour
 
     public System.Action<int> onClick;
 
-    private void Awake()
+    public void Init()
     {
         popUp.sizeDelta = DEFAULT_SIZE;
         selectionText = new List<TextMeshProUGUI>(selection.Length);
-        for (int i = 0; i < selection.Length; ++i)
+        for(int i = 0; i < selection.Length; ++i)
         {
             int selectionIndex = i;
             selection[selectionIndex].onClick.AddListener(
-                delegate
+                delegate 
                 {
                     SetActive(false);
                     if (onClick != null)
@@ -77,7 +77,7 @@ public class PopUp_Selection : MonoBehaviour
         return this;
     }
 
-    public PopUp_Selection Init()
+    public PopUp_Selection Clear()
     {
         onClick = null;
         for(int i = 0; i < selection.Length; ++i)
