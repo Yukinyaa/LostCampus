@@ -93,6 +93,38 @@ public abstract class BaseAI : NetworkBehaviour
         return closest;
     }
     
+    GameObject FindTarget()
+    {
+        Collider[] hitColliders = Physics.OverlapSphere(transform.position, 10f);
+
+        GameObject targetGameObject = null;
+
+        float temp = 0;
+
+        float shortTemp = 10;
+
+        for (int i = 0; i < hitColliders.Length; i++)
+        {
+
+            if (hitColliders[i].tag == "Player")
+            {
+
+                temp = Vector3.Distance(hitColliders[i].transform.position, transform.position);
+
+                if (temp < shortTemp)
+                {
+
+                    targetGameObject = hitColliders[i].gameObject;
+
+                }
+
+            }
+
+        }
+
+        return targetGameObject;
+    }
+
     protected void FreezeVelocity()
     {
         if (actionState == ActionState.CHASING)

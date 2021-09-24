@@ -17,8 +17,11 @@ public class Wander : BaseAI
 
     protected override void Move()
     {
-        target = FindClosestPlayer();
-        distance = Vector3.Distance(target.transform.position, transform.position);
+        target = FindTarget();
+        if (target)
+            distance = Vector3.Distance(target.transform.position, transform.position);
+
+        Debug.Log(target.tag);
         timer += Time.deltaTime;
         if (distance < chaseRadius)
         {
@@ -47,7 +50,7 @@ public class Wander : BaseAI
             }
         }
     }
-
+    
     protected override void Targeting()
     {   
         RaycastHit[] rayHits = Physics.SphereCastAll(transform.position, attackRadius, transform.forward, attackRange, LayerMask.GetMask("Player"));
