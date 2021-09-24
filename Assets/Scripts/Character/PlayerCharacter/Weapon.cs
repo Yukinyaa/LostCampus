@@ -14,7 +14,7 @@ public class Weapon : MonoBehaviour
 
     private void Awake()
     {
-        Debug.Assert(myStatus != null);
+        //Debug.Assert(myStatus != null);
 
         this.WeaponCollider = GetComponentInChildren<MeshCollider>();
         this.WeaponCollider.enabled = false;
