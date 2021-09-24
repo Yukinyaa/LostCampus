@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using Mirror;
+using TMPro;
 using UnityEngine;
 /*
 public class Status : MonoBehaviour
@@ -17,14 +19,22 @@ public class Status : MonoBehaviour
     private bool Delay = false;
     #endregion
 
+    private bool isInvincible = false;
+    [SerializeField] private ParticleSystem hitParticle;
+    [SerializeField] private GameObject DamageIndicator;
+    private TextMeshPro damageIndicatorText;
     private void Awake()
     {
-        WaitForATKDelaySecond = new WaitForSeconds(this.ATKDelaySecond);
+        this.damageIndicatorText=DamageIndicator.GetComponent<TextMeshPro>();
     }
 
     public float GetATK()
     {
-        return this.ATK;
+        
+        this.PlayDamageIndicator(dam);
+        PlayHitParticle(colPos);
+        if (isInvincible) return;
+        CmdGetDamaged(dam);
     }
 
     public float TotalATK()
@@ -37,15 +47,26 @@ public class Status : MonoBehaviour
         }
         return ATK;
     }
-
-    private IEnumerator ATKIEnumerator()
+    private void PlayDamageIndicator(float dmg)
+    {
+        this.damageIndicatorText.text = dmg.ToString();
+        this.DamageIndicator.transform.position = gameObject.transform.position;
+        Instantiate(this.DamageIndicator);
+    }
+    private void PlayDamageIndicator(string dmg)
+    {
+        this.damageIndicatorText.text = dmg;
+        this.DamageIndicator.transform.position = gameObject.transform.position;
+        Instantiate(this.DamageIndicator);
+    }
+    public void PlayHitParticle(Vector3? pos = null)
     {
         Delay = true;
         yield return WaitForATKDelaySecond;
         Delay = false;
     }
 
-    public float GetHP()
+    public void GetEliminated()
     {
         return this.HP;
     }

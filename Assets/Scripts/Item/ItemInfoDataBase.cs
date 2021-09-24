@@ -29,7 +29,7 @@ public static class ItemInfoDataBase
 { 
    public const string ITEMINFO_PATH = "Items";
    public const string ITEMIMAGE_PATH = "ItemImage";
-   
+
    private static List<ItemInfo> itemInfos;
    public static List<ItemInfo> ItemInfos 
    {
@@ -65,7 +65,8 @@ public static class ItemInfoDataBase
 
    public static Sprite GetSprite(string name)
    {
-       if (name.Equals("")) return Sprites["None"];
+       Sprite spr = Sprites[name];
+       if (spr == null) return Sprites["None"];
        return Sprites[name];
    }
    

@@ -300,11 +300,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dfbb1c6d52a0f584d84c628ef98b8065, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HP: 100
-  ATK: 1
-  AP: 10
-  MaxAP: 10
-  team: 0
+  syncMode: 0
+  syncInterval: 0.1
+  Hp: 100
+  MaxHp: 100
+  Atk: 1
+  Ap: 5
+  MaxAp: 5
+  MyFaction: 0
+  hitParticle: {fileID: 663889129897616865}
+  damageIndicator: {fileID: 8017695008282437103, guid: 4683936f117dcf04eaef18b047a15051, type: 3}
 --- !u!114 &345209283141304070
 MonoBehaviour:
   m_ObjectHideFlags: 0

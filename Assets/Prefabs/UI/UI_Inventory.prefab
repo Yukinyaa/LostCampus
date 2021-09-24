@@ -408,6 +408,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d1159d0d9a6bb5b4192860105333fa84, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  OnBeginDragEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  OnDragEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  OnDropEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  OnEndDragEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  OnPointerEnterEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  OnPointerExitEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  OnPointerClickEvent:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &704750121038062086
 GameObject:
   m_ObjectHideFlags: 0
@@ -475,7 +496,7 @@ MonoBehaviour:
       m_Calls: []
   m_text: New Text
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 285713f24ab7b3f49a56b0e9f450b3ba, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -539,7 +560,7 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
-  m_hasFontAssetChanged: 0
+  m_hasFontAssetChanged: 1
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
 --- !u!1 &1065436972981949776
@@ -1384,7 +1405,7 @@ MonoBehaviour:
       m_Calls: []
   m_text: New Text
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 285713f24ab7b3f49a56b0e9f450b3ba, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -1448,7 +1469,7 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
-  m_hasFontAssetChanged: 0
+  m_hasFontAssetChanged: 1
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
 --- !u!1 &5977007244630291516
@@ -1817,7 +1838,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2288812035143253047
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1864,6 +1885,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9259d32952849ad47b25fcf01ca49b18, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  rectTransform: {fileID: 0}
   canvasGroup: {fileID: 2162632563708179898}
   content: {fileID: 9090775564743785662}
   contentLayoutGroup: {fileID: 5862999489337833210}
@@ -2039,6 +2061,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d439bd96ab6de94e8c154d7f0f3ac23, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  rectTransform: {fileID: 0}
   canvasGroup: {fileID: 0}
   title: {fileID: 836689339110122308}
   instruction: {fileID: 8236900638822744010}
