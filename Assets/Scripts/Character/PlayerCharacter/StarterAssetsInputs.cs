@@ -14,7 +14,6 @@ public class StarterAssetsInputs : MonoBehaviour
 	public bool attack;
 	public bool drawWeapon;
 	public bool action;
-	public bool dodge;
 
 	[Header("Movement Settings")]
 	public bool analogMovement;
@@ -61,11 +60,6 @@ public class StarterAssetsInputs : MonoBehaviour
     {
 		ActionInput(value.isPressed);
     }
-	
-	public void OnDodge(InputValue value)
-	{
-		DodgeInput(value.isPressed);
-	}
 
 #else
 // old input sys if we do decide to have it (most likely wont)...
@@ -104,13 +98,7 @@ public class StarterAssetsInputs : MonoBehaviour
 	private void ActionInput(bool isPressed)
 	{
 		action = isPressed;
-	}	
-	
-	private void DodgeInput(bool isPressed)
-	{
-		dodge = isPressed;
 	}
-
 
 #if !UNITY_IOS || !UNITY_ANDROID
 

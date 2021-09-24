@@ -15,7 +15,7 @@ MonoBehaviour:
   id: 10
   name: "\uB3CC\uCC3D"
   rarity: 1
-  type: 64
+  type: 1
   flavorText: "\uD0DC\uCD08\uC758 \uC778\uB958\uAC00 \uC0AC\uC6A9\uD588\uC744 \uBC95\uD55C
     \uBB34\uAE30"
   maxStack: 1
