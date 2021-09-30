@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Mirror;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class Status : NetworkBehaviour
 {
@@ -21,10 +22,17 @@ public class Status : NetworkBehaviour
 
     #endregion
 
-    private bool isInvincible = false;
     [SerializeField] private ParticleSystem hitParticle;
     [SerializeField] private GameObject DamageIndicator;
+    private bool isInvincible = false;
     private TextMeshPro damageIndicatorText;
+    private UnityEvent<GameObject> onDieEvent;
+    public UnityEvent<GameObject> OnDieEvent
+    {
+        get => onDieEvent;
+        set => onDieEvent = value;
+    }
+
     private void Awake()
     {
         this.damageIndicatorText=DamageIndicator.GetComponent<TextMeshPro>();

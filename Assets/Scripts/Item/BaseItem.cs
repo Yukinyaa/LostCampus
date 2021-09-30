@@ -7,7 +7,7 @@ using UnityEngine;
 using UnityEngine.Events;
 
 [Serializable]
-public class BaseItem : NetworkBehaviour
+public class BaseItem : Entity
 {
 
     #region info
@@ -37,10 +37,9 @@ public class BaseItem : NetworkBehaviour
     [Header("픽업까지의 유예시간")] [SerializeField]
     private float pickUpCoolTime = 0.5f;
     
-    private string instanceId;
     private float pickUpTimer = 0f;
 
-    private void Awake()
+    public override void OnStartClient()
     {
         _itemInfo = ItemInfoDataBase.FindItemInfo(infoID);
         spriteRend.sprite = ItemInfoDataBase.GetSprite(_itemInfo.sprite);
@@ -52,14 +51,21 @@ public class BaseItem : NetworkBehaviour
     {
         _itemInfo = itemInfo;
         amount = _amount;
-        instanceId = _instanceId;
+        instanceID = _instanceId;
     }
     
     public BaseItem(int itemId, int _amount = 1, string _instanceId = null)
     {
         infoID = itemId;
         amount = _amount;
-        instanceId = _instanceId;
+        instanceID = _instanceId;
+    }
+
+    public void init(int itemId, int _amount = 1, string _instanceId = null)
+    {
+        infoID = itemId;
+        amount = _amount;
+        instanceID = _instanceId;
     }
 
     void OnEnable()
@@ -101,7 +107,7 @@ public class BaseItem : NetworkBehaviour
         amount += i;
         if (amount <= 0)
         {
-            NetworkManager.Destroy(gameObject);
+            NetworkServer.Destroy(gameObject);
         }
     }
 }
