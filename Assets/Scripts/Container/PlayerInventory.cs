@@ -60,7 +60,6 @@ public class PlayerInventory : ItemContainer
 
     public void OnInventoryPressed(InputAction.CallbackContext context)
     {
-        Debug.Log("ad");
         if(context.control.IsPressed())
             InventoryUI?.Toggle();
     }
