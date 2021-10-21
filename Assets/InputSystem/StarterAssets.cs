@@ -84,9 +84,9 @@ public class @StarterInputAssets : IInputActionCollection, IDisposable
                 },
                 {
                     ""name"": ""Action"",
-                    ""type"": ""Button"",
+                    ""type"": ""PassThrough"",
                     ""id"": ""d6fedf5a-b072-4f64-8bed-e06f3fbc8969"",
-                    ""expectedControlType"": ""Button"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """"
                 },
@@ -102,6 +102,14 @@ public class @StarterInputAssets : IInputActionCollection, IDisposable
                     ""name"": ""Dodge"",
                     ""type"": ""PassThrough"",
                     ""id"": ""f448c15a-7589-4703-9b4b-16b045b62e5e"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""ToggleMouse"",
+                    ""type"": ""PassThrough"",
+                    ""id"": ""70139126-9a60-4798-9b51-c823616271ba"",
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """"
@@ -349,6 +357,28 @@ public class @StarterInputAssets : IInputActionCollection, IDisposable
                     ""action"": ""Dodge"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""5e1db97b-b094-4155-8997-b48543a59d4f"",
+                    ""path"": ""<Keyboard>/leftAlt"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""KeyboardMouse;Gamepad;PS4 Controller;Xbox Controller"",
+                    ""action"": ""ToggleMouse"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""cf731aa7-33e9-470b-8143-bb87e5ce925e"",
+                    ""path"": ""<Keyboard>/e"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""KeyboardMouse;Gamepad;Xbox Controller;PS4 Controller"",
+                    ""action"": ""Action"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -416,6 +446,7 @@ public class @StarterInputAssets : IInputActionCollection, IDisposable
         m_Player_Action = m_Player.FindAction("Action", throwIfNotFound: true);
         m_Player_Alternate = m_Player.FindAction("Alternate", throwIfNotFound: true);
         m_Player_Dodge = m_Player.FindAction("Dodge", throwIfNotFound: true);
+        m_Player_ToggleMouse = m_Player.FindAction("ToggleMouse", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -476,6 +507,7 @@ public class @StarterInputAssets : IInputActionCollection, IDisposable
     private readonly InputAction m_Player_Action;
     private readonly InputAction m_Player_Alternate;
     private readonly InputAction m_Player_Dodge;
+    private readonly InputAction m_Player_ToggleMouse;
     public struct PlayerActions
     {
         private @StarterInputAssets m_Wrapper;
@@ -491,6 +523,7 @@ public class @StarterInputAssets : IInputActionCollection, IDisposable
         public InputAction @Action => m_Wrapper.m_Player_Action;
         public InputAction @Alternate => m_Wrapper.m_Player_Alternate;
         public InputAction @Dodge => m_Wrapper.m_Player_Dodge;
+        public InputAction @ToggleMouse => m_Wrapper.m_Player_ToggleMouse;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -533,6 +566,9 @@ public class @StarterInputAssets : IInputActionCollection, IDisposable
                 @Dodge.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnDodge;
                 @Dodge.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnDodge;
                 @Dodge.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnDodge;
+                @ToggleMouse.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnToggleMouse;
+                @ToggleMouse.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnToggleMouse;
+                @ToggleMouse.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnToggleMouse;
             }
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
@@ -570,6 +606,9 @@ public class @StarterInputAssets : IInputActionCollection, IDisposable
                 @Dodge.started += instance.OnDodge;
                 @Dodge.performed += instance.OnDodge;
                 @Dodge.canceled += instance.OnDodge;
+                @ToggleMouse.started += instance.OnToggleMouse;
+                @ToggleMouse.performed += instance.OnToggleMouse;
+                @ToggleMouse.canceled += instance.OnToggleMouse;
             }
         }
     }
@@ -623,5 +662,6 @@ public class @StarterInputAssets : IInputActionCollection, IDisposable
         void OnAction(InputAction.CallbackContext context);
         void OnAlternate(InputAction.CallbackContext context);
         void OnDodge(InputAction.CallbackContext context);
+        void OnToggleMouse(InputAction.CallbackContext context);
     }
 }

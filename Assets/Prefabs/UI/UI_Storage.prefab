@@ -563,7 +563,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &402574136380052930
 RectTransform:
   m_ObjectHideFlags: 0
@@ -611,6 +611,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rectTransform: {fileID: 402574136380052930}
   canvasGroup: {fileID: 402574136380052931}
+  contentCanvasGroup: {fileID: 0}
   content: {fileID: 402574136698203169}
   contentLayoutGroup: {fileID: 402574136698203171}
   canvas: {fileID: 0}
@@ -629,6 +630,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d1159d0d9a6bb5b4192860105333fa84, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  OnBeginDragEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  OnDragEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  OnDropEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  OnEndDragEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  OnPointerEnterEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  OnPointerExitEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  OnPointerClickEvent:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &402574136698203170
 GameObject:
   m_ObjectHideFlags: 0
@@ -1149,6 +1171,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d1159d0d9a6bb5b4192860105333fa84, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  OnBeginDragEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  OnDragEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  OnDropEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  OnEndDragEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  OnPointerEnterEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  OnPointerExitEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  OnPointerClickEvent:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &818615292979914276
 GameObject:
   m_ObjectHideFlags: 0
@@ -1803,7 +1846,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d439bd96ab6de94e8c154d7f0f3ac23, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  rectTransform: {fileID: 0}
   canvasGroup: {fileID: 163826710396366967}
+  contentCanvasGroup: {fileID: 0}
   title: {fileID: 3187666024999540911}
   instruction: {fileID: 1547423220062559855}
   icon: {fileID: 8321085553195354152}

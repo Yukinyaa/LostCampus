@@ -35,7 +35,7 @@ public class UIComponent : MonoBehaviour
         onMaximize += OnMaximize;
     }
 
-    protected void SetState(bool _state)
+    public void SetState(bool _state)
     {
         try
         {

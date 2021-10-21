@@ -50,7 +50,7 @@ public abstract class BaseAI : NetworkBehaviour
     protected void Update()
     {
         Move();
-        Debug.Log(gameObject.ToString() +" is "+actionState.ToString());
+        //Debug.Log(gameObject.ToString() +" is "+actionState.ToString());
     }
     protected abstract void Move();
     protected abstract void Targeting();

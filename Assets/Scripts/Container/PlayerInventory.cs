@@ -19,6 +19,7 @@ public class PlayerInventory : ItemContainer
     {
         if (isLocalPlayer)
         {
+            //Debug.Log(InputManager.Instance.ActionMap.FindAction("ToggleInventory") == null);
             InputManager.Instance.ActionMap.FindAction("ToggleInventory").performed +=
                 OnInventoryPressed;
             InventoryUI = UIManager.Instance.GetUI<UI_Inventory>();

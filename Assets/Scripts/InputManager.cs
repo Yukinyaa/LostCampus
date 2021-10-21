@@ -23,6 +23,11 @@ public class InputManager : Singleton<InputManager>
         }
     }
     
+    public static InputAction FindAction(string name)
+    {
+        return Instance.ActionMap.FindAction(name);
+    }
+    
     //사용예 :
     //InputManager.Instance.ActionMap.FindAction("ToggleInventory").performed += x => Debug.Log( x.action.name+" performed");
     //눌렸을때를 확인하기 위해서는 x.controls.isPressed을 사용

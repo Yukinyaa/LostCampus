@@ -189,21 +189,23 @@ public class Shelter : NetworkBehaviour
         if (!isClient) return;
         if (!isShelter) return;
 
-        if (!EventSystem.current.IsPointerOverGameObject() && Mouse.current.leftButton.isPressed)
+        if (!EventSystem.current.IsPointerOverGameObject() && Cursor.visible && Mouse.current.leftButton.isPressed)
         {
             Ray ray = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
 
             if (Physics.Raycast(ray, out RaycastHit hit))
             {
+                Debug.Log(hit.transform.name);
                 switch (hit.transform.name)
                 {
                     case "Armory":
-                        //UIManager.Instance.GetUI<UI_Armory>().SetActive(true);
+                        UIManager.Instance.GetUI<UI_Equip>().gameObject.SetActive(true);
                         break;
                     case "Chest":
-                    case "CraftingTable":
                         inventory.ActiveContainerUI();
-                        //UIManager.Instance.GetUI<UI_CraftingTable>().SetState(true);
+                        break;
+                    case "CraftingTable":
+                        UIManager.Instance.GetUI<UI_CraftingTable>().gameObject.SetActive(true);
                         break;
                     case "Door":
                         MessageManager.Instance.Send("/moveto Field");

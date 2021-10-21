@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 01c136764d92f3940969d5ea6543796c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerStatus: {fileID: 0}
+  myStatus: {fileID: 0}
 --- !u!54 &626678811880244389
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -192,6 +192,7 @@ GameObject:
   - component: {fileID: 1329667464887348410}
   - component: {fileID: 7867115797891470777}
   - component: {fileID: 57131429054381899}
+  - component: {fileID: 492628311209026192}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -256,7 +257,6 @@ MonoBehaviour:
   DodgeApCost: 1
   RotationSmoothTime: 0.12
   SpeedChangeRate: 10
-  Health: 100
   JumpHeight: 1.2
   Gravity: -15
   JumpTimeout: 0.3
@@ -315,7 +315,6 @@ MonoBehaviour:
   MaxAp: 5
   MyFaction: 0
   hitParticle: {fileID: 663889129897616865}
-  damageIndicator: {fileID: 8017695008282437103, guid: 4683936f117dcf04eaef18b047a15051, type: 3}
 --- !u!114 &345209283141304070
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -557,6 +556,18 @@ MonoBehaviour:
   MAX_SLOT: 16
   SLOT_INCREASE_FACTOR: 4
   InventoryUI: {fileID: 0}
+--- !u!114 &492628311209026192
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4063426843281924986}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cb84fba5f0901ba48b582e81724de931, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &4137981372564262661
 GameObject:
   m_ObjectHideFlags: 0

@@ -24,9 +24,9 @@ public class UI_TopBar : MonoBehaviour, IBeginDragHandler, IDragHandler
         {
             target = GetComponentInParent<UIComponent>();
         }
-        target.onMinimize += () => text_MinMax.SetText("¡à");
+        target.onMinimize += () => text_MinMax.SetText("â–¡");
         target.onMaximize += () => text_MinMax.SetText("_");
-        target.onShow += () => text_MinMax.SetText(target.IsMini ? "¡à" : "_");
+        target.onShow += () => text_MinMax.SetText(target.IsMini ? "â–¡" : "_");
         button_Exit.onClick.AddListener(delegate { target.Hide(); });
         button_MinMax.onClick.AddListener(delegate
         {

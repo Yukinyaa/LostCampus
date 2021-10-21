@@ -20,21 +20,20 @@ public class CSVParser : MonoBehaviour
         return csvTextAsset.text;
     }
 
-    public static List<Dictionary<String, String>> Parse(string str)
+    private static List<Dictionary<string, string>> ParseToDict(string str)
     {
         string[] dataLines = Regex.Split(str, LINE_SPLIT_RE);
-        List<Dictionary<String, String>> Datas = new List<Dictionary<String, String>>(); //첫째줄은 항목명으로 사용하니 0은 빈 리스트, 1부터 시작함
+        List<Dictionary<string, string>> Datas = new List<Dictionary<string, string>>();
         
-        List<String> categories = new List<string>();
-        Dictionary<String, String> line;        
+        List<string> categories = new List<string>(Regex.Split(dataLines[0], SPLIT_RE));
+        
+        Dictionary<string, string> line;        
         int num = 1;
         string[] tokens;
-        
-        Datas.Add(new Dictionary<String, String>());
         while (num < dataLines.Length)
         {
             tokens = Regex.Split(dataLines[num], SPLIT_RE);
-            line = new Dictionary<String, String>();
+            line = new Dictionary<string, string>();
             
             for (int i=0; i < categories.Count; i++)
             {
@@ -46,12 +45,46 @@ public class CSVParser : MonoBehaviour
         return Datas;
     }
     
+    private static List<List<string>> ParseToList(string str)
+    {
+        string[] dataLines = Regex.Split(str, LINE_SPLIT_RE);
+        List<List<string>> Datas = new List<List<String>>();
+        
+        List<string> categories = new List<string>(Regex.Split(dataLines[0], SPLIT_RE));
+        
+        List<string> line;        
+        int num = 1;
+        string[] tokens;
+        while (num < dataLines.Length)
+        {
+            tokens = Regex.Split(dataLines[num], SPLIT_RE);
+            line = new List<string>();
+            
+            for (int i=0; i < categories.Count; i++)
+            {
+                line.Add(tokens[i]);
+            }
+            Datas.Add(line);
+            num++;
+        }
+        return Datas;
+    }
+    
     /// <summary>
-    /// List<Dictionary<항목명,내용>>
+    /// List<Dictionary<카테고리명,내용>>
     /// </summary>
     /// <returns></returns>
-    public static List<Dictionary<String, String>> ReadAndParse(string path)
+    public static List<Dictionary<string, string>> ReadAndParseToDict(string path)
     {
-        return Parse(ReadString(path));
+        return ParseToDict(ReadString(path));
+    }
+    /// <summary>
+    /// List<List<내용>>
+    /// </summary>
+    /// <param name="path"></param>
+    /// <returns></returns>
+    public static List<List<string>> ReadAndParseToList(string path)
+    {
+        return ParseToList(ReadString(path));
     }
 }

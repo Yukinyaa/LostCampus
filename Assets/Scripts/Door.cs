@@ -6,7 +6,7 @@ using DG.Tweening;
 
 public class Door : NetworkBehaviour
 {
-
+    [SerializeField] private bool isOpenable = true;
     [SyncVar]private bool open = false;
     public float doorOpenAngle = 90f;
     public float doorCloseAngle = 0f;
@@ -27,6 +27,7 @@ public class Door : NetworkBehaviour
     [Command(requiresAuthority =false)]
     public void ChangeDoorState()
     {
+        if (isOpenable == false) return;
         open = !open;
 
         if (open)

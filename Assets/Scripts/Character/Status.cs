@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Mirror;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class Status : NetworkBehaviour
 {
@@ -21,19 +22,25 @@ public class Status : NetworkBehaviour
 
     #endregion
 
-    private bool isInvincible = false;
     [SerializeField] private ParticleSystem hitParticle;
-    [SerializeField] private GameObject DamageIndicator;
-    private TextMeshPro damageIndicatorText;
+    private bool isInvincible = false;
+    private UnityEvent<GameObject> onDieEvent = new UnityEvent<GameObject>();
+    public UnityEvent<GameObject> OnDieEvent
+    {
+        get => onDieEvent;
+        set => onDieEvent = value;
+    }
+
+    private ParticleManager ParticleManager;
     private void Awake()
     {
-        this.damageIndicatorText=DamageIndicator.GetComponent<TextMeshPro>();
+        ParticleManager=GameObject.Find("ParticleManager").GetComponent<ParticleManager>();
     }
 
     public void GetAttacked(float dam, Vector3? colPos = null)
     {
         
-        this.PlayDamageIndicator(dam);
+        this.ParticleManager.PlayDamageIndicator(this.gameObject,dam);
         PlayHitParticle(colPos);
         if (isInvincible) return;
         CmdGetDamaged(dam);
@@ -48,18 +55,6 @@ public class Status : NetworkBehaviour
             GetEliminated();
         }
     }
-    private void PlayDamageIndicator(float dmg)
-    {
-        this.damageIndicatorText.text = dmg.ToString();
-        this.DamageIndicator.transform.position = gameObject.transform.position;
-        Instantiate(this.DamageIndicator);
-    }
-    private void PlayDamageIndicator(string dmg)
-    {
-        this.damageIndicatorText.text = dmg;
-        this.DamageIndicator.transform.position = gameObject.transform.position;
-        Instantiate(this.DamageIndicator);
-    }
     public void PlayHitParticle(Vector3? pos = null)
     {
         if (hitParticle == null) return;
@@ -68,8 +63,10 @@ public class Status : NetworkBehaviour
         hitParticle.Play();
     }
 
+    [Server]
     public void GetEliminated()
     {
+        OnDieEvent.Invoke(gameObject);
         NetworkServer.Destroy(gameObject);
     }
 

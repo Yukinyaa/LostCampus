@@ -71,9 +71,9 @@
                 },
                 {
                     "name": "Action",
-                    "type": "Button",
+                    "type": "PassThrough",
                     "id": "d6fedf5a-b072-4f64-8bed-e06f3fbc8969",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": ""
                 },
@@ -89,6 +89,14 @@
                     "name": "Dodge",
                     "type": "PassThrough",
                     "id": "f448c15a-7589-4703-9b4b-16b045b62e5e",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "ToggleMouse",
+                    "type": "PassThrough",
+                    "id": "70139126-9a60-4798-9b51-c823616271ba",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": ""
@@ -334,6 +342,28 @@
                     "processors": "",
                     "groups": "KeyboardMouse",
                     "action": "Dodge",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "5e1db97b-b094-4155-8997-b48543a59d4f",
+                    "path": "<Keyboard>/leftAlt",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "KeyboardMouse;Gamepad;PS4 Controller;Xbox Controller",
+                    "action": "ToggleMouse",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "cf731aa7-33e9-470b-8143-bb87e5ce925e",
+                    "path": "<Keyboard>/e",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "KeyboardMouse;Gamepad;Xbox Controller;PS4 Controller",
+                    "action": "Action",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

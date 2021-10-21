@@ -1432,7 +1432,7 @@ ParticleSystem:
       serializedVersion: 2
       minMaxState: 0
       minColor: {r: 1, g: 1, b: 1, a: 1}
-      maxColor: {r: 1, g: 1, b: 1, a: 1}
+      maxColor: {r: 1, g: 0, b: 0, a: 1}
       maxGradient:
         serializedVersion: 2
         key0: {r: 1, g: 1, b: 1, a: 1}
@@ -6277,6 +6277,7 @@ GameObject:
   - component: {fileID: 7355031039198739997}
   - component: {fileID: 1623762132251299547}
   - component: {fileID: 2932715459654718822}
+  - component: {fileID: 6688504220660156987}
   m_Layer: 0
   m_Name: ant_move_fix
   m_TagString: Enemy
@@ -6411,7 +6412,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
-  Hp: 3
+  Hp: 2
   MaxHp: 100
   Atk: 1
   Ap: 5
@@ -6435,6 +6436,21 @@ MonoBehaviour:
   visible: 0
   m_AssetId: 
   hasSpawned: 0
+--- !u!114 &6688504220660156987
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7355031039198740002}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: be265520ec48ab44fbbcaed3be94ec10, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
+  baseID: ant
 --- !u!1 &7478137125818838138
 GameObject:
   m_ObjectHideFlags: 0

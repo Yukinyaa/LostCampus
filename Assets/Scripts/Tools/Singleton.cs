@@ -61,6 +61,11 @@ public class Singleton<T> : MonoBehaviour where T : MonoBehaviour
                    "' already exists. Destroying This");
             Destroy(this);
         }
+        else
+        {
+            instance = this as T;
+            DontDestroyOnLoad(gameObject);
+        }
     }
 
     protected virtual void OnApplicationQuit()
