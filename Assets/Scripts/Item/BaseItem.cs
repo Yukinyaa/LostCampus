@@ -90,7 +90,8 @@ public class BaseItem : Entity
                 int remain = 0;
                 if (inv != null)
                 {
-                    remain = inv.TryUpdateItemById(_itemInfo.id,amount);
+                    remain = inv.TryUpdateItemById(itemInfo.id,amount);
+                    Debug.Log(inv.gameObject.name + " obtained "+itemInfo.name + (amount-remain));
                 }
                 CmdChangeAmount(-(amount - remain));
 

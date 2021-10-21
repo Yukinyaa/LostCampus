@@ -1513,7 +1513,7 @@ GameObject:
   - component: {fileID: 7672263036670502527}
   - component: {fileID: 6193504188878655386}
   m_Layer: 0
-  m_Name: Enemy_Ant
+  m_Name: OLD_Enemy_Ant
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

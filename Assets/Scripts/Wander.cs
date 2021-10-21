@@ -21,7 +21,6 @@ public class Wander : BaseAI
         if (target)
             distance = Vector3.Distance(target.transform.position, transform.position);
 
-        Debug.Log(target.tag);
         timer += Time.deltaTime;
         if (distance < chaseRadius)
         {

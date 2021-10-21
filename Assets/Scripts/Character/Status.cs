@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Mirror;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -22,10 +23,8 @@ public class Status : NetworkBehaviour
     #endregion
 
     [SerializeField] private ParticleSystem hitParticle;
-    [SerializeField] private GameObject DamageIndicator;
     private bool isInvincible = false;
-    private TextMeshPro damageIndicatorText;
-    private UnityEvent<GameObject> onDieEvent;
+    private UnityEvent<GameObject> onDieEvent = new UnityEvent<GameObject>();
     public UnityEvent<GameObject> OnDieEvent
     {
         get => onDieEvent;
@@ -64,8 +63,10 @@ public class Status : NetworkBehaviour
         hitParticle.Play();
     }
 
+    [Server]
     public void GetEliminated()
     {
+        OnDieEvent.Invoke(gameObject);
         NetworkServer.Destroy(gameObject);
     }
 

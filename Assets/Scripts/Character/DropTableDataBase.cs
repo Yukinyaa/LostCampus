@@ -37,7 +37,7 @@ public static class DropTableDataBase
 
     public static DropTable FindDropTable(string id)
     {
-        return dropTables.Find(x => x.name.Equals(id));
+        return DropTables.Find(x => x.name.Equals(id));
     }
    
     public static void AddDropTable(DropTable dropTable)
